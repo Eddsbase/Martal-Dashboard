@@ -1059,7 +1059,6 @@ function CompanyTab({cms}){
       <Stat label={churnLabel} value={`${churnVal}%`} color={crCol(parseFloat(churnVal))} sub={churnSub}/>
       <Stat label="6-Mo Avg" value={`${a6}%`} color="#8dc63f"/>
       <Stat label="12-Mo Avg" value={`${a12}%`} color="#5aab1f"/>
-      <Stat label="Net Change" value={`${lat.dc-lat.cl>=0?"+":""}${lat.dc-lat.cl}`} color={lat.dc-lat.cl>=0?G:"#ef4444"}/>
     </div>
 
     {w.paceCard!==false&&<CompanyPaceCard/>}
