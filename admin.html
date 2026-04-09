@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin — Martal Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#0d0d0d;color:#f0f0ef;font-family:'DM Sans',system-ui,sans-serif;min-height:100vh;}
+button,input,select,textarea{font-family:inherit;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:#1a1a1a;}
+::-webkit-scrollbar-thumb{background:#333;border-radius:10px;}
+input,select,textarea{background:#1a1a1a;border:1px solid #2a2a2a;color:#f0f0ef;border-radius:6px;padding:8px 12px;font-size:13px;outline:none;width:100%;}
+input:focus,select:focus,textarea:focus{border-color:#4fa61a;box-shadow:0 0 0 2px #4fa61a22;}
+label{font-size:10px;text-transform:uppercase;letter-spacing:1.4px;color:#6b6b68;font-weight:600;display:block;margin-bottom:5px;}
+.btn{border:none;border-radius:8px;padding:9px 20px;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:0.5px;transition:all .15s;}
+.btn-green{background:#4fa61a;color:#fff;}
+.btn-green:hover{background:#3d8514;}
+.btn-red{background:#dc2626;color:#fff;}
+.btn-red:hover{background:#b91c1c;}
+.btn-ghost{background:transparent;border:1px solid #2a2a2a;color:#a8a8a5;}
+.btn-ghost:hover{border-color:#4a4a47;color:#f0f0ef;}
+.card{background:#161616;border:1px solid #222;border-radius:10px;padding:20px 22px;margin-bottom:12px;}
+.section-title{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#6b6b68;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.section-title::before{content:'';width:3px;height:12px;background:#4fa61a;border-radius:2px;flex-shrink:0;}
+.toggle-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #1f1f1f;}
+.toggle-row:last-child{border-bottom:none;}
+.toggle{width:40px;height:22px;border-radius:11px;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;}
+.toggle-thumb{position:absolute;top:3px;width:16px;height:16px;background:#fff;border-radius:8px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,0.4);}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th{padding:7px 10px;text-align:left;color:#6b6b68;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid #222;}
+td{padding:6px 8px;border-bottom:1px solid #1a1a1a;vertical-align:middle;}
+td input{padding:5px 8px;font-size:12px;background:#111;border:1px solid #222;}
+td input:focus{border-color:#4fa61a;}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;}
+.tag-pass{background:#4fa61a22;color:#4fa61a;border:1px solid #4fa61a44;}
+.tag-obs{background:#f5c51822;color:#f5c518;border:1px solid #f5c51844;}
+.tag-below{background:#ef444422;color:#ef4444;border:1px solid #ef444444;}
+.saved-toast{position:fixed;bottom:24px;right:24px;background:#4fa61a;color:#fff;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:600;box-shadow:0 4px 20px #4fa61a66;z-index:999;display:none;}
+</style>
+</head>
+<body>
+
+<!-- ─── PASSWORD GATE ─── -->
+<div id="gate" style="display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:20px;">
+  <div style="text-align:center;margin-bottom:8px;">
+    <div style="width:48px;height:48px;background:#4fa61a;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;font-family:'Outfit',sans-serif;color:#fff;margin:0 auto 16px;box-shadow:0 4px 20px #4fa61a55;">M</div>
+    <div style="font-size:20px;font-weight:800;font-family:'Outfit',sans-serif;letter-spacing:-0.5px;">Dashboard Admin</div>
+    <div style="font-size:12px;color:#6b6b68;margin-top:4px;">Martal Group · Internal Use Only</div>
+  </div>
+  <div style="background:#161616;border:1px solid #222;border-radius:12px;padding:28px 32px;width:340px;">
+    <label>Username</label>
+    <input type="email" id="pw-user" placeholder="email@martalgroup.com" style="margin-bottom:12px;" onkeydown="if(event.key==='Enter')document.getElementById('pw-input').focus()"/>
+    <label>Password</label>
+    <input type="password" id="pw-input" placeholder="Enter password" style="margin-bottom:14px;" onkeydown="if(event.key==='Enter')checkPw()"/>
+    <button class="btn btn-green" onclick="checkPw()" style="width:100%;margin-top:2px;">Unlock Admin Panel</button>
+    <div id="pw-error" style="color:#ef4444;font-size:12px;margin-top:10px;display:none;">Incorrect credentials. Try again.</div>
+  </div>
+  <div style="font-size:10px;color:#333;letter-spacing:1px;">ACCESS RESTRICTED</div>
+</div>
+
+<!-- ─── ADMIN PANEL ─── -->
+<div id="admin" style="display:none;">
+
+  <!-- Top Bar -->
+  <div style="background:#111;border-bottom:1px solid #1f1f1f;padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="width:32px;height:32px;background:#4fa61a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900;font-family:'Outfit',sans-serif;color:#fff;box-shadow:0 2px 8px #4fa61a55;">M</div>
+      <div>
+        <div style="font-size:13px;font-weight:800;font-family:'Outfit',sans-serif;letter-spacing:1px;text-transform:uppercase;">Martal Admin</div>
+        <div style="font-size:9px;color:#6b6b68;letter-spacing:1px;text-transform:uppercase;margin-top:1px;">Dashboard Control Panel</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <a href="index_2.html" target="_blank" style="color:#4fa61a;font-size:11px;font-weight:600;letter-spacing:0.5px;text-decoration:none;">↗ View Dashboard</a>
+      <div style="width:1px;height:20px;background:#222;"></div>
+      <button class="btn btn-ghost" onclick="lockAdmin()" style="font-size:11px;padding:7px 14px;">Lock</button>
+    </div>
+  </div>
+
+  <div style="max-width:1000px;margin:0 auto;padding:28px 24px 60px;">
+
+    <!-- Save All Bar -->
+    <div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#f0f0ef;">Changes save automatically to localStorage</div>
+        <div style="font-size:11px;color:#6b6b68;margin-top:2px;">The live dashboard reads these values on every load. Changes take effect immediately.</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-ghost" onclick="resetAll()" style="font-size:11px;">Reset to Defaults</button>
+        <button class="btn btn-green" onclick="saveAll()" style="font-size:12px;">Save All Changes</button>
+      </div>
+    </div>
+
+    <!-- ─── Section Tabs ─── -->
+    <div style="display:flex;gap:2px;margin-bottom:20px;background:#111;border:1px solid #1f1f1f;border-radius:8px;padding:4px;">
+      <button class="section-btn active" data-section="meta" onclick="showSection('meta',this)" style="flex:1;padding:8px;font-size:11px;font-weight:700;letter-spacing:0.5px;border:none;border-radius:6px;cursor:pointer;background:#4fa61a;color:#fff;">Dashboard Meta</button>
+      <button class="section-btn" data-section="widgets" onclick="showSection('widgets',this)" style="flex:1;padding:8px;font-size:11px;font-weight:700;letter-spacing:0.5px;border:none;border-radius:6px;cursor:pointer;background:transparent;color:#6b6b68;">Widgets</button>
+      <button class="section-btn" data-section="churn" onclick="showSection('churn',this)" style="flex:1;padding:8px;font-size:11px;font-weight:700;letter-spacing:0.5px;border:none;border-radius:6px;cursor:pointer;background:transparent;color:#6b6b68;">Churn Display</button>
+      <button class="section-btn" data-section="sdr" onclick="showSection('sdr',this)" style="flex:1;padding:8px;font-size:11px;font-weight:700;letter-spacing:0.5px;border:none;border-radius:6px;cursor:pointer;background:transparent;color:#6b6b68;">SDR Scores</button>
+      <button class="section-btn" data-section="pace" onclick="showSection('pace',this)" style="flex:1;padding:8px;font-size:11px;font-weight:700;letter-spacing:0.5px;border:none;border-radius:6px;cursor:pointer;background:transparent;color:#6b6b68;">Rep PACE</button>
+      <button class="section-btn" data-section="company" onclick="showSection('company',this)" style="flex:1;padding:8px;font-size:11px;font-weight:700;letter-spacing:0.5px;border:none;border-radius:6px;cursor:pointer;background:transparent;color:#6b6b68;">Company Data</button>
+      <button class="section-btn" data-section="password" onclick="showSection('password',this)" style="flex:1;padding:8px;font-size:11px;font-weight:700;letter-spacing:0.5px;border:none;border-radius:6px;cursor:pointer;background:transparent;color:#6b6b68;">Password</button>
+      <button class="section-btn" data-section="users" onclick="showSection('users',this)" style="flex:1;padding:8px;font-size:11px;font-weight:700;letter-spacing:0.5px;border:none;border-radius:6px;cursor:pointer;background:transparent;color:#6b6b68;">Users</button>
+    </div>
+
+    <!-- ─── META ─── -->
+    <div id="section-meta" class="admin-section">
+      <div class="card">
+        <div class="section-title">Dashboard Meta</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div><label>Period Label (announcement bar)</label><input id="meta-period" placeholder="e.g. Period 3/16–4/15/2026" oninput="autoSave()"/></div>
+          <div><label>Last Updated</label><input id="meta-updated" placeholder="e.g. Apr 9, 2026" oninput="autoSave()"/></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── WIDGETS ─── -->
+    <div id="section-widgets" class="admin-section" style="display:none;">
+      <div class="card">
+        <div class="section-title">Widget Visibility — Company Tab</div>
+        <div id="widget-toggles"></div>
+      </div>
+    </div>
+
+    <!-- ─── CHURN ─── -->
+    <div id="section-churn" class="admin-section" style="display:none;">
+      <div class="card">
+        <div class="section-title">Churn Display Settings</div>
+        <div class="toggle-row" style="margin-bottom:14px;">
+          <div>
+            <div style="font-size:13px;font-weight:600;">Lock to Previous Month</div>
+            <div style="font-size:11px;color:#6b6b68;margin-top:2px;">When ON, shows a fixed churn value instead of live calculated data</div>
+          </div>
+          <div id="churn-lock-toggle" class="toggle" onclick="toggleChurnLock()" style="background:#4fa61a;">
+            <div class="toggle-thumb" style="left:21px;"></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+          <div><label>Locked Churn Value (%)</label><input id="churn-value" placeholder="e.g. 9.62" oninput="autoSave()"/></div>
+          <div><label>Month Label (sub-text)</label><input id="churn-month" placeholder="e.g. Mar 26" oninput="autoSave()"/></div>
+          <div><label>Card Display Label</label><input id="churn-label" placeholder="e.g. Previous Month Churn (March 2026)" oninput="autoSave()"/></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SDR SCORES ─── -->
+    <div id="section-sdr" class="admin-section" style="display:none;">
+      <div class="card">
+        <div class="section-title">SDR Scores — Feb 2026 Report (3-Month Rolling Average)</div>
+        <div style="font-size:11px;color:#6b6b68;margin-bottom:14px;">Pass ≥3.5 · Observe 3.0–3.49 · Below &lt;3.0 · Leave blank for —</div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr>
+              <th>SDR Name</th>
+              <th>Jan Score</th>
+              <th>Feb Score</th>
+              <th>Mar Score</th>
+              <th>3-Mo Avg</th>
+              <th>Gap vs 3.5</th>
+              <th>Tier</th>
+              <th>Notes</th>
+            </tr></thead>
+            <tbody id="sdr-table"></tbody>
+          </table>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:10px;">
+          <button class="btn btn-green" onclick="recalcSDR()">↺ Recalculate Averages</button>
+          <button class="btn btn-ghost" onclick="resetSDR()">Reset to Defaults</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── REP PACE ─── -->
+    <div id="section-pace" class="admin-section" style="display:none;">
+      <div class="card">
+        <div class="section-title">Rep PACE Data — Current Period (3/16–4/15)</div>
+        <div style="font-size:11px;color:#6b6b68;margin-bottom:14px;">March = prior period finals · Current = period-to-date actuals</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px;padding:14px;background:#111;border-radius:8px;border:1px solid #1f1f1f;">
+          <div><label>Period Elapsed %</label><input id="apr-elapsed" placeholder="e.g. 0.83" oninput="autoSave()"/></div>
+          <div><label>Company MTD MQLs</label><input id="co-mql" placeholder="e.g. 1193" oninput="autoSave()"/></div>
+          <div><label>Company MTD SQLs</label><input id="co-sql" placeholder="e.g. 465" oninput="autoSave()"/></div>
+          <div><label>Company MTD Meetings</label><input id="co-mtg" placeholder="e.g. 241" oninput="autoSave()"/></div>
+          <div><label>March Final MQLs</label><input id="march-mql" placeholder="e.g. 1700" oninput="autoSave()"/></div>
+          <div><label>March Final SQLs</label><input id="march-sql" placeholder="e.g. 407" oninput="autoSave()"/></div>
+          <div><label>March Final Meetings</label><input id="march-mtg" placeholder="e.g. 218" oninput="autoSave()"/></div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr>
+              <th>Rep Name</th>
+              <th>March Rank</th>
+              <th>March SQL</th>
+              <th>March Meetings</th>
+              <th>March MQL</th>
+              <th>Cur MQL</th>
+              <th>Cur SQL</th>
+              <th>Cur Mtg</th>
+            </tr></thead>
+            <tbody id="pace-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── COMPANY DATA ─── -->
+    <div id="section-company" class="admin-section" style="display:none;">
+      <div class="card">
+        <div class="section-title">Company Monthly Data Override</div>
+        <div style="font-size:11px;color:#6b6b68;margin-bottom:14px;">Override the most recent months. Leave blank to use built-in data. Format: ac (active clients), dc (deals closed), cl (contracts lost).</div>
+        <div id="company-rows"></div>
+        <button class="btn btn-ghost" onclick="addCompanyRow()" style="margin-top:10px;font-size:11px;">+ Add Month Override</button>
+      </div>
+    </div>
+
+    <!-- ─── USERS ─── -->
+    <div id="section-users" class="admin-section" style="display:none;">
+      <div class="card">
+        <div class="section-title">Admin Users</div>
+        <div style="font-size:11px;color:#6b6b68;margin-bottom:16px;line-height:1.7;">
+          Add up to 2 additional users who can log in and update the dashboard when you're OOO.<br/>
+          Users can edit all data and settings. Passwords are stored locally — share the URL and credentials directly.
+        </div>
+
+        <!-- Primary admin -->
+        <div style="background:#111;border:1px solid #1f1f1f;border-radius:8px;padding:14px 16px;margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+            <div style="font-size:13px;font-weight:700;color:#f0f0ef;">Primary Admin</div>
+            <span class="tag tag-pass" style="font-size:9px;">OWNER</span>
+          </div>
+          <div style="font-size:11px;color:#6b6b68;">This is you. Change password in the Password tab.</div>
+        </div>
+
+        <!-- User slots -->
+        <div id="user-slots"></div>
+
+        <button class="btn btn-ghost" onclick="addUser()" id="add-user-btn" style="margin-top:10px;font-size:11px;">+ Add User</button>
+      </div>
+    </div>
+
+    <!-- ─── PASSWORD ─── -->
+    <div id="section-password" class="admin-section" style="display:none;">
+      <div class="card">
+        <div class="section-title">Change Admin Credentials</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;max-width:680px;">
+          <div><label>New Username (email)</label><input type="email" id="new-username" placeholder="Leave blank to keep current"/></div>
+          <div><label>New Password</label><input type="password" id="new-pw" placeholder="Enter new password"/></div>
+          <div><label>Confirm Password</label><input type="password" id="confirm-pw" placeholder="Confirm new password"/></div>
+        </div>
+        <button class="btn btn-green" onclick="changePassword()" style="margin-top:14px;">Update Credentials</button>
+        <div id="pw-msg" style="font-size:12px;margin-top:10px;display:none;"></div>
+        <div style="margin-top:20px;padding:14px;background:#111;border-radius:8px;border:1px solid #1f1f1f;">
+          <div style="font-size:11px;color:#6b6b68;line-height:1.8;">
+            <strong style="color:#a8a8a5;">Current username:</strong> <span id="current-user-display">—</span><br/>
+            Credentials are stored in localStorage — not synced across devices.<br/>
+            Update credentials on each device you use to access admin.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="saved-toast" id="saved-toast">✓ Saved</div>
+
+<script>
+// ─── DEFAULT DATA ───────────────────────────────────────────────────────────
+const DEFAULT_PASSWORD = 'Nsbfdwgcde#34#';
+const DEFAULT_USERNAME = 'edward@martalgroup.com';
+
+const DEFAULT_CMS = {
+  widgets:{paceCard:true,churnTrend:true,activeTrend:true,closedVsLost:true,periodComparison:true,teamPerf:true,teamScore:true},
+  churn:{locked:true,lockedValue:"9.62",lockedMonth:"Mar 26",lockedLabel:"Previous Month Churn (March 2026)"},
+  meta:{lastUpdated:"Apr 9, 2026",period:"Period 3/16–4/15/2026"},
+};
+
+const WIDGET_LABELS = {
+  paceCard:"Company Pace Card",
+  churnTrend:"Churn Rate Trend Chart",
+  activeTrend:"Active Clients Trend Chart",
+  closedVsLost:"Closed vs Lost Chart",
+  periodComparison:"Period Comparison Table",
+  teamPerf:"Team Pipeline Activity Widget",
+  teamScore:"SDR Score Overview Widget",
+};
+
+const DEFAULT_SDR = {
+  "Dominic Libertoski":{jan:6.05,feb:6.36,mar:8.57,avg:6.99,gap:3.49,act:3.0,tier:"PASS",notes:"Gather insights on No Shows"},
+  "Eric Tuttle":{jan:4.45,feb:6.25,mar:6.25,avg:5.65,gap:2.15,act:3.0,tier:"PASS",notes:"Gather insights on No Shows"},
+  "Jesse Shorr":{jan:5.23,feb:6.29,mar:5.07,avg:5.53,gap:2.03,act:3.0,tier:"PASS"},
+  "Anand Pandey":{jan:4.20,feb:4.33,mar:5.19,avg:4.57,gap:1.07,act:3.0,tier:"PASS"},
+  "Kellee Madonia":{jan:null,feb:4.88,mar:4.17,avg:4.53,gap:1.03,act:3.0,tier:"PASS"},
+  "Harjit Sawhney":{jan:3.63,feb:5.09,mar:4.01,avg:4.24,gap:0.74,act:3.0,tier:"PASS"},
+  "Blake Peremel":{jan:4.43,feb:4.17,mar:3.81,avg:4.14,gap:0.64,act:3.0,tier:"PASS"},
+  "Tim Lan":{jan:3.63,feb:4.72,mar:3.59,avg:3.98,gap:0.48,act:3.0,tier:"PASS",notes:"Gather insights on No Shows"},
+  "Francois Dore":{jan:2.12,feb:3.62,mar:5.70,avg:3.81,gap:0.31,act:3.0,tier:"PASS"},
+  "Elisha Johnson":{jan:null,feb:null,mar:3.70,avg:3.70,gap:0.20,act:3.0,tier:"PASS"},
+  "Alyssa Perez":{jan:5.99,feb:2.77,mar:2.26,avg:3.67,gap:0.17,act:3.0,tier:"PASS",notes:"At threshold — decreased monthly"},
+  "Stephanie Hackert":{jan:1.92,feb:6.33,mar:2.69,avg:3.65,gap:0.15,act:3.0,tier:"PASS"},
+  "Savannah Peck":{jan:3.46,feb:3.27,mar:3.86,avg:3.53,gap:0.03,act:3.0,tier:"PASS",notes:"Surpassed 3.5 in March — monitor April"},
+  "Cesar Garcia":{jan:4.16,feb:2.31,mar:3.64,avg:3.37,gap:-0.13,act:3.0,tier:"DEVELOP",notes:"Surpassed 3.5 in March — monitor April"},
+  "Bill O'Leary":{jan:2.57,feb:3.90,mar:3.33,avg:3.27,gap:-0.23,act:3.0,tier:"DEVELOP",notes:"Dipped — 1-1 scheduled"},
+  "Alli Fowler":{jan:3.14,feb:3.25,mar:3.35,avg:3.25,gap:-0.25,act:3.0,tier:"DEVELOP"},
+  "Joshua Bylsma":{jan:4.07,feb:2.75,mar:1.90,avg:2.91,gap:-0.59,act:3.0,tier:"DEVELOP",notes:"Below for 2 months — 1-1"},
+  "Ariel Wolfe":{jan:1.25,feb:2.44,mar:4.71,avg:2.80,gap:-0.70,act:3.0,tier:"DEVELOP"},
+  "Mark Kreidler":{jan:null,feb:null,mar:2.80,avg:2.80,gap:-0.70,act:3.0,tier:"DEVELOP"},
+  "Paige Givinsky":{jan:2.60,feb:3.42,mar:2.24,avg:2.75,gap:-0.75,act:3.0,tier:"DEVELOP"},
+  "Korbin Kirk":{jan:null,feb:3.45,mar:1.80,avg:2.62,gap:-0.88,act:3.0,tier:"DEVELOP"},
+  "Daniel Davies":{jan:1.90,feb:2.66,mar:3.31,avg:2.62,gap:-0.88,act:3.0,tier:"DEVELOP"},
+  "Joshua Crawford":{jan:2.14,feb:1.89,mar:3.45,avg:2.49,gap:-1.01,act:3.0,tier:"DEVELOP"},
+  "Michele Harris":{jan:2.30,feb:2.41,mar:2.12,avg:2.28,gap:-1.22,act:3.0,tier:"DEVELOP"},
+  "Derek Sindelman":{jan:2.39,feb:2.39,mar:1.71,avg:2.16,gap:-1.34,act:3.0,tier:"DEVELOP",notes:"Decreased — bench naturally"},
+  "Rebecca Barnes":{jan:0.86,feb:2.42,mar:2.64,avg:1.97,gap:-1.53,act:3.0,tier:"DEVELOP"},
+  "Anthony Allen":{jan:1.46,feb:1.38,mar:null,avg:1.72,gap:-1.78,act:3.0,tier:"DEVELOP"},
+  "Logan Kennedy":{jan:1.05,feb:0.84,mar:2.03,avg:1.31,gap:-2.19,act:3.0,tier:"DEVELOP"},
+  "Javion Jones":{jan:0.22,feb:0.79,mar:1.47,avg:0.83,gap:-2.67,act:3.0,tier:"DEVELOP"},
+};
+
+const DEFAULT_PACE = {
+  "Dominic Libertoski":{marchRank:1,marchSQL:48,marchFlips:30,marchMQL:84,curMQL:89,curSQL:49,curMtg:29},
+  "Eric Tuttle":{marchRank:2,marchSQL:24,marchFlips:17,marchMQL:28,curMQL:7,curSQL:5,curMtg:4},
+  "Francois Dore":{marchRank:3,marchSQL:34,marchFlips:19,marchMQL:118,curMQL:30,curSQL:19,curMtg:16},
+  "Anand Pandey":{marchRank:4,marchSQL:32,marchFlips:14,marchMQL:150,curMQL:81,curSQL:45,curMtg:13},
+  "Jesse Shorr":{marchRank:5,marchSQL:18,marchFlips:15,marchMQL:53,curMQL:60,curSQL:30,curMtg:20},
+  "Ariel Wolfe":{marchRank:6,marchSQL:21,marchFlips:14,marchMQL:79,curMQL:52,curSQL:13,curMtg:9},
+  "Kellee Madonia":{marchRank:7,marchSQL:10,marchFlips:7,marchMQL:14,curMQL:12,curSQL:24,curMtg:14},
+  "Harjit Sawhney":{marchRank:8,marchSQL:19,marchFlips:10,marchMQL:45,curMQL:37,curSQL:17,curMtg:10},
+  "Savannah Peck":{marchRank:9,marchSQL:18,marchFlips:11,marchMQL:90,curMQL:65,curSQL:24,curMtg:11},
+  "Blake Peremel":{marchRank:10,marchSQL:13,marchFlips:9,marchMQL:96,curMQL:88,curSQL:19,curMtg:11},
+  "Elisha Johnson":{marchRank:11,marchSQL:4,marchFlips:2,marchMQL:5,curMQL:0,curSQL:0,curMtg:0},
+  "Cesar Garcia":{marchRank:12,marchSQL:22,marchFlips:9,marchMQL:92,curMQL:52,curSQL:27,curMtg:7},
+  "Tim Lan":{marchRank:13,marchSQL:18,marchFlips:8,marchMQL:74,curMQL:58,curSQL:23,curMtg:13},
+  "Joshua Crawford":{marchRank:14,marchSQL:11,marchFlips:7,marchMQL:58,curMQL:65,curSQL:8,curMtg:1},
+  "Alli Fowler":{marchRank:15,marchSQL:15,marchFlips:6,marchMQL:102,curMQL:32,curSQL:27,curMtg:15},
+  "Bill O'Leary":{marchRank:16,marchSQL:16,marchFlips:8,marchMQL:67,curMQL:43,curSQL:9,curMtg:5},
+  "Daniel Davies":{marchRank:17,marchSQL:13,marchFlips:6,marchMQL:23,curMQL:9,curSQL:5,curMtg:4},
+  "Mark Kreidler":{marchRank:18,marchSQL:3,marchFlips:1,marchMQL:4,curMQL:0,curSQL:0,curMtg:0},
+  "Stephanie Hackert":{marchRank:19,marchSQL:7,marchFlips:3,marchMQL:124,curMQL:46,curSQL:10,curMtg:7},
+  "Rebecca Barnes":{marchRank:20,marchSQL:11,marchFlips:4,marchMQL:33,curMQL:20,curSQL:6,curMtg:2},
+  "Alyssa Perez":{marchRank:21,marchSQL:9,marchFlips:5,marchMQL:38,curMQL:75,curSQL:14,curMtg:10},
+  "Paige Givinsky":{marchRank:22,marchSQL:6,marchFlips:4,marchMQL:30,curMQL:35,curSQL:5,curMtg:1},
+  "Michele Harris":{marchRank:23,marchSQL:3,marchFlips:1,marchMQL:58,curMQL:24,curSQL:1,curMtg:0},
+  "Logan Kennedy":{marchRank:24,marchSQL:7,marchFlips:3,marchMQL:33,curMQL:11,curSQL:2,curMtg:0},
+  "Joshua Bylsma":{marchRank:25,marchSQL:12,marchFlips:2,marchMQL:55,curMQL:26,curSQL:23,curMtg:5},
+  "Korbin Kirk":{marchRank:26,marchSQL:4,marchFlips:1,marchMQL:16,curMQL:6,curSQL:11,curMtg:6},
+  "Derek Sindelman":{marchRank:27,marchSQL:3,marchFlips:2,marchMQL:105,curMQL:78,curSQL:9,curMtg:4},
+  "Javion Jones":{marchRank:28,marchSQL:5,marchFlips:0,marchMQL:35,curMQL:45,curSQL:7,curMtg:1},
+  "Edgar Medina":{marchRank:29,marchSQL:1,marchFlips:0,marchMQL:8,curMQL:1,curSQL:0,curMtg:0},
+  "Anthony Allen":{marchRank:30,marchSQL:0,marchFlips:0,marchMQL:0,curMQL:8,curSQL:1,curMtg:0},
+  "Angela Hamilton":{marchRank:null,marchSQL:null,marchFlips:null,marchMQL:null,curMQL:38,curSQL:32,curMtg:23},
+  "Alex Prodromou":{marchRank:null,marchSQL:null,marchFlips:null,marchMQL:null,curMQL:0,curSQL:0,curMtg:0},
+  "Clara Galetti":{marchRank:null,marchSQL:null,marchFlips:null,marchMQL:null,curMQL:0,curSQL:0,curMtg:0},
+  "Luis Rodriguez":{marchRank:null,marchSQL:null,marchFlips:null,marchMQL:null,curMQL:0,curSQL:0,curMtg:0},
+  "Chinedu Okafor":{marchRank:null,marchSQL:null,marchFlips:null,marchMQL:null,curMQL:0,curSQL:0,curMtg:0},
+  "Johan Vrey":{marchRank:null,marchSQL:null,marchFlips:null,marchMQL:null,curMQL:0,curSQL:0,curMtg:0},
+};
+
+// ─── STATE ──────────────────────────────────────────────────────────────────
+let cms = JSON.parse(localStorage.getItem('martal_cms') || 'null') || JSON.parse(JSON.stringify(DEFAULT_CMS));
+let sdrData = JSON.parse(localStorage.getItem('martal_sdr') || 'null') || JSON.parse(JSON.stringify(DEFAULT_SDR));
+let paceData = JSON.parse(localStorage.getItem('martal_pace') || 'null') || JSON.parse(JSON.stringify(DEFAULT_PACE));
+
+// ─── AUTH ────────────────────────────────────────────────────────────────────
+function getStoredPw(){ return localStorage.getItem('martal_admin_pw') || DEFAULT_PASSWORD; }
+
+function checkPw(){
+  const inputUser = document.getElementById('pw-user').value.trim().toLowerCase();
+  const inputPw = document.getElementById('pw-input').value;
+  const storedUser = (localStorage.getItem('martal_admin_user') || DEFAULT_USERNAME).toLowerCase();
+  const storedPw = getStoredPw();
+
+  // Check primary admin
+  if(inputUser === storedUser && inputPw === storedPw){
+    unlockAdmin('Edd Young');
+    return;
+  }
+  // Check additional users
+  const us = JSON.parse(localStorage.getItem('martal_users') || '[]');
+  const matched = us.find(u => u.username && u.password &&
+    inputUser === u.username.toLowerCase() && inputPw === u.password);
+  if(matched){
+    unlockAdmin(matched.name || matched.username);
+    return;
+  }
+  document.getElementById('pw-error').style.display = 'block';
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-input').focus();
+}
+
+function getStoredUser(){ return localStorage.getItem('martal_admin_user') || DEFAULT_USERNAME; }
+function lockAdmin(){
+  document.getElementById('admin').style.display = 'none';
+  document.getElementById('gate').style.display = 'flex';
+  document.getElementById('pw-user').value = '';
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-error').style.display = 'none';
+  document.querySelectorAll('.login-badge').forEach(b=>b.remove());
+}
+
+function changePassword(){
+  const nu = document.getElementById('new-username').value.trim();
+  const np = document.getElementById('new-pw').value;
+  const cp = document.getElementById('confirm-pw').value;
+  const msg = document.getElementById('pw-msg');
+  if(!np){ msg.style.display='block'; msg.style.color='#ef4444'; msg.textContent='Password cannot be empty.'; return; }
+  if(np !== cp){ msg.style.display='block'; msg.style.color='#ef4444'; msg.textContent='Passwords do not match.'; return; }
+  if(nu) localStorage.setItem('martal_admin_user', nu);
+  localStorage.setItem('martal_admin_pw', np);
+  msg.style.display='block'; msg.style.color='#4fa61a'; msg.textContent='Credentials updated successfully.';
+  document.getElementById('new-username').value='';
+  document.getElementById('new-pw').value='';
+  document.getElementById('confirm-pw').value='';
+}
+
+// ─── SECTION NAV ─────────────────────────────────────────────────────────────
+function showSection(id, btn){
+  document.querySelectorAll('.admin-section').forEach(s=>s.style.display='none');
+  document.getElementById('section-'+id).style.display='block';
+  document.querySelectorAll('.section-btn').forEach(b=>{
+    b.style.background='transparent'; b.style.color='#6b6b68';
+  });
+  btn.style.background='#4fa61a'; btn.style.color='#fff';
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+function initAdmin(){
+  // Meta
+  document.getElementById('meta-period').value = cms.meta?.period || '';
+  document.getElementById('meta-updated').value = cms.meta?.lastUpdated || '';
+
+  // Widgets
+  const wc = document.getElementById('widget-toggles');
+  wc.innerHTML = '';
+  Object.entries(WIDGET_LABELS).forEach(([key, label])=>{
+    const on = cms.widgets?.[key] !== false;
+    wc.innerHTML += `<div class="toggle-row">
+      <span style="font-size:13px;color:${on?'#f0f0ef':'#6b6b68'}">${label}</span>
+      <div id="toggle-${key}" class="toggle" onclick="toggleWidget('${key}')" style="background:${on?'#4fa61a':'#2a2a2a'}">
+        <div class="toggle-thumb" style="left:${on?21:3}px;"></div>
+      </div>
+    </div>`;
+  });
+
+  // Churn
+  const cl = cms.churn?.locked !== false;
+  const ct = document.getElementById('churn-lock-toggle');
+  ct.style.background = cl ? '#4fa61a' : '#2a2a2a';
+  ct.querySelector('.toggle-thumb').style.left = cl ? '21px' : '3px';
+  document.getElementById('churn-value').value = cms.churn?.lockedValue || '';
+  document.getElementById('churn-month').value = cms.churn?.lockedMonth || '';
+  document.getElementById('churn-label').value = cms.churn?.lockedLabel || '';
+
+  // SDR table
+  renderSDRTable();
+
+  // PACE
+  document.getElementById('apr-elapsed').value = localStorage.getItem('martal_elapsed') || '0.83';
+  const co = JSON.parse(localStorage.getItem('martal_co') || 'null') || {mql:1193,sql:465,mtg:241};
+  const march = JSON.parse(localStorage.getItem('martal_march') || 'null') || {mql:1700,sql:407,mtg:218};
+  document.getElementById('co-mql').value = co.mql;
+  document.getElementById('co-sql').value = co.sql;
+  document.getElementById('co-mtg').value = co.mtg;
+  document.getElementById('march-mql').value = march.mql;
+  document.getElementById('march-sql').value = march.sql;
+  document.getElementById('march-mtg').value = march.mtg;
+  renderPaceTable();
+}
+
+// ─── WIDGET TOGGLES ──────────────────────────────────────────────────────────
+function toggleWidget(key){
+  if(!cms.widgets) cms.widgets = {};
+  cms.widgets[key] = cms.widgets[key] === false;
+  const on = cms.widgets[key] !== false;
+  const el = document.getElementById('toggle-'+key);
+  el.style.background = on ? '#4fa61a' : '#2a2a2a';
+  el.querySelector('.toggle-thumb').style.left = on ? '21px' : '3px';
+  el.previousElementSibling.style.color = on ? '#f0f0ef' : '#6b6b68';
+  autoSave();
+}
+
+function toggleChurnLock(){
+  if(!cms.churn) cms.churn = {};
+  cms.churn.locked = !cms.churn.locked;
+  const on = cms.churn.locked;
+  const t = document.getElementById('churn-lock-toggle');
+  t.style.background = on ? '#4fa61a' : '#2a2a2a';
+  t.querySelector('.toggle-thumb').style.left = on ? '21px' : '3px';
+  autoSave();
+}
+
+// ─── SDR TABLE ───────────────────────────────────────────────────────────────
+function bandTag(avg){
+  if(avg >= 3.5) return '<span class="tag tag-pass">PASS</span>';
+  if(avg >= 3.0) return '<span class="tag tag-obs">OBSERVE</span>';
+  return '<span class="tag tag-below">BELOW</span>';
+}
+
+function renderSDRTable(){
+  const tb = document.getElementById('sdr-table');
+  tb.innerHTML = '';
+  Object.entries(sdrData).sort((a,b)=>b[1].avg-a[1].avg).forEach(([name,s])=>{
+    const slug = name.replace(/[^a-zA-Z]/g,'_');
+    tb.innerHTML += `<tr id="sdr-row-${slug}">
+      <td style="font-weight:600;color:#f0f0ef;white-space:nowrap;min-width:150px;">${name}</td>
+      <td><input data-rep="${name}" data-field="jan" value="${s.jan??''}" oninput="sdrChange(this)" style="width:70px;text-align:center;"/></td>
+      <td><input data-rep="${name}" data-field="feb" value="${s.feb??''}" oninput="sdrChange(this)" style="width:70px;text-align:center;"/></td>
+      <td><input data-rep="${name}" data-field="mar" value="${s.mar??''}" oninput="sdrChange(this)" style="width:70px;text-align:center;"/></td>
+      <td><input data-rep="${name}" data-field="avg" id="sdr-avg-${slug}" value="${s.avg.toFixed(2)}" oninput="sdrChange(this)" style="width:70px;text-align:center;font-weight:700;color:#4fa61a;"/></td>
+      <td id="sdr-gap-${slug}" style="text-align:center;font-weight:700;color:${s.gap>=0?'#4fa61a':'#ef4444'}">${s.gap>=0?'+':''}${s.gap.toFixed(2)}</td>
+      <td id="sdr-band-${slug}">${bandTag(s.avg)}</td>
+      <td><input data-rep="${name}" data-field="notes" value="${s.notes||''}" oninput="sdrChange(this)" style="width:200px;font-size:11px;"/></td>
+    </tr>`;
+  });
+}
+
+function sdrChange(el){
+  const rep = el.dataset.rep;
+  const field = el.dataset.field;
+  const val = el.value.trim();
+  if(!sdrData[rep]) return;
+  if(field === 'notes'){ sdrData[rep].notes = val; }
+  else { sdrData[rep][field] = val === '' ? null : parseFloat(val) || null; }
+  autoSave();
+}
+
+function recalcSDR(){
+  Object.entries(sdrData).forEach(([name, s])=>{
+    const vals = [s.jan, s.feb, s.mar].filter(v=>v!=null);
+    const avg = vals.length ? Math.round((vals.reduce((a,b)=>a+b,0)/vals.length)*100)/100 : 0;
+    s.avg = avg;
+    s.gap = Math.round((avg - 3.5)*100)/100;
+    s.tier = avg >= 3.5 ? 'PASS' : 'DEVELOP';
+    const slug = name.replace(/[^a-zA-Z]/g,'_');
+    const avgEl = document.getElementById('sdr-avg-'+slug);
+    const gapEl = document.getElementById('sdr-gap-'+slug);
+    const bandEl = document.getElementById('sdr-band-'+slug);
+    if(avgEl){ avgEl.value = avg.toFixed(2); avgEl.style.color = avg>=3.5?'#4fa61a':avg>=3?'#f5c518':'#ef4444'; }
+    if(gapEl){ gapEl.textContent = (s.gap>=0?'+':'')+s.gap.toFixed(2); gapEl.style.color = s.gap>=0?'#4fa61a':'#ef4444'; }
+    if(bandEl){ bandEl.innerHTML = bandTag(avg); }
+  });
+  autoSave();
+  showToast('Recalculated — ✓ Saved');
+}
+
+function resetSDR(){
+  if(!confirm('Reset all SDR scores to default values?')) return;
+  sdrData = JSON.parse(JSON.stringify(DEFAULT_SDR));
+  localStorage.setItem('martal_sdr', JSON.stringify(sdrData));
+  renderSDRTable();
+  showToast('SDR scores reset to defaults');
+}
+
+// ─── PACE TABLE ──────────────────────────────────────────────────────────────
+function renderPaceTable(){
+  const tb = document.getElementById('pace-table');
+  tb.innerHTML = '';
+  Object.entries(paceData).forEach(([name, p])=>{
+    tb.innerHTML += `<tr>
+      <td style="font-weight:600;color:#f0f0ef;white-space:nowrap;min-width:150px;">${name}</td>
+      <td><input data-rep="${name}" data-field="marchRank" value="${p.marchRank??''}" oninput="paceChange(this)" style="width:55px;text-align:center;"/></td>
+      <td><input data-rep="${name}" data-field="marchSQL" value="${p.marchSQL??''}" oninput="paceChange(this)" style="width:55px;text-align:center;"/></td>
+      <td><input data-rep="${name}" data-field="marchFlips" value="${p.marchFlips??''}" oninput="paceChange(this)" style="width:55px;text-align:center;"/></td>
+      <td><input data-rep="${name}" data-field="marchMQL" value="${p.marchMQL??''}" oninput="paceChange(this)" style="width:55px;text-align:center;"/></td>
+      <td><input data-rep="${name}" data-field="curMQL" value="${p.curMQL??0}" oninput="paceChange(this)" style="width:55px;text-align:center;color:#a78bfa;font-weight:600;"/></td>
+      <td><input data-rep="${name}" data-field="curSQL" value="${p.curSQL??0}" oninput="paceChange(this)" style="width:55px;text-align:center;color:#38bdf8;font-weight:600;"/></td>
+      <td><input data-rep="${name}" data-field="curMtg" value="${p.curMtg??0}" oninput="paceChange(this)" style="width:55px;text-align:center;color:#4fa61a;font-weight:600;"/></td>
+    </tr>`;
+  });
+}
+
+function paceChange(el){
+  const rep = el.dataset.rep;
+  const field = el.dataset.field;
+  const val = el.value.trim();
+  if(!paceData[rep]) return;
+  paceData[rep][field] = val === '' ? null : (isNaN(val) ? null : parseFloat(val));
+  autoSave();
+}
+
+// ─── COMPANY ROWS ────────────────────────────────────────────────────────────
+let companyOverrides = JSON.parse(localStorage.getItem('martal_company_overrides') || '[]');
+
+function renderCompanyRows(){
+  const c = document.getElementById('company-rows');
+  c.innerHTML = '';
+  companyOverrides.forEach((row, i)=>{
+    c.innerHTML += `<div style="display:grid;grid-template-columns:120px 80px 80px 80px 32px;gap:10px;align-items:end;margin-bottom:10px;">
+      <div><label>Month (e.g. Apr 26)</label><input value="${row.m||''}" oninput="updateCo(${i},'m',this.value)"/></div>
+      <div><label>Active (ac)</label><input type="number" value="${row.ac||''}" oninput="updateCo(${i},'ac',this.value)"/></div>
+      <div><label>Closed (dc)</label><input type="number" value="${row.dc||''}" oninput="updateCo(${i},'dc',this.value)"/></div>
+      <div><label>Lost (cl)</label><input type="number" value="${row.cl||''}" oninput="updateCo(${i},'cl',this.value)"/></div>
+      <button class="btn btn-red" onclick="removeCo(${i})" style="height:36px;padding:0 10px;font-size:13px;margin-bottom:0;">✕</button>
+    </div>`;
+  });
+}
+renderCompanyRows();
+
+function addCompanyRow(){ companyOverrides.push({m:'',ac:'',dc:'',cl:''}); renderCompanyRows(); autoSave(); }
+function removeCo(i){ companyOverrides.splice(i,1); renderCompanyRows(); autoSave(); }
+function updateCo(i,k,v){ companyOverrides[i][k]=v; autoSave(); }
+
+// ─── SAVE ────────────────────────────────────────────────────────────────────
+function autoSave(){
+  // Read meta inputs
+  if(!cms.meta) cms.meta = {};
+  cms.meta.period = document.getElementById('meta-period').value;
+  cms.meta.lastUpdated = document.getElementById('meta-updated').value;
+  // Read churn inputs
+  if(!cms.churn) cms.churn = {};
+  cms.churn.lockedValue = document.getElementById('churn-value').value;
+  cms.churn.lockedMonth = document.getElementById('churn-month').value;
+  cms.churn.lockedLabel = document.getElementById('churn-label').value;
+
+  localStorage.setItem('martal_cms', JSON.stringify(cms));
+  localStorage.setItem('martal_sdr', JSON.stringify(sdrData));
+  localStorage.setItem('martal_pace', JSON.stringify(paceData));
+  localStorage.setItem('martal_company_overrides', JSON.stringify(companyOverrides));
+
+  // PACE globals
+  const elapsed = parseFloat(document.getElementById('apr-elapsed').value) || 0.83;
+  localStorage.setItem('martal_elapsed', elapsed);
+  localStorage.setItem('martal_co', JSON.stringify({
+    mql: parseInt(document.getElementById('co-mql').value)||0,
+    sql: parseInt(document.getElementById('co-sql').value)||0,
+    mtg: parseInt(document.getElementById('co-mtg').value)||0,
+  }));
+  localStorage.setItem('martal_march', JSON.stringify({
+    mql: parseInt(document.getElementById('march-mql').value)||0,
+    sql: parseInt(document.getElementById('march-sql').value)||0,
+    mtg: parseInt(document.getElementById('march-mtg').value)||0,
+  }));
+  showToast('✓ Saved');
+}
+
+function saveAll(){ autoSave(); showToast('✓ All changes saved'); }
+
+function resetAll(){
+  if(!confirm('Reset ALL settings to defaults? This cannot be undone.')) return;
+  cms = JSON.parse(JSON.stringify(DEFAULT_CMS));
+  sdrData = JSON.parse(JSON.stringify(DEFAULT_SDR));
+  paceData = JSON.parse(JSON.stringify(DEFAULT_PACE));
+  companyOverrides = [];
+  localStorage.setItem('martal_cms', JSON.stringify(cms));
+  localStorage.setItem('martal_sdr', JSON.stringify(sdrData));
+  localStorage.setItem('martal_pace', JSON.stringify(paceData));
+  localStorage.setItem('martal_company_overrides', '[]');
+  localStorage.removeItem('martal_elapsed');
+  localStorage.removeItem('martal_co');
+  localStorage.removeItem('martal_march');
+  initAdmin();
+  renderCompanyRows();
+  showToast('Reset to defaults');
+}
+
+// ─── TOAST ───────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('saved-toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.style.display='none', 2000);
+}
+
+// ─── USER MANAGEMENT ─────────────────────────────────────────────────────────
+const MAX_USERS = 2;
+let users = JSON.parse(localStorage.getItem('martal_users') || '[]');
+
+function renderUsers(){
+  const slots = document.getElementById('user-slots');
+  const addBtn = document.getElementById('add-user-btn');
+  slots.innerHTML = '';
+  users.forEach((u, i) => {
+    slots.innerHTML += `<div style="background:#111;border:1px solid #1f1f1f;border-radius:8px;padding:14px 16px;margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+        <div style="flex:1;">
+          <div style="font-size:11px;color:#6b6b68;margin-bottom:3px;">User ${i+1}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+            <div>
+              <label style="font-size:9px;color:#4a4a47;text-transform:uppercase;letter-spacing:1.2px;font-weight:600;margin-bottom:4px;display:block;">Name / Label</label>
+              <input value="${u.name||''}" oninput="updateUser(${i},'name',this.value)" placeholder="e.g. Vito Sanchez" style="background:#0d0d0d;"/>
+            </div>
+            <div>
+              <label style="font-size:9px;color:#4a4a47;text-transform:uppercase;letter-spacing:1.2px;font-weight:600;margin-bottom:4px;display:block;">Username</label>
+              <input value="${u.username||''}" oninput="updateUser(${i},'username',this.value)" placeholder="e.g. vito" style="background:#0d0d0d;"/>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div>
+              <label style="font-size:9px;color:#4a4a47;text-transform:uppercase;letter-spacing:1.2px;font-weight:600;margin-bottom:4px;display:block;">Password</label>
+              <input type="password" value="${u.password||''}" oninput="updateUser(${i},'password',this.value)" placeholder="Set a password" style="background:#0d0d0d;"/>
+            </div>
+            <div style="display:flex;align-items:flex-end;">
+              <div style="font-size:10px;color:#6b6b68;line-height:1.6;">Share the admin URL and these credentials.<br/>They can log in using their username as both fields if preferred.</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-red" onclick="removeUser(${i})" style="font-size:11px;padding:6px 12px;margin-top:2px;flex-shrink:0;">Remove</button>
+      </div>
+    </div>`;
+  });
+  if(addBtn) addBtn.style.display = users.length >= MAX_USERS ? 'none' : 'inline-flex';
+}
+
+function addUser(){
+  if(users.length >= MAX_USERS){ alert('Maximum 2 additional users allowed.'); return; }
+  users.push({name:'', username:'', password:''});
+  saveUsers();
+  renderUsers();
+}
+
+function removeUser(i){
+  if(!confirm(`Remove user "${users[i].name||'User '+(i+1)}"?`)) return;
+  users.splice(i,1);
+  saveUsers();
+  renderUsers();
+  showToast('User removed');
+}
+
+function updateUser(i, field, val){
+  users[i][field] = val;
+  saveUsers();
+}
+
+function saveUsers(){
+  localStorage.setItem('martal_users', JSON.stringify(users));
+  showToast('✓ Saved');
+}
+
+// ─── ENHANCED AUTH: check primary + users ────────────────────────────────────
+function checkPw(){
+  const input = document.getElementById('pw-input').value;
+  // Check primary admin password
+  if(input === getStoredPw()){
+    unlockAdmin('Primary Admin');
+    return;
+  }
+  // Check additional users by username or password match
+  const us = JSON.parse(localStorage.getItem('martal_users') || '[]');
+  const matched = us.find(u => u.password && (input === u.password || input === u.username+':'+u.password));
+  if(matched){
+    unlockAdmin(matched.name || 'User');
+    return;
+  }
+  document.getElementById('pw-error').style.display = 'block';
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-input').focus();
+}
+
+function unlockAdmin(name){
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('admin').style.display = 'block';
+  const topRight = document.querySelector('#admin [onclick="lockAdmin()"]').parentElement;
+  const badge = document.createElement('span');
+  badge.className = 'login-badge';
+  badge.style.cssText = 'font-size:10px;color:#6b6b68;letter-spacing:0.5px;';
+  badge.textContent = `Logged in as ${name}`;
+  topRight.insertBefore(badge, topRight.firstChild);
+  initAdmin();
+  renderUsers();
+  // Show current username in password tab
+  const cu = document.getElementById('current-user-display');
+  if(cu) cu.textContent = getStoredUser();
+}
+
+// Enter key on password field
+document.getElementById('pw-input').addEventListener('keydown', e=>{ if(e.key==='Enter') checkPw(); });
+
+</script>
+</body>
+</html>
