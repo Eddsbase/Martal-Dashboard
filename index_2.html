@@ -3,20 +3,26 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Martal Group — Performance & Churn Intelligence Dashboard</title>
+<title>Martal Group — Performance Intelligence Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:#e8e8e8;font-family:system-ui,sans-serif;}
-::-webkit-scrollbar{width:6px;height:6px;}
-::-webkit-scrollbar-track{background:#e8e8e8;}
-::-webkit-scrollbar-thumb{background:#c0c0c0;border-radius:3px;}
+body{background:#f0f0ef;font-family:'DM Sans',system-ui,sans-serif;}
+button,input,select{font-family:inherit;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#c8c8c5;border-radius:10px;}
+::selection{background:#4fa61a22;color:#111110;}
+button,a{transition:color .15s,background .15s,border-color .15s,opacity .15s;}
 </style>
 </head>
 <body>
-<div id="root"><div style="padding:40px;text-align:center;color:#707070;font-family:system-ui,sans-serif;font-size:14px;">Loading Martal Dashboard…</div></div>
+<div id="root"><div style="padding:60px;text-align:center;color:#6b6b68;font-family:'DM Sans',system-ui;font-size:14px;">Loading…</div></div>
 <script type="text/babel">
 const { useState, useMemo, useEffect, useRef } = React;
 
@@ -63,20 +69,24 @@ const ALL_M = CD.map(d=>d.m);
 const PEN={"Rep Issue":8,"Sales Ops Issue":8,"Lack of Results":6,"No Closed Deals":6,"Single Rep Account":5,"No Show Issue":5,"Poor List Quality":3,"Slow Start":3,"Budget Issue":1,"Didnt Pay":1,"Accepted Landbase":1,"Leadership Intervention":2};
 
 // ─── MARTAL BRAND TOKENS ─────────────────────────────────────────────────────
-const G="#5aab1f";
-const G_DARK="#4a8a18";
-const ANNOUNCE="#f0f7e8";
-const BG="#e8e8e8";
+const G="#4fa61a";
+const G_DARK="#3d8514";
+const G_LIGHT="#eef7e7";
+const ANNOUNCE="#0d1a08";
+const BG="#f0f0ef";
 const CARD="#ffffff";
-const CARD2="#f3f3f3";
-const CARD3="#ebebeb";
-const BORDER="#d4d4d4";
-const BORDER2="#bebebe";
-const TEXT="#0d0d0d";
-const MUTED="#707070";
-const MUTED2="#b0b0b0";
-const FONT_DISPLAY = "'Inter','system-ui',sans-serif";
-const FONT_BODY = "'Inter','system-ui',sans-serif";
+const CARD2="#f7f7f6";
+const CARD3="#efefee";
+const BORDER="#e2e2e0";
+const BORDER2="#c8c8c5";
+const TEXT="#111110";
+const MUTED="#6b6b68";
+const MUTED2="#a8a8a5";
+const SHADOW="0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04)";
+const SHADOW_MD="0 2px 8px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.06)";
+const FONT_DISPLAY = "'Outfit',sans-serif";
+const FONT_BODY = "'DM Sans',sans-serif";
+const FONT_MONO = "'DM Mono',monospace";
 
 // Green-only churn scale: dark green (good/low) → light yellow-green (bad/high)
 const crCol=v=>v==null?MUTED:v<10?"#3a8c0f":v<15?"#f5c518":v<20?"#f97316":"#dc2626";
@@ -187,66 +197,74 @@ function SvgLineChart({data,lines=[],xKey='m',height=100}){
 const CS={
   background:CARD,
   border:`1px solid ${BORDER}`,
-  borderRadius:6,
-  padding:"16px 18px",
+  borderRadius:10,
+  padding:"18px 20px",
   marginBottom:10,
+  boxShadow:SHADOW,
 };
 
 // ─── PILL ─────────────────────────────────────────────────────────────────────
 const Pill=({label,color})=>(
   <span style={{
-    background:color+"15",color,
-    border:`1px solid ${color}35`,
-    borderRadius:3,
-    padding:"2px 8px",
-    fontSize:10,
+    background:color+"18",color,
+    border:`1px solid ${color}40`,
+    borderRadius:4,
+    padding:"2px 9px",
+    fontSize:9.5,
     fontWeight:700,
-    letterSpacing:"0.4px",
+    letterSpacing:"0.6px",
     fontFamily:FONT_BODY,
     textTransform:"uppercase",
+    display:"inline-block",
   }}>{label}</span>
 );
 
 // ─── STAT CARD ────────────────────────────────────────────────────────────────
 const Stat=({label,value,color,sub})=>(
   <div style={{
-    background:CARD2,
+    background:CARD,
     border:`1px solid ${BORDER}`,
-    borderRadius:6,
-    padding:"14px 16px",
-    flex:1,
-    minWidth:110,
+    borderRadius:10,
+    padding:"20px 20px 16px",
+    flex:"1 1 130px",
+    minWidth:130,
+    height:100,
     position:"relative",
     overflow:"hidden",
+    boxShadow:SHADOW,
+    display:"flex",
+    flexDirection:"column",
+    justifyContent:"space-between",
   }}>
     <div style={{
-      position:"absolute",top:0,left:0,width:3,height:"100%",
-      background:color||G,borderRadius:"3px 0 0 3px",
+      position:"absolute",bottom:0,left:0,right:0,height:3,
+      background:`linear-gradient(90deg,${color||G},${color||G}55)`,
     }}/>
     <div style={{
       color:MUTED,
-      fontSize:9,
-      marginBottom:6,
+      fontSize:9.5,
       textTransform:"uppercase",
-      letterSpacing:"1.2px",
-      fontWeight:700,
+      letterSpacing:"1.4px",
+      fontWeight:600,
       fontFamily:FONT_BODY,
+      lineHeight:1.3,
     }}>{label}</div>
-    <div style={{
-      color:color||TEXT,
-      fontSize:20,
-      fontWeight:800,
-      letterSpacing:"-0.5px",
-      lineHeight:1,
-      fontFamily:FONT_DISPLAY,
-    }}>{value??"-"}</div>
-    {sub&&<div style={{
-      color:MUTED2,
-      fontSize:9,
-      marginTop:4,
-      fontFamily:FONT_BODY,
-      letterSpacing:"0.3px",
-    }}>{sub}</div>}
+    <div>
+      <div style={{
+        color:color||TEXT,
+        fontSize:28,
+        fontWeight:800,
+        letterSpacing:"-1.5px",
+        lineHeight:1,
+        fontFamily:FONT_DISPLAY,
+      }}>{value??"-"}</div>
+      {sub&&<div style={{
+        color:MUTED2,
+        fontSize:9,
+        marginTop:4,
+        fontFamily:FONT_BODY,
+      }}>{sub}</div>}
+    </div>
   </div>
 );
 
@@ -255,16 +273,16 @@ const SectionLabel=({children})=>(
   <div style={{
     color:MUTED,
     fontSize:9,
-    fontWeight:700,
-    marginBottom:10,
+    fontWeight:600,
+    marginBottom:12,
     textTransform:"uppercase",
-    letterSpacing:"1.5px",
+    letterSpacing:"1.6px",
     fontFamily:FONT_BODY,
     display:"flex",
     alignItems:"center",
     gap:8,
   }}>
-    <div style={{width:16,height:1,background:G,opacity:0.6}}/>
+    <div style={{width:3,height:12,background:G,borderRadius:2,flexShrink:0}}/>
     {children}
   </div>
 );
@@ -510,6 +528,43 @@ const ALL_REPS=[
 // ─── PACE + RANKING DATA ──────────────────────────────────────────────────────
 // marchSQL/marchFlips/marchMQL = March ranking final (period ending 3/16/2026)
 // curMQL/SQL/MTG = Current period actuals as of 4/09/2026 (period: 3/16 → 4/15/2026)
+// ─── SDR SCORING DATA — Feb 2026 Report (3-month rolling average) ─────────────
+// Pass threshold: 3.5 · Observe: 3.0–3.49 · Below: <3.0
+// Activity score baseline: 3.0 for all reps
+const SDR_SCORES = {
+  "Dominic Libertoski": {jan:6.05,feb:6.36,mar:8.57,avg:6.99,gap:3.49,act:3.0,tier:"PASS",notes:"Gather insights on No Shows"},
+  "Eric Tuttle":        {jan:4.45,feb:6.25,mar:6.25,avg:5.65,gap:2.15,act:3.0,tier:"PASS",notes:"Gather insights on No Shows"},
+  "Jesse Shorr":        {jan:5.23,feb:6.29,mar:5.07,avg:5.53,gap:2.03,act:3.0,tier:"PASS"},
+  "Anand Pandey":       {jan:4.20,feb:4.33,mar:5.19,avg:4.57,gap:1.07,act:3.0,tier:"PASS"},
+  "Kellee Madonia":     {jan:null,feb:4.88,mar:4.17,avg:4.53,gap:1.03,act:3.0,tier:"PASS"},
+  "Harjit Sawhney":     {jan:3.63,feb:5.09,mar:4.01,avg:4.24,gap:0.74,act:3.0,tier:"PASS"},
+  "Blake Peremel":      {jan:4.43,feb:4.17,mar:3.81,avg:4.14,gap:0.64,act:3.0,tier:"PASS"},
+  "Tim Lan":            {jan:3.63,feb:4.72,mar:3.59,avg:3.98,gap:0.48,act:3.0,tier:"PASS",notes:"Gather insights on No Shows"},
+  "Francois Dore":      {jan:2.12,feb:3.62,mar:5.70,avg:3.81,gap:0.31,act:3.0,tier:"PASS"},
+  "Elisha Johnson":     {jan:null,feb:null,mar:3.70,avg:3.70,gap:0.20,act:3.0,tier:"PASS"},
+  "Alyssa Perez":       {jan:5.99,feb:2.77,mar:2.26,avg:3.67,gap:0.17,act:3.0,tier:"PASS",notes:"At threshold — decreased monthly. 1-1 scheduled"},
+  "Stephanie Hackert":  {jan:1.92,feb:6.33,mar:2.69,avg:3.65,gap:0.15,act:3.0,tier:"PASS"},
+  "Savannah Peck":      {jan:3.46,feb:3.27,mar:3.86,avg:3.53,gap:0.03,act:3.0,tier:"PASS",notes:"Surpassed 3.5 in March — monitor April"},
+  "Cesar Garcia":       {jan:4.16,feb:2.31,mar:3.64,avg:3.37,gap:-0.13,act:3.0,tier:"DEVELOP",notes:"Surpassed 3.5 in March — monitor April"},
+  "Bill O'Leary":       {jan:2.57,feb:3.90,mar:3.33,avg:3.27,gap:-0.23,act:3.0,tier:"DEVELOP",notes:"Dipped — 1-1 scheduled"},
+  "Alli Fowler":        {jan:3.14,feb:3.25,mar:3.35,avg:3.25,gap:-0.25,act:3.0,tier:"DEVELOP",notes:"Too focused on ranking metrics vs execution"},
+  "Joshua Bylsma":      {jan:4.07,feb:2.75,mar:1.90,avg:2.91,gap:-0.59,act:3.0,tier:"DEVELOP",notes:"Below performance for 2 months — 1-1"},
+  "Ariel Wolfe":        {jan:1.25,feb:2.44,mar:4.71,avg:2.80,gap:-0.70,act:3.0,tier:"DEVELOP"},
+  "Mark Kreidler":      {jan:null,feb:null,mar:2.80,avg:2.80,gap:-0.70,act:3.0,tier:"DEVELOP"},
+  "Paige Givinsky":     {jan:2.60,feb:3.42,mar:2.24,avg:2.75,gap:-0.75,act:3.0,tier:"DEVELOP"},
+  "Korbin Kirk":        {jan:null,feb:3.45,mar:1.80,avg:2.62,gap:-0.88,act:3.0,tier:"DEVELOP",notes:"Angela meeting 1-1 to sus out gaps"},
+  "Daniel Davies":      {jan:1.90,feb:2.66,mar:3.31,avg:2.62,gap:-0.88,act:3.0,tier:"DEVELOP",notes:"Improved score — no clients until 3.5 threshold"},
+  "Joshua Crawford":    {jan:2.14,feb:1.89,mar:3.45,avg:2.49,gap:-1.01,act:3.0,tier:"DEVELOP",notes:"Big March improvement — still below 3.5"},
+  "Michele Harris":     {jan:2.30,feb:2.41,mar:2.12,avg:2.28,gap:-1.22,act:3.0,tier:"DEVELOP"},
+  "Derek Sindelman":    {jan:2.39,feb:2.39,mar:1.71,avg:2.16,gap:-1.34,act:3.0,tier:"DEVELOP",notes:"Decreased — bench naturally"},
+  "Rebecca Barnes":     {jan:0.86,feb:2.42,mar:2.64,avg:1.97,gap:-1.53,act:3.0,tier:"DEVELOP",notes:"Slight increase — 1-1 coaching ongoing"},
+  "Anthony Allen":      {jan:1.46,feb:1.38,mar:null,avg:1.72,gap:-1.78,act:3.0,tier:"DEVELOP"},
+  "Logan Kennedy":      {jan:1.05,feb:0.84,mar:2.03,avg:1.31,gap:-2.19,act:3.0,tier:"DEVELOP",notes:"Increased 1pt — 2 coaching sessions ongoing"},
+  "Javion Jones":       {jan:0.22,feb:0.79,mar:1.47,avg:0.83,gap:-2.67,act:3.0,tier:"DEVELOP",notes:"Canceled coaching too many times — monitor April"},
+};
+const SDR_PASS_THRESHOLD = 3.5;
+const SDR_OBS_THRESHOLD  = 3.0;
+
 const APR_ELAPSED = 0.83; // 4/09: 19 of 23 business days elapsed in 3/16–4/15 period
 
 // Company-level: March final vs current period MTD (summed from ranking report 4/09)
@@ -620,7 +675,7 @@ function PacePanel({repName}){
         </div>
         {/* April MTD */}
         <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:3}}>
-          <span style={{...subLabel,color:paceCol(curVal,key),fontWeight:700}}>April MTD</span>
+          <span style={{...subLabel,color:paceCol(curVal,key),fontWeight:700}}>Period MTD</span>
           <span style={numStyle(paceCol(curVal,key))}>{curVal}</span>
           <div style={{...barTrack}}>
             <div style={{width:`${Math.min(100,curVal/barMax*100)}%`,height:"100%",background:paceCol(curVal,key),borderRadius:3}}/>
@@ -694,7 +749,7 @@ function SomPaceTable({reps}){
   };
   return(
     <div style={{...CS,border:`1px solid #d4d4d4`,background:"#fafcf8"}}>
-      <SectionLabel>Team PACE — April MTD vs March Final</SectionLabel>
+      <SectionLabel>Team PACE — Period MTD vs March Final</SectionLabel>
       <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY,marginBottom:8}}>% columns: <strong>now%</strong> → <strong>proj%</strong> of March final</div>
       <div style={{overflowX:"auto"}}>
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:12,fontFamily:FONT_BODY}}>
@@ -874,7 +929,7 @@ function CompanyPaceCard(){
         <div style={{background:"#0d0d0d",color:"#fff",borderRadius:8,padding:"6px 16px",textAlign:"center"}}>
           <div style={{fontSize:9,opacity:0.6,fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",fontFamily:FONT_BODY}}>Month elapsed</div>
           <div style={{fontSize:20,fontWeight:800,fontFamily:FONT_DISPLAY}}>{Math.round(APR_ELAPSED*100)}%</div>
-          <div style={{fontSize:9,opacity:0.5,fontFamily:FONT_BODY}}>7 of ~22 days</div>
+          <div style={{fontSize:9,opacity:0.5,fontFamily:FONT_BODY}}>19 of 23 days</div>
         </div>
       </div>
 
@@ -931,15 +986,22 @@ function CompanyPaceCard(){
         );
       })}
       <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY,textAlign:"right"}}>
-        March totals from ranking report · April MTD from team tab (Apr 9) · Proj = MTD ÷ {Math.round(APR_ELAPSED*100)}%
+        March totals from ranking report · Period MTD from ranking report (Apr 9) · Proj = MTD ÷ {Math.round(APR_ELAPSED*100)}%
       </div>
     </div>
   );
 }
 
-function CompanyTab(){
+function CompanyTab({cms}){
+  const [section,setSection]=useState("overview");
   const [cA,setA]=useState("Mar 25");
   const [cB,setB]=useState("Mar 26");
+  const [sortBy,setSortBy]=useState("avg");
+  const [bandFilter,setBandFilter]=useState("all");
+  const [showNotes,setShowNotes]=useState(false);
+  const [curSort,setCurSort]=useState("mtg");
+  const [curFilter,setCurFilter]=useState("all");
+  const [selectedRep,setSelectedRep]=useState(null);
   const r18=CD.slice(-18);
   const lat=CD[CD.length-1];
   const vCR=CD.filter(d=>d.cr!=null);
@@ -947,50 +1009,309 @@ function CompanyTab(){
   const a12=(vCR.slice(-12).reduce((s,d)=>s+d.cr,0)/12).toFixed(2);
   const rA=CD.find(d=>d.m===cA),rB=CD.find(d=>d.m===cB);
   const dlt=(a,b,k)=>{if(!a||!b||a[k]==null||b[k]==null)return null;const d=b[k]-a[k];return{v:d,pct:((d/a[k])*100).toFixed(1)};};
+  const w=cms?.widgets||{};
+  const churnLocked=cms?.churn?.locked!==false;
+  const churnVal=churnLocked?(cms?.churn?.lockedValue||"9.62"):lat.cr;
+  const churnLabel=churnLocked?(cms?.churn?.lockedLabel||"Previous Month Churn"):"Churn Rate";
+  const churnSub=churnLocked?null:"3-mo trailing avg";
+  const selectStyle={width:"100%",background:CARD2,color:TEXT,border:`1px solid ${BORDER2}`,borderRadius:4,padding:"8px 12px",fontSize:13,fontFamily:FONT_BODY,outline:"none",cursor:"pointer"};
 
-  const selectStyle = {
-    width:"100%",
-    background:CARD2,
-    color:TEXT,
-    border:`1px solid ${BORDER2}`,
-    borderRadius:4,
-    padding:"8px 12px",
-    fontSize:13,
-    fontFamily:FONT_BODY,
-    outline:"none",
-    cursor:"pointer",
-  };
+  // Band helpers
+  const sdrBand=avg=>avg>=SDR_PASS_THRESHOLD?"pass":avg>=SDR_OBS_THRESHOLD?"observe":"below";
+  const bandCol=b=>b==="pass"?G:b==="observe"?"#f5c518":"#ef4444";
+  const bandLabel=b=>b==="pass"?"PASS":b==="observe"?"OBSERVE":"BELOW";
+  const scoreCol=v=>{if(v==null)return BORDER2;if(v>=5)return"#1e7a0f";if(v>=3.5)return G;if(v>=3)return"#f5c518";if(v>=2)return"#f97316";return"#ef4444";};
+
+  // SDR rows
+  const sdrRows=Object.entries(SDR_SCORES).map(([name,s])=>({name,...s,band:sdrBand(s.avg)}));
+  const passCount=sdrRows.filter(r=>r.band==="pass").length;
+  const obsCount=sdrRows.filter(r=>r.band==="observe").length;
+  const belowCount=sdrRows.filter(r=>r.band==="below").length;
+
+  // Current period team totals
+  const teamMQL=Object.values(REP_PACE).reduce((s,p)=>s+(p.curMQL||0),0);
+  const teamSQL=Object.values(REP_PACE).reduce((s,p)=>s+(p.curSQL||0),0);
+  const teamMtg=Object.values(REP_PACE).reduce((s,p)=>s+(p.curMtg||0),0);
+  const prevMQL=Object.values(REP_PACE).filter(p=>p.marchMQL!=null).reduce((s,p)=>s+(p.marchMQL||0),0);
+  const prevSQL=Object.values(REP_PACE).filter(p=>p.marchSQL!=null).reduce((s,p)=>s+(p.marchSQL||0),0);
+  const prevMtg=Object.values(REP_PACE).filter(p=>p.marchFlips!=null).reduce((s,p)=>s+(p.marchFlips||0),0);
+
+  // Current period rep rows
+  const curRows=Object.entries(REP_PACE).map(([name,p])=>({
+    name,mql:p.curMQL,sql:p.curSQL,mtg:p.curMtg,
+    prevMtg:p.marchFlips,prevSQL:p.marchSQL,prevMQL:p.marchMQL,
+    band:sdrBand(SDR_SCORES[name]?.avg??0),
+  }));
+  const curFiltered=curFilter==="all"?curRows:curRows.filter(r=>r.band===curFilter);
+  const curSorted=[...curFiltered].sort((a,b)=>(b[curSort]||0)-(a[curSort]||0));
+  const curMax=Math.max(...curSorted.map(r=>r[curSort]||0),1);
+  const curTarget=curSort==="mtg"?15:curSort==="sql"?15:40;
+
+  const SubNav=({id,label})=>(
+    <button onClick={()=>setSection(id)} style={{padding:"7px 16px",fontSize:11,fontWeight:700,letterSpacing:"0.8px",textTransform:"uppercase",border:"none",borderBottom:section===id?`2px solid ${G}`:"2px solid transparent",background:"transparent",color:section===id?G:MUTED,cursor:"pointer",fontFamily:FONT_BODY,whiteSpace:"nowrap"}}>{label}</button>
+  );
 
   return(<div>
-    <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:16}}>
+    {/* Always-visible stat cards */}
+    <div style={{display:"flex",gap:10,flexWrap:"wrap",marginBottom:16,alignItems:"stretch"}}>
       <Stat label="Active Clients" value={lat.ac} color={G}/>
       <Stat label="Lost This Month" value={lat.cl} color="#ef4444"/>
-      <Stat label="Churn Rate" value={`${lat.cr}%`} color={crCol(lat.cr)} sub="3-mo trailing avg"/>
+      <Stat label={churnLabel} value={`${churnVal}%`} color={crCol(parseFloat(churnVal))} sub={churnSub}/>
       <Stat label="6-Mo Avg" value={`${a6}%`} color="#8dc63f"/>
       <Stat label="12-Mo Avg" value={`${a12}%`} color="#5aab1f"/>
-      <Stat label="Deals Closed" value={lat.dc} color={G}/>
       <Stat label="Net Change" value={`${lat.dc-lat.cl>=0?"+":""}${lat.dc-lat.cl}`} color={lat.dc-lat.cl>=0?G:"#ef4444"}/>
     </div>
 
-    <CompanyPaceCard/>
+    {w.paceCard!==false&&<CompanyPaceCard/>}
 
-    <div style={CS}>
-      <SectionLabel>Churn Rate % — Lost ÷ Avg Active (prior 3 months)</SectionLabel>
-      <SvgBarChart data={r18.filter(d=>d.cr!=null)} dataKey="cr" colorFn={crCol} xKey="m" yFmt={v=>`${v}%`} height={140}/>
+    {/* Sub-navigation */}
+    <div style={{background:CARD,border:`1px solid ${BORDER}`,borderRadius:"10px 10px 0 0",borderBottom:"none",display:"flex",overflowX:"auto",boxShadow:SHADOW}}>
+      <SubNav id="overview"   label="Overview"/>
+      <SubNav id="current"    label="Current Month"/>
+      <SubNav id="trends"     label="Score Trends"/>
+      <SubNav id="heatmap"    label="Heatmap"/>
+      <SubNav id="active"     label="Client Trend"/>
+      <SubNav id="comparison" label="Period Compare"/>
     </div>
+    <div style={{background:CARD,border:`1px solid ${BORDER}`,borderTop:"none",borderRadius:"0 0 10px 10px",padding:"20px 22px",marginBottom:12,boxShadow:SHADOW}}>
 
-    <div style={CS}>
-      <SectionLabel>Active Clients — 18 Months</SectionLabel>
-      <SvgLineChart data={r18} lines={[{key:'ac',stroke:'#38bdf8',width:2.5}]} xKey="m" height={110}/>
-    </div>
+    {/* ─── OVERVIEW ─── */}
+    {section==="overview"&&<div>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:10,marginBottom:12}}>
+        <div>
+          <div style={{fontSize:9,fontWeight:700,color:MUTED,letterSpacing:"1.5px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:6}}>SDR Score Overview — Feb 2026 · 3-Month Rolling Average</div>
+          <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY,marginBottom:8}}>
+            <span style={{color:G,fontWeight:700}}>Pass ≥3.5</span> &nbsp;·&nbsp;
+            <span style={{color:"#f5c518",fontWeight:700}}>Observe 3.0–3.49</span> &nbsp;·&nbsp;
+            <span style={{color:"#ef4444",fontWeight:700}}>Below &lt;3.0</span> &nbsp;·&nbsp;
+            Activity baseline: 3.0
+          </div>
+          <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+            {[["all","All Reps",TEXT],["pass",`Pass (${passCount})`,G],["observe",`Observe (${obsCount})`,"#f5c518"],["below",`Below (${belowCount})`,"#ef4444"]].map(([id,label,col])=>(
+              <button key={id} onClick={()=>setBandFilter(id)} style={{padding:"4px 12px",fontSize:10,fontWeight:700,border:`1px solid ${bandFilter===id?col:BORDER}`,background:bandFilter===id?col+"22":"transparent",color:bandFilter===id?col:MUTED,borderRadius:20,cursor:"pointer",fontFamily:FONT_BODY}}>{label}</button>
+            ))}
+          </div>
+        </div>
+        <div style={{display:"flex",gap:5,alignItems:"center",flexWrap:"wrap"}}>
+          <span style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY}}>Sort:</span>
+          {[["avg","3-Mo Avg"],["mar","Mar Score"],["gap","Gap vs 3.5"]].map(([id,label])=>(
+            <button key={id} onClick={()=>setSortBy(id)} style={{padding:"4px 10px",fontSize:10,fontWeight:700,border:`1px solid ${sortBy===id?G:BORDER}`,background:sortBy===id?G:"transparent",color:sortBy===id?"#fff":MUTED,borderRadius:4,cursor:"pointer",fontFamily:FONT_BODY}}>{label}</button>
+          ))}
+          <button onClick={()=>setShowNotes(n=>!n)} style={{padding:"4px 10px",fontSize:10,fontWeight:700,border:`1px solid ${showNotes?G:BORDER}`,background:showNotes?G+"15":"transparent",color:showNotes?G:MUTED,borderRadius:4,cursor:"pointer",fontFamily:FONT_BODY}}>Notes {showNotes?"▲":"▼"}</button>
+        </div>
+      </div>
+      {(()=>{
+        const filtered2=bandFilter==="all"?sdrRows:sdrRows.filter(r=>r.band===bandFilter);
+        const sorted2=[...filtered2].sort((a,b)=>{
+          if(sortBy==="avg") return b.avg-a.avg;
+          if(sortBy==="gap") return b.gap-a.gap;
+          if(sortBy==="mar") return (b.mar||0)-(a.mar||0);
+          return b.avg-a.avg;
+        });
+        const maxAvg=Math.max(...sorted2.map(r=>r.avg),SDR_PASS_THRESHOLD+1);
+        return(<>
+          <div style={{overflowX:"auto",marginBottom:12}}>
+            <div style={{minWidth:Math.max(500,sorted2.length*32),paddingBottom:4}}>
+              <div style={{position:"relative",height:148}}>
+                {[{val:SDR_PASS_THRESHOLD,col:G,label:"3.5 pass"},{val:SDR_OBS_THRESHOLD,col:"#f5c518",label:"3.0 activity"}].map(({val,col,label})=>(
+                  <div key={label} style={{position:"absolute",top:`${(1-val/maxAvg)*120}px`,left:0,right:0,borderTop:`1.5px dashed ${col}`,zIndex:1,pointerEvents:"none"}}>
+                    <span style={{position:"absolute",right:2,top:-10,fontSize:8,color:col,fontWeight:700,fontFamily:FONT_BODY}}>{label}</span>
+                  </div>
+                ))}
+                <div style={{display:"flex",alignItems:"flex-end",gap:2,height:120}}>
+                  {sorted2.map(r=>{
+                    const v=sortBy==="mar"?(r.mar||0):r.avg;
+                    const h=Math.max(2,(v/maxAvg)*118);
+                    const col=bandCol(r.band);
+                    return(<div key={r.name} title={`${r.name}: ${r.avg.toFixed(2)} avg | Mar: ${r.mar??'—'} | Gap: ${r.gap>=0?"+":""}${r.gap.toFixed(2)}`} style={{display:"flex",flexDirection:"column",alignItems:"center",flex:1,minWidth:24,cursor:"pointer"}} onClick={()=>{setSelectedRep(r.name);setSection("repdetail");}}>
+                      <div style={{width:"78%",height:h,background:col,borderRadius:"2px 2px 0 0"}} onMouseEnter={e=>e.currentTarget.style.opacity="0.7"} onMouseLeave={e=>e.currentTarget.style.opacity="1"}/>
+                      <div style={{fontSize:6.5,color:MUTED,fontFamily:FONT_BODY,transform:"rotate(-40deg)",transformOrigin:"top center",whiteSpace:"nowrap",marginTop:4,height:22}}>{r.name.split(" ").map(w=>w[0]).join(".")}</div>
+                    </div>);
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style={{overflowX:"auto"}}>
+            <table style={{width:"100%",borderCollapse:"collapse",fontSize:11,fontFamily:FONT_BODY}}>
+              <thead><tr style={{borderBottom:`2px solid ${BORDER2}`}}>
+                {["SDR","Jan","Feb","Mar","3-Mo Avg","Gap vs 3.5","Activity","Tier",...(showNotes?["Notes"]:[])].map(h=>(
+                  <th key={h} style={{padding:"5px 10px",textAlign:h==="SDR"||h==="Notes"?"left":"center",color:MUTED,fontWeight:700,fontSize:9,textTransform:"uppercase",letterSpacing:"1px",whiteSpace:"nowrap"}}>{h}</th>
+                ))}
+              </tr></thead>
+              <tbody>{sorted2.map((r,i)=>(
+                <tr key={r.name} style={{borderBottom:`1px solid ${BORDER}`,background:i%2?CARD3:"transparent",cursor:"pointer"}} onClick={()=>{setSelectedRep(r.name);setSection("repdetail");}}>
+                  <td style={{padding:"6px 10px",fontWeight:600,color:G,textDecoration:"underline",whiteSpace:"nowrap"}}>{r.name}</td>
+                  <td style={{padding:"6px 10px",textAlign:"center",color:scoreCol(r.jan)}}>{r.jan!=null?r.jan.toFixed(2):"—"}</td>
+                  <td style={{padding:"6px 10px",textAlign:"center",color:scoreCol(r.feb)}}>{r.feb!=null?r.feb.toFixed(2):"—"}</td>
+                  <td style={{padding:"6px 10px",textAlign:"center",color:scoreCol(r.mar),fontWeight:600}}>{r.mar!=null?r.mar.toFixed(2):"—"}</td>
+                  <td style={{padding:"6px 10px",textAlign:"center",fontWeight:800,color:bandCol(r.band)}}>{r.avg.toFixed(2)}</td>
+                  <td style={{padding:"6px 10px",textAlign:"center",fontWeight:700,color:r.gap>=0?G:"#ef4444"}}>{r.gap>=0?"+":""}{r.gap.toFixed(2)}</td>
+                  <td style={{padding:"6px 10px",textAlign:"center",color:MUTED}}>{r.act.toFixed(1)}</td>
+                  <td style={{padding:"6px 10px",textAlign:"center"}}><Pill label={bandLabel(r.band)} color={bandCol(r.band)}/></td>
+                  {showNotes&&<td style={{padding:"6px 10px",color:MUTED,fontSize:10,maxWidth:220}}>{r.notes||"—"}</td>}
+                </tr>
+              ))}</tbody>
+            </table>
+          </div>
+        </>);
+      })()}
+    </div>}
 
-    <div style={CS}>
-      <SectionLabel>Closed vs Lost</SectionLabel>
-      <SvgGroupedBarChart data={r18} series={[{key:'dc',name:'Closed',fill:G},{key:'cl',name:'Lost',fill:'#ef4444'}]} xKey="m" height={120}/>
-    </div>
+    {/* ─── CURRENT MONTH ─── */}
+    {section==="current"&&<div>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:10,marginBottom:12}}>
+        <div>
+          <div style={{fontSize:9,fontWeight:700,color:MUTED,letterSpacing:"1.5px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:4}}>Period 3/16–4/15 · Pipeline Activity · 83% Elapsed</div>
+          <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:6}}>
+            {[["all","All Reps",TEXT],["pass",`Pass (${passCount})`,G],["observe",`Observe (${obsCount})`,"#f5c518"],["below",`Below (${belowCount})`,"#ef4444"]].map(([id,label,col])=>(
+              <button key={id} onClick={()=>setCurFilter(id)} style={{padding:"4px 12px",fontSize:10,fontWeight:700,border:`1px solid ${curFilter===id?col:BORDER}`,background:curFilter===id?col+"22":"transparent",color:curFilter===id?col:MUTED,borderRadius:20,cursor:"pointer",fontFamily:FONT_BODY}}>{label}</button>
+            ))}
+          </div>
+        </div>
+        <div style={{display:"flex",gap:5,alignItems:"center"}}>
+          <span style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY}}>Sort:</span>
+          {[["mtg","Meetings"],["sql","SQLs"],["mql","MQLs"]].map(([id,label])=>(
+            <button key={id} onClick={()=>setCurSort(id)} style={{padding:"4px 10px",fontSize:10,fontWeight:700,border:`1px solid ${curSort===id?G:BORDER}`,background:curSort===id?G:"transparent",color:curSort===id?"#fff":MUTED,borderRadius:4,cursor:"pointer",fontFamily:FONT_BODY}}>{label}</button>
+          ))}
+        </div>
+      </div>
+      <div style={{display:"flex",gap:8,marginBottom:14}}>
+        {[["Team MQLs",teamMQL,prevMQL,"#a78bfa"],["Team SQLs",teamSQL,prevSQL,"#38bdf8"],["Team Meetings",teamMtg,prevMtg,G]].map(([l,v,prev,c])=>(
+          <div key={l} style={{flex:1,background:CARD3,border:`1px solid ${BORDER}`,borderRadius:6,padding:"10px 14px",textAlign:"center"}}>
+            <div style={{color:MUTED,fontSize:9,fontWeight:700,letterSpacing:"1.2px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:4}}>{l}</div>
+            <div style={{fontSize:28,fontWeight:900,color:c,fontFamily:FONT_DISPLAY}}>{v.toLocaleString()}</div>
+            <div style={{fontSize:9,color:MUTED,fontFamily:FONT_BODY,marginTop:2}}>prev: {prev.toLocaleString()}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{overflowX:"auto"}}>
+        <div style={{minWidth:Math.max(500,curSorted.length*30),paddingBottom:4}}>
+          <div style={{fontSize:9,color:MUTED,fontFamily:FONT_BODY,marginBottom:6}}>{curSort==="mtg"?"MEETINGS BOOKED":curSort==="sql"?"SQLS":"MQLS"} — current period</div>
+          <div style={{position:"relative",height:148}}>
+            {curTarget<=curMax&&<div style={{position:"absolute",top:`${(1-curTarget/curMax)*120}px`,left:0,right:0,borderTop:`1.5px dashed ${G}`,zIndex:1,pointerEvents:"none"}}>
+              <span style={{position:"absolute",right:2,top:-10,fontSize:8,color:G,fontWeight:700,fontFamily:FONT_BODY}}>{curTarget} target</span>
+            </div>}
+            <div style={{display:"flex",alignItems:"flex-end",gap:2,height:120}}>
+              {curSorted.map(r=>{
+                const v=r[curSort]||0;const h=Math.max(2,(v/curMax)*118);
+                const col=bandCol(r.band);
+                return(<div key={r.name} title={`${r.name}: ${v}`} style={{display:"flex",flexDirection:"column",alignItems:"center",flex:1,minWidth:22,cursor:"pointer"}} onClick={()=>{setSelectedRep(r.name);setSection("repdetail");}}>
+                  <div style={{width:"75%",height:h,background:col,borderRadius:"2px 2px 0 0"}} onMouseEnter={e=>e.currentTarget.style.opacity="0.7"} onMouseLeave={e=>e.currentTarget.style.opacity="1"}/>
+                  <div style={{fontSize:6.5,color:MUTED,fontFamily:FONT_BODY,transform:"rotate(-40deg)",transformOrigin:"top center",whiteSpace:"nowrap",marginTop:4,height:22}}>{r.name.split(" ").map(w=>w[0]).join(".")}</div>
+                </div>);
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style={{overflowX:"auto",marginTop:10}}>
+        <table style={{width:"100%",borderCollapse:"collapse",fontSize:11,fontFamily:FONT_BODY}}>
+          <thead><tr style={{borderBottom:`2px solid ${BORDER2}`}}>
+            {["SDR","Cur MQL","Prev MQL","Cur SQL","Prev SQL","Cur Mtg","Prev Mtg","Band"].map(h=>(
+              <th key={h} style={{padding:"5px 10px",textAlign:h==="SDR"?"left":"center",color:MUTED,fontWeight:700,fontSize:9,textTransform:"uppercase",letterSpacing:"1px",whiteSpace:"nowrap"}}>{h}</th>
+            ))}
+          </tr></thead>
+          <tbody>{curSorted.map((r,i)=>(
+            <tr key={r.name} style={{borderBottom:`1px solid ${BORDER}`,background:i%2?CARD3:"transparent",cursor:"pointer"}} onClick={()=>{setSelectedRep(r.name);setSection("repdetail");}}>
+              <td style={{padding:"6px 10px",fontWeight:600,color:G,textDecoration:"underline",whiteSpace:"nowrap"}}>{r.name}</td>
+              <td style={{padding:"6px 10px",textAlign:"center",color:"#a78bfa",fontWeight:600}}>{r.mql}</td>
+              <td style={{padding:"6px 10px",textAlign:"center",color:MUTED}}>{r.prevMQL??'—'}</td>
+              <td style={{padding:"6px 10px",textAlign:"center",color:"#38bdf8",fontWeight:600}}>{r.sql}</td>
+              <td style={{padding:"6px 10px",textAlign:"center",color:MUTED}}>{r.prevSQL??'—'}</td>
+              <td style={{padding:"6px 10px",textAlign:"center",fontWeight:700,color:bandCol(r.band)}}>{r.mtg}</td>
+              <td style={{padding:"6px 10px",textAlign:"center",color:MUTED}}>{r.prevMtg??'—'}</td>
+              <td style={{padding:"6px 10px",textAlign:"center"}}><Pill label={bandLabel(r.band)} color={bandCol(r.band)}/></td>
+            </tr>
+          ))}</tbody>
+        </table>
+      </div>
+    </div>}
 
-    <div style={CS}>
-      <SectionLabel>Period Comparison</SectionLabel>
+    {/* ─── SCORE TRENDS ─── */}
+    {section==="trends"&&<div>
+      <div style={{fontSize:9,fontWeight:700,color:MUTED,letterSpacing:"1.5px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:12}}>Score Trends — Jan → Feb → Mar 2026 (Monthly Results Score)</div>
+      <div style={{overflowX:"auto"}}>
+        <table style={{width:"100%",borderCollapse:"collapse",fontSize:11,fontFamily:FONT_BODY}}>
+          <thead><tr style={{borderBottom:`2px solid ${BORDER2}`}}>
+            {["SDR","Jan 2026","Feb 2026","Mar 2026","3-Mo Avg","Trend","Tier"].map(h=>(
+              <th key={h} style={{padding:"5px 12px",textAlign:h==="SDR"?"left":"center",color:MUTED,fontWeight:700,fontSize:9,textTransform:"uppercase",letterSpacing:"1px"}}>{h}</th>
+            ))}
+          </tr></thead>
+          <tbody>{[...sdrRows].sort((a,b)=>b.avg-a.avg).map((r,i)=>{
+            const scores=[r.jan,r.feb,r.mar].filter(v=>v!=null);
+            const trend=scores.length>=2?scores[scores.length-1]-scores[scores.length-2]:null;
+            const trendCol=trend==null?MUTED:trend>0.5?G:trend>0?"#8dc63f":trend>-0.5?"#f5c518":"#ef4444";
+            const maxW=60;
+            return(<tr key={r.name} style={{borderBottom:`1px solid ${BORDER}`,background:i%2?CARD3:"transparent",cursor:"pointer"}} onClick={()=>{setSelectedRep(r.name);setSection("repdetail");}}>
+              <td style={{padding:"6px 12px",fontWeight:600,color:G,textDecoration:"underline",whiteSpace:"nowrap"}}>{r.name}</td>
+              {[r.jan,r.feb,r.mar].map((v,mi)=>(
+                <td key={mi} style={{padding:"6px 12px",textAlign:"center"}}>
+                  {v!=null?(
+                    <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2}}>
+                      <span style={{fontWeight:700,color:scoreCol(v),fontSize:12}}>{v.toFixed(2)}</span>
+                      <div style={{width:Math.round((v/8)*maxW),height:4,background:scoreCol(v),borderRadius:2,maxWidth:maxW}}/>
+                    </div>
+                  ):<span style={{color:MUTED2}}>—</span>}
+                </td>
+              ))}
+              <td style={{padding:"6px 12px",textAlign:"center",fontWeight:800,color:bandCol(r.band)}}>{r.avg.toFixed(2)}</td>
+              <td style={{padding:"6px 12px",textAlign:"center",fontWeight:700,color:trendCol,fontSize:13}}>
+                {trend==null?"—":trend>0?`▲ +${trend.toFixed(2)}`:`▼ ${trend.toFixed(2)}`}
+              </td>
+              <td style={{padding:"6px 12px",textAlign:"center"}}><Pill label={bandLabel(r.band)} color={bandCol(r.band)}/></td>
+            </tr>);
+          })}</tbody>
+        </table>
+      </div>
+    </div>}
+
+    {/* ─── HEATMAP ─── */}
+    {section==="heatmap"&&<div>
+      <div style={{fontSize:9,fontWeight:700,color:MUTED,letterSpacing:"1.5px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:6}}>Score Heatmap — Results Score by Rep × Month</div>
+      <div style={{display:"flex",gap:12,marginBottom:12,flexWrap:"wrap",alignItems:"center"}}>
+        {[[">5.0","#1e7a0f"],["≥3.5",G],["3.0–3.49","#f5c518"],["2.0–2.99","#f97316"],["<2.0","#ef4444"],["No data",BORDER2]].map(([l,c])=>(
+          <div key={l} style={{display:"flex",alignItems:"center",gap:5}}>
+            <div style={{width:14,height:14,background:c,borderRadius:2}}/>
+            <span style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY}}>{l}</span>
+          </div>
+        ))}
+      </div>
+      <div style={{overflowX:"auto"}}>
+        <table style={{borderCollapse:"collapse",fontSize:11,fontFamily:FONT_BODY,width:"100%"}}>
+          <thead><tr>
+            <th style={{padding:"5px 12px",textAlign:"left",color:MUTED,fontWeight:700,fontSize:9,textTransform:"uppercase",letterSpacing:"1px",minWidth:160}}>SDR</th>
+            {["Jan 2026","Feb 2026","Mar 2026","3-Mo Avg","Tier"].map(h=>(
+              <th key={h} style={{padding:"5px 16px",textAlign:"center",color:MUTED,fontWeight:700,fontSize:9,textTransform:"uppercase",letterSpacing:"1px",whiteSpace:"nowrap"}}>{h}</th>
+            ))}
+          </tr></thead>
+          <tbody>{[...sdrRows].sort((a,b)=>b.avg-a.avg).map((r,i)=>(
+            <tr key={r.name} style={{borderBottom:`1px solid ${BORDER}`,cursor:"pointer"}} onClick={()=>{setSelectedRep(r.name);setSection("repdetail");}}>
+              <td style={{padding:"5px 12px",fontWeight:600,color:G,textDecoration:"underline",whiteSpace:"nowrap"}}>{r.name}</td>
+              {[r.jan,r.feb,r.mar,r.avg].map((v,ci)=>{
+                const col=scoreCol(v);
+                return(<td key={ci} style={{padding:"4px 8px",textAlign:"center"}}>
+                  <div style={{background:v!=null?col+"30":CARD3,border:`1px solid ${v!=null?col:BORDER}`,borderRadius:4,padding:"6px 10px",minWidth:60,display:"inline-block"}}>
+                    <span style={{fontWeight:ci===3?800:600,color:v!=null?col:MUTED2,fontSize:ci===3?13:11}}>{v!=null?v.toFixed(2):"—"}</span>
+                  </div>
+                </td>);
+              })}
+              <td style={{padding:"5px 8px",textAlign:"center"}}><Pill label={bandLabel(r.band)} color={bandCol(r.band)}/></td>
+            </tr>
+          ))}</tbody>
+        </table>
+      </div>
+    </div>}
+
+    {/* ─── ACTIVE CLIENT TREND ─── */}
+    {section==="active"&&<div>
+      <div style={{fontSize:9,fontWeight:700,color:MUTED,letterSpacing:"1.5px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:10}}>Active Clients — 18 Months</div>
+      <SvgLineChart data={r18} lines={[{key:'ac',stroke:'#38bdf8',width:2.5}]} xKey="m" height={160}/>
+    </div>}
+
+    {/* ─── PERIOD COMPARISON ─── */}
+    {section==="comparison"&&<div>
+      <div style={{fontSize:9,fontWeight:700,color:MUTED,letterSpacing:"1.5px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:12}}>Period Comparison</div>
       <div style={{display:"flex",gap:12,marginBottom:14,flexWrap:"wrap"}}>
         {[["Period A",cA,setA],["Period B",cB,setB]].map(([l,v,s])=>(
           <div key={l} style={{flex:1,minWidth:140}}>
@@ -1003,35 +1324,84 @@ function CompanyTab(){
       </div>
       {rA&&rB&&<table style={{width:"100%",borderCollapse:"collapse",fontSize:13,fontFamily:FONT_BODY}}>
         <thead><tr style={{borderBottom:`1px solid ${BORDER2}`}}>
-          {["Metric","A","B","Delta"].map(h=>(
-            <th key={h} style={{padding:"7px 10px",textAlign:"left",color:MUTED,fontWeight:700,fontSize:9,textTransform:"uppercase",letterSpacing:"1px"}}>{h}</th>
-          ))}
+          {["Metric","A","B","Delta"].map(h=>(<th key={h} style={{padding:"7px 10px",textAlign:"left",color:MUTED,fontWeight:700,fontSize:9,textTransform:"uppercase",letterSpacing:"1px"}}>{h}</th>))}
         </tr></thead>
-        <tbody>
-          {[
-            {l:"Active Clients",k:"ac",f:v=>v,bad:false},
-            {l:"Deals Closed",k:"dc",f:v=>v,bad:false},
-            {l:"Contracts Lost",k:"cl",f:v=>v,bad:true},
-            {l:"Churn %",k:"cr",f:v=>v!=null?`${v}%`:"—",bad:true},
-          ].map(row=>{
-            const d=dlt(rA,rB,row.k);
-            const clr=d?((row.bad?(d.v<0):(d.v>0))?G:(row.bad?(d.v>0):(d.v<0))?"#ef4444":MUTED):MUTED;
-            return(
-              <tr key={row.k} style={{borderBottom:`1px solid ${BORDER}`}}>
-                <td style={{padding:"8px 10px",color:MUTED}}>{row.l}</td>
-                <td style={{padding:"8px 10px",color:TEXT}}>{row.f(rA[row.k])}</td>
-                <td style={{padding:"8px 10px",color:TEXT}}>{row.f(rB[row.k])}</td>
-                <td style={{padding:"8px 10px",color:clr,fontWeight:700}}>
-                  {d?`${d.v>0?"+":""}${typeof d.v==="number"&&!Number.isInteger(d.v)?d.v.toFixed(2):d.v} (${d.pct}%)`:"—"}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
+        <tbody>{[{l:"Active Clients",k:"ac",f:v=>v,bad:false},{l:"Deals Closed",k:"dc",f:v=>v,bad:false},{l:"Contracts Lost",k:"cl",f:v=>v,bad:true},{l:"Churn %",k:"cr",f:v=>v!=null?`${v}%`:"—",bad:true}].map(row=>{
+          const d=dlt(rA,rB,row.k);
+          const clr=d?((row.bad?(d.v<0):(d.v>0))?G:(row.bad?(d.v>0):(d.v<0))?"#ef4444":MUTED):MUTED;
+          return(<tr key={row.k} style={{borderBottom:`1px solid ${BORDER}`}}>
+            <td style={{padding:"8px 10px",color:MUTED}}>{row.l}</td>
+            <td style={{padding:"8px 10px",color:TEXT}}>{row.f(rA[row.k])}</td>
+            <td style={{padding:"8px 10px",color:TEXT}}>{row.f(rB[row.k])}</td>
+            <td style={{padding:"8px 10px",color:clr,fontWeight:700}}>{d?`${d.v>0?"+":""}${typeof d.v==="number"&&!Number.isInteger(d.v)?d.v.toFixed(2):d.v} (${d.pct}%)`:"—"}</td>
+          </tr>);
+        })}</tbody>
       </table>}
-    </div>
+    </div>}
+
+    {/* ─── REP DETAIL ─── */}
+    {section==="repdetail"&&<div>
+      <div style={{display:"flex",gap:10,alignItems:"center",marginBottom:12,flexWrap:"wrap"}}>
+        <button onClick={()=>setSection("overview")} style={{padding:"5px 12px",fontSize:11,fontWeight:700,border:`1px solid ${BORDER2}`,background:"transparent",color:MUTED,borderRadius:4,cursor:"pointer",fontFamily:FONT_BODY}}>← Back</button>
+        <select value={selectedRep||""} onChange={e=>setSelectedRep(e.target.value)} style={{...selectStyle,width:"auto",minWidth:200}}>
+          <option value="">— Select Rep —</option>
+          {[...sdrRows].sort((a,b)=>b.avg-a.avg).map(r=><option key={r.name} value={r.name}>{r.name}</option>)}
+        </select>
+      </div>
+      {selectedRep&&(()=>{
+        const s=SDR_SCORES[selectedRep];
+        const p=REP_PACE[selectedRep];
+        const band=s?sdrBand(s.avg):"below";
+        const col=bandCol(band);
+        const accs=getRepAccounts(selectedRep);
+        if(!s&&!p) return <div style={{color:MUTED,padding:20}}>No data found for {selectedRep}</div>;
+        return(<div>
+          <div style={{display:"flex",gap:10,marginBottom:14,flexWrap:"wrap",alignItems:"flex-start"}}>
+            <div style={{flex:1,minWidth:200,...CS,background:col+"10",border:`2px solid ${col}`}}>
+              <div style={{fontSize:13,fontWeight:800,color:TEXT,fontFamily:FONT_DISPLAY,marginBottom:4}}>{selectedRep}</div>
+              {s&&<>
+                <div style={{fontSize:32,fontWeight:900,color:col,fontFamily:FONT_DISPLAY,lineHeight:1}}>{s.avg.toFixed(2)}</div>
+                <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY,marginTop:2}}>3-Mo Avg · {s.gap>=0?"+":{}.toString()}{s.gap.toFixed(2)} vs 3.5 threshold</div>
+                <div style={{marginTop:8}}><Pill label={bandLabel(band)} color={col}/></div>
+              </>}
+            </div>
+            {s&&<div style={{flex:2,minWidth:240,...CS}}>
+              <div style={{fontSize:9,fontWeight:700,color:MUTED,letterSpacing:"1.2px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:10}}>Monthly Scores</div>
+              {[["Jan 2026",s.jan],["Feb 2026",s.feb],["Mar 2026",s.mar],["3-Mo Avg",s.avg]].map(([l,v])=>(
+                <div key={l} style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
+                  <span style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY,width:70}}>{l}</span>
+                  <span style={{fontWeight:700,color:v!=null?scoreCol(v):MUTED2,width:36,textAlign:"right"}}>{v!=null?v.toFixed(2):"—"}</span>
+                  <div style={{flex:1,height:5,background:CARD3,borderRadius:3}}>
+                    {v!=null&&<div style={{width:`${Math.min(100,(v/8)*100)}%`,height:"100%",background:scoreCol(v),borderRadius:3}}/>}
+                  </div>
+                </div>
+              ))}
+              {s.notes&&<div style={{marginTop:10,padding:"8px 10px",background:CARD3,borderRadius:4,fontSize:11,color:MUTED,fontFamily:FONT_BODY,borderLeft:`3px solid ${col}`}}>{s.notes}</div>}
+            </div>}
+          </div>
+          {p&&<PacePanel repName={selectedRep}/>}
+          {accs.length>0&&<div style={CS}>
+            <SectionLabel>Account Portfolio — {accs.filter(a=>!a.end).length} active · {accs.filter(a=>a.end).length} churned</SectionLabel>
+            <table style={{width:"100%",borderCollapse:"collapse",fontSize:11,fontFamily:FONT_BODY}}>
+              <thead><tr style={{borderBottom:`1px solid ${BORDER2}`}}>{["Account","Start","Status","Reason"].map(h=><th key={h} style={{padding:"5px 10px",textAlign:"left",color:MUTED,fontWeight:700,fontSize:9,textTransform:"uppercase",letterSpacing:"1px"}}>{h}</th>)}</tr></thead>
+              <tbody>{[...accs].sort((a,b)=>a.end?1:-1).map((a,i)=>(
+                <tr key={i} style={{borderBottom:`1px solid ${BORDER}`,background:i%2?CARD3:"transparent"}}>
+                  <td style={{padding:"6px 10px",fontWeight:500,color:TEXT}}>{a.name}</td>
+                  <td style={{padding:"6px 10px",color:MUTED}}>{a.start}</td>
+                  <td style={{padding:"6px 10px"}}>{a.end?<Pill label={`Churned ${a.end}`} color="#ef4444"/>:<Pill label="Active" color={G}/>}</td>
+                  <td style={{padding:"6px 10px"}}>{a.reason?<Pill label={a.reason} color={rsnCol(a.reason)}/>:<span style={{color:MUTED2}}>—</span>}</td>
+                </tr>
+              ))}</tbody>
+            </table>
+          </div>}
+        </div>);
+      })()}
+    </div>}
+
+    </div>{/* end sub-nav content box */}
   </div>);
 }
+
 
 // ─── SOMs TAB ─────────────────────────────────────────────────────────────────
 // ─── PRINT MODAL ──────────────────────────────────────────────────────────────
@@ -1628,9 +1998,439 @@ function RepsTab(){
   </div>);
 }
 
+// ─── SDR PERFORMANCE DASHBOARD TAB ───────────────────────────────────────────
+const SDR_DARK="#0d1117",SDR_CARD="#161b22",SDR_CARD2="#21262d",SDR_BORDER="#30363d";
+const SDR_TEXT="#e6edf3",SDR_MUTED="#8b949e",SDR_GREEN="#3fb950",SDR_YELLOW="#d29922";
+const SDR_RED="#f85149",SDR_BLUE="#58a6ff",SDR_PURPLE="#bc8cff";
+const MTG_TARGET=8.5;
+function sdrScore(rep,period="prev"){
+  const mtg=period==="prev"?(rep.marchFlips||0):(rep.curMtg||0);
+  const sql=period==="prev"?(rep.marchSQL||0):(rep.curSQL||0);
+  return Math.round(((mtg/MTG_TARGET)*2.4+(sql/12)*1.0)*10)/10;
+}
+const SDR_PASS=3.5,SDR_ACT=3.0;
+const SDR_REPS=Object.entries(REP_PACE).map(([name,p])=>({name,marchRank:p.marchRank,marchFlips:p.marchFlips,marchSQL:p.marchSQL,marchMQL:p.marchMQL,curMtg:p.curMtg,curSQL:p.curSQL,curMQL:p.curMQL}));
+function sdrBand(s){return s>=SDR_PASS?"pass":s>=SDR_ACT?"observe":"below";}
+function bandCol(b){return b==="pass"?SDR_GREEN:b==="observe"?SDR_YELLOW:SDR_RED;}
+
+function SDRDashboard({cms}){
+  const [subTab,setSubTab]=useState("overview");
+  const [period,setPeriod]=useState("prev");
+  const [filter,setFilter]=useState("all");
+  const [sortBy,setSortBy]=useState("score");
+  const [selRep,setSelRep]=useState(null);
+  const DC={background:SDR_CARD,border:`1px solid ${SDR_BORDER}`,borderRadius:8,padding:"16px 20px"};
+  const PERIOD_LABEL=period==="prev"?"Feb 16 – Mar 15, 2026":"Mar 16 – Apr 15, 2026";
+  const repsWithScore=SDR_REPS.map(r=>({...r,score:sdrScore(r,period),actScore:SDR_ACT,mtg:period==="prev"?(r.marchFlips||0):(r.curMtg||0),sql:period==="prev"?(r.marchSQL||0):(r.curSQL||0),mql:period==="prev"?(r.marchMQL||0):(r.curMQL||0)})).map(r=>({...r,band:sdrBand(r.score)}));
+  const pass=repsWithScore.filter(r=>r.band==="pass").length;
+  const observe=repsWithScore.filter(r=>r.band==="observe").length;
+  const below=repsWithScore.filter(r=>r.band==="below").length;
+  const avgScore=(repsWithScore.reduce((s,r)=>s+r.score,0)/repsWithScore.length).toFixed(2);
+  const teamMtg=repsWithScore.reduce((s,r)=>s+r.mtg,0);
+  const teamSQL=repsWithScore.reduce((s,r)=>s+r.sql,0);
+  const teamMQL=repsWithScore.reduce((s,r)=>s+r.mql,0);
+  const filtered=repsWithScore.filter(r=>filter==="all"||r.band===filter);
+  const sorted=[...filtered].sort((a,b)=>sortBy==="score"?b.score-a.score:sortBy==="mtg"?b.mtg-a.mtg:sortBy==="sql"?b.sql-a.sql:b.mql-a.mql);
+  const SUBTABS=["overview","current month","score trends","heatmap","pacing","rep detail"];
+
+  if(cms?.widgets?.pipeline===false) return <div style={{color:MUTED,padding:40,textAlign:"center"}}>SDR tab hidden via CMS.</div>;
+
+  return(
+    <div style={{background:SDR_DARK,borderRadius:10,padding:24,marginTop:-8}}>
+      {/* Header */}
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:12,marginBottom:4}}>
+        <div>
+          <div style={{fontSize:22,fontWeight:800,color:SDR_TEXT,fontFamily:FONT_DISPLAY}}>SDR Performance Dashboard</div>
+          <div style={{fontSize:12,color:SDR_MUTED,marginTop:4,fontFamily:FONT_BODY}}>
+            {period==="prev"?"Feb 2026 · 3-month rolling avg (Dec–Jan–Feb)":"Apr 2026 · current period (Mar 16–Apr 15)"} · Current month: {PERIOD_LABEL}
+          </div>
+        </div>
+        <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+          {[["pass",`Pass · ${pass}`,SDR_GREEN],["observe",`Observe · ${observe}`,SDR_YELLOW],["below",`Below · ${below}`,SDR_RED]].map(([id,label,col])=>(
+            <div key={id} style={{background:col+"22",border:`1px solid ${col}55`,color:col,borderRadius:20,padding:"5px 16px",fontSize:12,fontWeight:700,fontFamily:FONT_BODY}}>{id==="pass"?"✓":id==="observe"?"⚠":"●"} {label}</div>
+          ))}
+        </div>
+      </div>
+
+      {/* Stat cards */}
+      <div style={{display:"flex",gap:10,flexWrap:"wrap",margin:"16px 0"}}>
+        {[["AVG TEAM SCORE",avgScore,SDR_BLUE,"Feb rolling avg"],["PASS",pass,SDR_GREEN,"≥ 3.5 perf & 3.0 act"],["OBSERVE",observe,SDR_YELLOW,"One metric below"],["BELOW",below,SDR_RED,"Both metrics below"],["TEAM MEETINGS",teamMtg,SDR_PURPLE,`${teamSQL} SQLs · ${teamMQL} MQLs this period`]].map(([l,v,c,sub])=>(
+          <div key={l} style={{...DC,flex:1,minWidth:120}}>
+            <div style={{fontSize:9,color:SDR_MUTED,fontWeight:700,letterSpacing:"1.2px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:8}}>{l}</div>
+            <div style={{fontSize:28,fontWeight:900,color:c,fontFamily:FONT_DISPLAY,lineHeight:1}}>{v}</div>
+            <div style={{fontSize:10,color:SDR_MUTED,marginTop:6,fontFamily:FONT_BODY}}>{sub}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Info banner */}
+      <div style={{background:"#1f2937",border:"1px solid #374151",borderRadius:6,padding:"10px 16px",marginBottom:16,display:"flex",gap:10,alignItems:"center"}}>
+        <div style={{width:10,height:10,background:SDR_BLUE,borderRadius:2,flexShrink:0}}/>
+        <div style={{fontSize:12,color:SDR_MUTED,fontFamily:FONT_BODY}}>Activity score shows <strong style={{color:SDR_TEXT}}>3.0 for all reps</strong> — placeholder in source report. All reps currently meeting the 3.0 activity threshold.</div>
+      </div>
+
+      {/* Filter + period */}
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:10,marginBottom:16}}>
+        <div style={{display:"flex",gap:6,alignItems:"center",flexWrap:"wrap"}}>
+          <span style={{fontSize:11,color:SDR_MUTED,fontFamily:FONT_BODY}}>FILTER:</span>
+          {[["all","All Reps",SDR_TEXT],["pass",`Pass (${pass})`,SDR_GREEN],["observe",`Observe (${observe})`,SDR_YELLOW],["below",`Below (${below})`,SDR_RED]].map(([id,label,col])=>(
+            <button key={id} onClick={()=>setFilter(id)} style={{padding:"5px 14px",fontSize:11,fontWeight:700,border:`1px solid ${filter===id?col:SDR_BORDER}`,background:filter===id?col+"22":"transparent",color:filter===id?col:SDR_MUTED,borderRadius:20,cursor:"pointer",fontFamily:FONT_BODY}}>{label}</button>
+          ))}
+        </div>
+        <div style={{display:"flex",gap:4}}>
+          {[["prev","Feb 16 – Mar 15"],["cur","Mar 16 – Apr 15"]].map(([id,label])=>(
+            <button key={id} onClick={()=>setPeriod(id)} style={{padding:"5px 12px",fontSize:11,fontWeight:700,border:`1px solid ${period===id?SDR_BLUE:SDR_BORDER}`,background:period===id?SDR_BLUE+"22":"transparent",color:period===id?SDR_BLUE:SDR_MUTED,borderRadius:4,cursor:"pointer",fontFamily:FONT_BODY}}>{label}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* Sub-tabs */}
+      <div style={{display:"flex",borderBottom:`1px solid ${SDR_BORDER}`,marginBottom:20,gap:0}}>
+        {SUBTABS.map(t=>(
+          <button key={t} onClick={()=>setSubTab(t)} style={{padding:"8px 16px",background:"transparent",border:"none",borderBottom:subTab===t?`2px solid ${SDR_BLUE}`:"2px solid transparent",color:subTab===t?SDR_BLUE:SDR_MUTED,fontSize:12,fontWeight:subTab===t?700:400,cursor:"pointer",fontFamily:FONT_BODY,textTransform:"capitalize"}}>{t}</button>
+        ))}
+      </div>
+
+      {/* OVERVIEW */}
+      {subTab==="overview"&&(
+        <div>
+          <div style={{fontSize:12,color:SDR_MUTED,marginBottom:12,fontFamily:FONT_BODY}}>
+            {period==="prev"?"Feb 2026 rolling 3-month average":"Mar 16–Apr 15 period score"} · dashed = 3.5 threshold · click bar → Rep Detail
+          </div>
+          <div style={{...DC}}>
+            <div style={{overflowX:"auto"}}>
+              <div style={{minWidth:Math.max(700,sorted.length*38),position:"relative",height:240}}>
+                {[0,2,4,6,8,10,12].map(v=>{const y=195-(v/13)*175;return(<g key={v}><div style={{position:"absolute",top:y,left:28,right:8,borderTop:`1px dashed ${SDR_BORDER}`}}/>
+                  <span style={{position:"absolute",top:y-6,left:0,fontSize:9,color:SDR_MUTED,fontFamily:FONT_BODY}}>{v}</span></g>);})}
+                <div style={{position:"absolute",top:195-(SDR_PASS/13)*175,left:28,right:8,borderTop:`1.5px dashed ${SDR_YELLOW}`,zIndex:2}}>
+                  <span style={{position:"absolute",right:0,top:-14,fontSize:9,color:SDR_YELLOW,fontWeight:700,fontFamily:FONT_BODY}}>3.5 pass</span>
+                </div>
+                <div style={{position:"absolute",top:195-(SDR_ACT/13)*175,left:28,right:8,borderTop:`1px dashed ${SDR_MUTED}`,zIndex:2}}>
+                  <span style={{position:"absolute",right:0,top:-13,fontSize:9,color:SDR_MUTED,fontFamily:FONT_BODY}}>3.0 activity</span>
+                </div>
+                <div style={{position:"absolute",top:0,left:28,right:8,bottom:28,display:"flex",alignItems:"flex-end",gap:2}}>
+                  {sorted.map((r)=>{
+                    const h=Math.max(2,(Math.min(r.score,13)/13)*175);
+                    const col=bandCol(r.band);
+                    return(<div key={r.name} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-end",height:"100%",cursor:"pointer"}} onClick={()=>{setSelRep(r.name);setSubTab("rep detail");}}>
+                      <div style={{width:"82%",height:h,background:col,borderRadius:"2px 2px 0 0"}} onMouseEnter={e=>e.currentTarget.style.opacity="0.7"} onMouseLeave={e=>e.currentTarget.style.opacity="1"} title={`${r.name}: ${r.score}`}/>
+                    </div>);
+                  })}
+                </div>
+                <div style={{position:"absolute",bottom:0,left:28,right:8,display:"flex",gap:2,height:26}}>
+                  {sorted.map((r)=>(
+                    <div key={r.name} style={{flex:1,overflow:"hidden",display:"flex",justifyContent:"center"}}>
+                      <span style={{fontSize:7,color:SDR_MUTED,fontFamily:FONT_BODY,transform:"rotate(-40deg)",transformOrigin:"top center",whiteSpace:"nowrap",display:"block",marginTop:4}}>
+                        {r.name.split(" ").map((w,i)=>i===0?w[0]+".":w[0]).join("")}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* CURRENT MONTH */}
+      {subTab==="current month"&&(
+        <div>
+          <div style={{fontSize:12,color:SDR_MUTED,marginBottom:12,fontFamily:FONT_BODY}}>{PERIOD_LABEL} · Pipeline Activity</div>
+          <div style={{display:"flex",gap:10,marginBottom:16,flexWrap:"wrap"}}>
+            {[["TEAM MQLs",teamMQL,SDR_PURPLE],["TEAM SQLs",teamSQL,SDR_BLUE],["TEAM MEETINGS",teamMtg,SDR_GREEN]].map(([l,v,c])=>(
+              <div key={l} style={{...DC,flex:1,minWidth:140,textAlign:"center"}}>
+                <div style={{fontSize:9,color:SDR_MUTED,fontWeight:700,letterSpacing:"1.2px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:6}}>{l}</div>
+                <div style={{fontSize:30,fontWeight:900,color:c,fontFamily:FONT_DISPLAY}}>{v}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{display:"flex",gap:6,marginBottom:12,alignItems:"center"}}>
+            <span style={{fontSize:11,color:SDR_MUTED,fontFamily:FONT_BODY}}>Sort by:</span>
+            {[["mtg","Meetings"],["sql","SQLs"],["mql","MQLs"],["score","Score"]].map(([id,label])=>(
+              <button key={id} onClick={()=>setSortBy(id)} style={{padding:"4px 10px",fontSize:11,fontWeight:700,border:`1px solid ${sortBy===id?SDR_BLUE:SDR_BORDER}`,background:sortBy===id?SDR_BLUE+"22":"transparent",color:sortBy===id?SDR_BLUE:SDR_MUTED,borderRadius:4,cursor:"pointer",fontFamily:FONT_BODY}}>{label}</button>
+            ))}
+          </div>
+          <div style={{...DC}}>
+            <div style={{fontSize:10,color:SDR_MUTED,marginBottom:12,fontFamily:FONT_BODY}}>MEETINGS BOOKED — {PERIOD_LABEL}</div>
+            <div style={{overflowX:"auto"}}>
+              <div style={{minWidth:Math.max(700,sorted.length*38),position:"relative",height:220}}>
+                {[0,8,16,24,32].map(v=>{const maxV=Math.max(...sorted.map(r=>r.mtg),1);const y=180-(v/Math.max(maxV,32))*160;return(<div key={v} style={{position:"absolute",top:y,left:28,right:8,borderTop:`1px dashed ${SDR_BORDER}`}}><span style={{position:"absolute",left:-26,fontSize:9,color:SDR_MUTED,fontFamily:FONT_BODY}}>{v}</span></div>);})}
+                <div style={{position:"absolute",top:180-(15/Math.max(Math.max(...sorted.map(r=>r.mtg),1),32))*160,left:28,right:8,borderTop:`1.5px dashed ${SDR_GREEN}`,zIndex:2}}>
+                  <span style={{position:"absolute",right:0,top:-14,fontSize:9,color:SDR_GREEN,fontWeight:700,fontFamily:FONT_BODY}}>15 target</span>
+                </div>
+                <div style={{position:"absolute",top:0,left:28,right:8,bottom:28,display:"flex",alignItems:"flex-end",gap:2}}>
+                  {sorted.map((r)=>{const maxV=Math.max(...sorted.map(r=>r.mtg),1);const h=Math.max(2,(r.mtg/Math.max(maxV,32))*160);const col=bandCol(r.band);return(<div key={r.name} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-end",height:"100%"}}><div style={{width:"82%",height:h,background:col,borderRadius:"2px 2px 0 0"}} title={`${r.name}: ${r.mtg}`}/></div>);})}
+                </div>
+                <div style={{position:"absolute",bottom:0,left:28,right:8,display:"flex",gap:2,height:26}}>
+                  {sorted.map((r)=>(<div key={r.name} style={{flex:1,display:"flex",justifyContent:"center"}}><span style={{fontSize:7,color:SDR_MUTED,fontFamily:FONT_BODY,transform:"rotate(-40deg)",transformOrigin:"top center",whiteSpace:"nowrap",display:"block",marginTop:4}}>{r.name.split(" ").map((w,i)=>i===0?w[0]+".":w[0]).join("")}</span></div>))}
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Rep table */}
+          <div style={{...DC,marginTop:12}}>
+            <table style={{width:"100%",borderCollapse:"collapse",fontSize:12,fontFamily:FONT_BODY}}>
+              <thead><tr style={{borderBottom:`1px solid ${SDR_BORDER}`}}>{["REP","MQL","SQL","MEETINGS","MTG BAND","FEB AVG SCORE","TIER"].map(h=><th key={h} style={{padding:"8px 10px",textAlign:h==="REP"?"left":"center",color:SDR_MUTED,fontWeight:700,fontSize:9,textTransform:"uppercase",letterSpacing:"1px"}}>{h}</th>)}</tr></thead>
+              <tbody>{sorted.map((r,i)=>{const col=bandCol(r.band);return(<tr key={r.name} style={{borderBottom:`1px solid ${SDR_BORDER}22`,background:i%2?SDR_CARD2:"transparent"}}>
+                <td style={{padding:"7px 10px",color:SDR_TEXT,fontWeight:600}}>{r.name}</td>
+                <td style={{padding:"7px 10px",textAlign:"center",color:SDR_PURPLE,fontWeight:600}}>{r.mql}</td>
+                <td style={{padding:"7px 10px",textAlign:"center",color:SDR_BLUE,fontWeight:600}}>{r.sql}</td>
+                <td style={{padding:"7px 10px",textAlign:"center",fontWeight:700,color:col}}>{r.mtg}</td>
+                <td style={{padding:"7px 10px",textAlign:"center"}}><span style={{background:col+"22",color:col,border:`1px solid ${col}44`,borderRadius:3,padding:"2px 8px",fontSize:10,fontWeight:700}}>{r.band.toUpperCase()}</span></td>
+                <td style={{padding:"7px 10px",textAlign:"center",fontWeight:700,color:col}}>{r.score.toFixed(1)}</td>
+                <td style={{padding:"7px 10px",textAlign:"center",color:SDR_MUTED,fontSize:11}}>{r.marchRank!=null?`#${r.marchRank}`:"New"}</td>
+              </tr>);})}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* SCORE TRENDS */}
+      {subTab==="score trends"&&(
+        <div>
+          <div style={{fontSize:12,color:SDR_MUTED,marginBottom:12,fontFamily:FONT_BODY}}>Performance score trend — previous period vs current period</div>
+          <div style={{...DC}}>
+            <table style={{width:"100%",borderCollapse:"collapse",fontSize:12,fontFamily:FONT_BODY}}>
+              <thead><tr style={{borderBottom:`1px solid ${SDR_BORDER}`}}>{["Rep","Mar Rank","Score (Feb–Mar)","Score (Mar–Apr)","Trend","Band"].map(h=><th key={h} style={{padding:"8px 10px",textAlign:h==="Rep"?"left":"center",color:SDR_MUTED,fontWeight:700,fontSize:9,textTransform:"uppercase",letterSpacing:"1px"}}>{h}</th>)}</tr></thead>
+              <tbody>{[...repsWithScore].sort((a,b)=>sdrScore(b,"prev")-sdrScore(a,"prev")).map((r,i)=>{
+                const prevS=sdrScore(r,"prev"),curS=sdrScore(r,"cur"),delta=curS-prevS,col=bandCol(sdrBand(prevS));
+                return(<tr key={r.name} style={{borderBottom:`1px solid ${SDR_BORDER}22`,background:i%2?SDR_CARD2:"transparent"}}>
+                  <td style={{padding:"8px 10px",color:SDR_TEXT,fontWeight:600,cursor:"pointer"}} onClick={()=>{setSelRep(r.name);setSubTab("rep detail");}}>{r.name}</td>
+                  <td style={{padding:"8px 10px",textAlign:"center",color:SDR_MUTED,fontSize:11}}>{r.marchRank!=null?`#${r.marchRank}`:"New"}</td>
+                  <td style={{padding:"8px 10px",textAlign:"center",fontWeight:700,color:bandCol(sdrBand(prevS))}}>{prevS.toFixed(1)}</td>
+                  <td style={{padding:"8px 10px",textAlign:"center",fontWeight:700,color:bandCol(sdrBand(curS))}}>{curS.toFixed(1)}</td>
+                  <td style={{padding:"8px 10px",textAlign:"center",fontWeight:700,color:delta>0?SDR_GREEN:delta<0?SDR_RED:SDR_MUTED}}>{delta>0?`↑ +${delta.toFixed(1)}`:delta<0?`↓ ${delta.toFixed(1)}`:"→"}</td>
+                  <td style={{padding:"8px 10px",textAlign:"center"}}><span style={{background:col+"22",color:col,border:`1px solid ${col}44`,borderRadius:3,padding:"2px 8px",fontSize:10,fontWeight:700}}>{sdrBand(prevS).toUpperCase()}</span></td>
+                </tr>);
+              })}</tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* HEATMAP */}
+      {subTab==="heatmap"&&(
+        <div>
+          <div style={{fontSize:12,color:SDR_MUTED,marginBottom:12,fontFamily:FONT_BODY}}>MQL × SQL × Meetings intensity — {PERIOD_LABEL}</div>
+          <div style={{...DC,overflowX:"auto"}}>
+            <table style={{width:"100%",borderCollapse:"collapse",fontSize:11,fontFamily:FONT_BODY}}>
+              <thead><tr style={{borderBottom:`1px solid ${SDR_BORDER}`}}>{["Rep","MQLs","","SQLs","","Meetings","","Score","Band"].map((h,i)=><th key={i} style={{padding:"8px 8px",textAlign:h==="Rep"?"left":"center",color:SDR_MUTED,fontWeight:700,fontSize:9,textTransform:"uppercase",letterSpacing:"1px",minWidth:h===""?70:undefined}}>{h}</th>)}</tr></thead>
+              <tbody>{[...repsWithScore].sort((a,b)=>b.score-a.score).map((r,i)=>{
+                const mqlMax=Math.max(...repsWithScore.map(x=>x.mql),1),sqlMax=Math.max(...repsWithScore.map(x=>x.sql),1),mtgMax=Math.max(...repsWithScore.map(x=>x.mtg),1);
+                const heat=(v,max)=>{const p=v/max;return p>0.75?"#1a472a":p>0.5?"#2d6a4f":p>0.25?"#40916c":p>0.05?"#74c69d":"#161b22";};
+                const col=bandCol(r.band);
+                return(<tr key={r.name} style={{borderBottom:`1px solid ${SDR_BORDER}22`,background:i%2?SDR_CARD2:"transparent"}}>
+                  <td style={{padding:"6px 8px",color:SDR_TEXT,fontWeight:500,whiteSpace:"nowrap"}}>{r.name}</td>
+                  <td style={{padding:"6px 8px",textAlign:"center",color:SDR_PURPLE,fontWeight:600}}>{r.mql}</td>
+                  <td style={{padding:"3px 4px"}}><div style={{height:14,background:heat(r.mql,mqlMax),borderRadius:2,width:`${Math.max((r.mql/mqlMax)*70,4)}px`,minWidth:4}}/></td>
+                  <td style={{padding:"6px 8px",textAlign:"center",color:SDR_BLUE,fontWeight:600}}>{r.sql}</td>
+                  <td style={{padding:"3px 4px"}}><div style={{height:14,background:heat(r.sql,sqlMax),borderRadius:2,width:`${Math.max((r.sql/sqlMax)*70,4)}px`,minWidth:4}}/></td>
+                  <td style={{padding:"6px 8px",textAlign:"center",color:SDR_GREEN,fontWeight:600}}>{r.mtg}</td>
+                  <td style={{padding:"3px 4px"}}><div style={{height:14,background:heat(r.mtg,mtgMax),borderRadius:2,width:`${Math.max((r.mtg/mtgMax)*70,4)}px`,minWidth:4}}/></td>
+                  <td style={{padding:"6px 8px",textAlign:"center",fontWeight:700,color:col}}>{r.score.toFixed(1)}</td>
+                  <td style={{padding:"6px 8px",textAlign:"center"}}><span style={{background:col+"22",color:col,border:`1px solid ${col}44`,borderRadius:3,padding:"2px 8px",fontSize:9,fontWeight:700}}>{r.band.toUpperCase()}</span></td>
+                </tr>);
+              })}</tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* PACING */}
+      {subTab==="pacing"&&(
+        <div>
+          <div style={{fontSize:12,color:SDR_MUTED,marginBottom:12,fontFamily:FONT_BODY}}>Current period pacing vs previous · {Math.round(APR_ELAPSED*100)}% elapsed</div>
+          <div style={{...DC,overflowX:"auto"}}>
+            <table style={{width:"100%",borderCollapse:"collapse",fontSize:12,fontFamily:FONT_BODY}}>
+              <thead><tr style={{borderBottom:`1px solid ${SDR_BORDER}`}}>{["Rep","Prev Mtg","Cur Mtg","Pace %","Prev SQL","Cur SQL","Pace %","Proj EOM","Band"].map(h=><th key={h} style={{padding:"8px 8px",textAlign:h==="Rep"?"left":"center",color:SDR_MUTED,fontWeight:700,fontSize:9,textTransform:"uppercase",letterSpacing:"1px",whiteSpace:"nowrap"}}>{h}</th>)}</tr></thead>
+              <tbody>{[...repsWithScore].sort((a,b)=>b.score-a.score).map((r,i)=>{
+                const mtgPace=r.marchFlips>0?Math.round((r.curMtg/r.marchFlips)*100):null;
+                const sqlPace=r.marchSQL>0?Math.round((r.curSQL/r.marchSQL)*100):null;
+                const proj=Math.round(r.curMtg/APR_ELAPSED);
+                const pc=p=>p==null?SDR_MUTED:p>=110?SDR_GREEN:p>=85?SDR_YELLOW:SDR_RED;
+                const col=bandCol(r.band);
+                return(<tr key={r.name} style={{borderBottom:`1px solid ${SDR_BORDER}22`,background:i%2?SDR_CARD2:"transparent"}}>
+                  <td style={{padding:"7px 8px",color:SDR_TEXT,fontWeight:500}}>{r.name}</td>
+                  <td style={{padding:"7px 8px",textAlign:"center",color:SDR_MUTED}}>{r.marchFlips??'—'}</td>
+                  <td style={{padding:"7px 8px",textAlign:"center",color:SDR_GREEN,fontWeight:700}}>{r.curMtg}</td>
+                  <td style={{padding:"7px 8px",textAlign:"center",fontWeight:700,color:pc(mtgPace)}}>{mtgPace!=null?`${mtgPace}%`:"New"}</td>
+                  <td style={{padding:"7px 8px",textAlign:"center",color:SDR_MUTED}}>{r.marchSQL??'—'}</td>
+                  <td style={{padding:"7px 8px",textAlign:"center",color:SDR_BLUE,fontWeight:700}}>{r.curSQL}</td>
+                  <td style={{padding:"7px 8px",textAlign:"center",fontWeight:700,color:pc(sqlPace)}}>{sqlPace!=null?`${sqlPace}%`:"New"}</td>
+                  <td style={{padding:"7px 8px",textAlign:"center",fontWeight:700,color:proj>=15?SDR_GREEN:proj>=8?SDR_YELLOW:SDR_RED}}>{proj}</td>
+                  <td style={{padding:"7px 8px",textAlign:"center"}}><span style={{background:col+"22",color:col,border:`1px solid ${col}44`,borderRadius:3,padding:"2px 8px",fontSize:9,fontWeight:700}}>{r.band.toUpperCase()}</span></td>
+                </tr>);
+              })}</tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* REP DETAIL */}
+      {subTab==="rep detail"&&(
+        <div>
+          <select value={selRep||""} onChange={e=>setSelRep(e.target.value)} style={{background:SDR_CARD2,color:SDR_TEXT,border:`1px solid ${SDR_BORDER}`,borderRadius:4,padding:"8px 14px",fontSize:13,fontFamily:FONT_BODY,outline:"none",width:"100%",maxWidth:340,marginBottom:16}}>
+            <option value="">— Select a rep —</option>
+            {[...repsWithScore].sort((a,b)=>b.score-a.score).map(r=><option key={r.name} value={r.name}>{r.name} ({r.score.toFixed(1)} — {r.band})</option>)}
+          </select>
+          {selRep&&(()=>{
+            const r=repsWithScore.find(x=>x.name===selRep);if(!r)return null;
+            const col=bandCol(r.band),prevS=sdrScore(r,"prev"),curS=sdrScore(r,"cur");
+            return(<div>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:12,marginBottom:16}}>
+                <div>
+                  <div style={{fontSize:20,fontWeight:800,color:SDR_TEXT,fontFamily:FONT_DISPLAY}}>{r.name}</div>
+                  <div style={{fontSize:11,color:SDR_MUTED,marginTop:4,fontFamily:FONT_BODY}}>{r.marchRank!=null?`March Rank #${r.marchRank}`:"New Rep"} · Activity score: 3.0</div>
+                </div>
+                <span style={{background:col+"22",color:col,border:`1px solid ${col}44`,borderRadius:6,padding:"8px 20px",fontSize:14,fontWeight:700,fontFamily:FONT_BODY}}>{r.band.toUpperCase()}</span>
+              </div>
+              <div style={{display:"flex",gap:10,flexWrap:"wrap",marginBottom:16}}>
+                {[["Score (Feb–Mar)",prevS.toFixed(1),bandCol(sdrBand(prevS))],["Score (Mar–Apr)",curS.toFixed(1),bandCol(sdrBand(curS))],["Mtg Feb–Mar",r.marchFlips??0,SDR_GREEN],["Mtg Mar–Apr",r.curMtg,SDR_GREEN],["SQL Feb–Mar",r.marchSQL??0,SDR_BLUE],["SQL Mar–Apr",r.curSQL,SDR_BLUE],["MQL Feb–Mar",r.marchMQL??0,SDR_PURPLE],["MQL Mar–Apr",r.curMQL,SDR_PURPLE]].map(([l,v,c])=>(
+                  <div key={l} style={{...DC,flex:1,minWidth:110,textAlign:"center"}}>
+                    <div style={{fontSize:8,color:SDR_MUTED,fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:6}}>{l}</div>
+                    <div style={{fontSize:22,fontWeight:800,color:c,fontFamily:FONT_DISPLAY}}>{v}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{...DC}}>
+                <div style={{fontSize:10,color:SDR_MUTED,fontWeight:700,letterSpacing:"1.2px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:12}}>SCORING BREAKDOWN</div>
+                {[["Performance Score (Feb–Mar)",prevS.toFixed(1),SDR_PASS,bandCol(sdrBand(prevS))],["Performance Score (Mar–Apr)",curS.toFixed(1),SDR_PASS,bandCol(sdrBand(curS))],["Activity Score","3.0",SDR_ACT,SDR_YELLOW]].map(([label,val,thresh,col])=>(
+                  <div key={label} style={{marginBottom:14}}>
+                    <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
+                      <span style={{fontSize:11,color:SDR_MUTED,fontFamily:FONT_BODY}}>{label}</span>
+                      <span style={{fontSize:13,fontWeight:700,color:col,fontFamily:FONT_DISPLAY}}>{val} <span style={{fontSize:10,color:SDR_MUTED,fontWeight:400}}>/ threshold {thresh}</span></span>
+                    </div>
+                    <div style={{height:6,background:SDR_CARD2,borderRadius:3,overflow:"hidden"}}>
+                      <div style={{height:"100%",width:`${Math.min(100,(parseFloat(val)/8)*100)}%`,background:col,borderRadius:3}}/>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>);
+          })()}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── CMS PANEL ────────────────────────────────────────────────────────────────
+const DEFAULT_CMS = {
+  widgets:{
+    paceCard:true, churnTrend:true, activeTrend:true,
+    closedVsLost:true, periodComparison:true,
+    teamPerf:true, teamScore:true,
+  },
+  churn:{
+    locked:true,
+    lockedValue:"9.62",
+    lockedMonth:"Mar 26",
+    lockedLabel:"Previous Month Churn (March 2026)",
+  },
+  meta:{
+    lastUpdated:"Apr 9, 2026",
+    period:"Period 3/16–4/15/2026",
+  },
+};
+
+function loadCMS(){
+  try{const s=localStorage.getItem("martal_cms");return s?JSON.parse(s):DEFAULT_CMS;}
+  catch{return DEFAULT_CMS;}
+}
+function saveCMS(c){try{localStorage.setItem("martal_cms",JSON.stringify(c));}catch{}}
+
+function CMSPanel({cms,setCms,onClose}){
+  const set=(path,val)=>{
+    const parts=path.split(".");
+    const next=JSON.parse(JSON.stringify(cms));
+    let obj=next;
+    for(let i=0;i<parts.length-1;i++)obj=obj[parts[i]];
+    obj[parts[parts.length-1]]=val;
+    setCms(next);
+    saveCMS(next);
+  };
+  const toggle=(path)=>set(path,!path.split(".").reduce((o,k)=>o[k],cms));
+
+  const widgetLabels={paceCard:"Company Pace Card",churnTrend:"Churn Rate Trend Chart",activeTrend:"Active Clients Trend Chart",closedVsLost:"Closed vs Lost Chart",periodComparison:"Period Comparison Table",teamPerf:"Team Performance Widget",teamScore:"Rep Score Overview"};
+
+  return(
+    <div style={{position:"fixed",top:0,right:0,bottom:0,width:340,background:"#fff",boxShadow:"-4px 0 24px rgba(0,0,0,0.12)",zIndex:500,display:"flex",flexDirection:"column",fontFamily:FONT_BODY}}>
+      {/* Header */}
+      <div style={{background:TEXT,color:"#fff",padding:"14px 20px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <div>
+          <div style={{fontSize:13,fontWeight:800,letterSpacing:"1px",textTransform:"uppercase"}}>⚙ CMS Settings</div>
+          <div style={{fontSize:10,opacity:0.6,marginTop:2}}>Admin only — internal use</div>
+        </div>
+        <button onClick={onClose} style={{background:"transparent",border:"1px solid #555",color:"#fff",borderRadius:4,padding:"5px 10px",cursor:"pointer",fontSize:12}}>✕ Close</button>
+      </div>
+
+      <div style={{flex:1,overflow:"auto",padding:"0 0 40px"}}>
+
+        {/* Widget Visibility */}
+        <div style={{padding:"16px 20px",borderBottom:`1px solid ${BORDER}`}}>
+          <div style={{fontSize:10,fontWeight:700,color:MUTED,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:12}}>Widget Visibility</div>
+          {Object.entries(widgetLabels).map(([key,label])=>{
+            const on=cms.widgets[key]!==false;
+            return(
+              <div key={key} style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+                <span style={{fontSize:12,color:on?TEXT:MUTED}}>{label}</span>
+                <div onClick={()=>toggle(`widgets.${key}`)} style={{width:40,height:22,borderRadius:11,background:on?G:BORDER2,cursor:"pointer",position:"relative",transition:"background 0.2s"}}>
+                  <div style={{position:"absolute",top:3,left:on?21:3,width:16,height:16,background:"#fff",borderRadius:8,transition:"left 0.2s",boxShadow:"0 1px 3px rgba(0,0,0,0.2)"}}/>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Churn Lock */}
+        <div style={{padding:"16px 20px",borderBottom:`1px solid ${BORDER}`}}>
+          <div style={{fontSize:10,fontWeight:700,color:MUTED,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:12}}>Churn Display</div>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+            <span style={{fontSize:12,color:TEXT}}>Lock to previous month</span>
+            <div onClick={()=>toggle("churn.locked")} style={{width:40,height:22,borderRadius:11,background:cms.churn.locked?G:BORDER2,cursor:"pointer",position:"relative",transition:"background 0.2s"}}>
+              <div style={{position:"absolute",top:3,left:cms.churn.locked?21:3,width:16,height:16,background:"#fff",borderRadius:8,transition:"left 0.2s",boxShadow:"0 1px 3px rgba(0,0,0,0.2)"}}/>
+            </div>
+          </div>
+          <div style={{marginBottom:8}}>
+            <div style={{fontSize:10,color:MUTED,marginBottom:4}}>Locked churn value (%)</div>
+            <input value={cms.churn.lockedValue} onChange={e=>set("churn.lockedValue",e.target.value)} style={{width:"100%",padding:"6px 10px",border:`1px solid ${BORDER2}`,borderRadius:4,fontSize:13,fontFamily:FONT_BODY,color:TEXT,background:CARD2}}/>
+          </div>
+          <div style={{marginBottom:8}}>
+            <div style={{fontSize:10,color:MUTED,marginBottom:4}}>Locked month label</div>
+            <input value={cms.churn.lockedMonth} onChange={e=>set("churn.lockedMonth",e.target.value)} style={{width:"100%",padding:"6px 10px",border:`1px solid ${BORDER2}`,borderRadius:4,fontSize:13,fontFamily:FONT_BODY,color:TEXT,background:CARD2}}/>
+          </div>
+          <div>
+            <div style={{fontSize:10,color:MUTED,marginBottom:4}}>Display label</div>
+            <input value={cms.churn.lockedLabel} onChange={e=>set("churn.lockedLabel",e.target.value)} style={{width:"100%",padding:"6px 10px",border:`1px solid ${BORDER2}`,borderRadius:4,fontSize:13,fontFamily:FONT_BODY,color:TEXT,background:CARD2}}/>
+          </div>
+        </div>
+
+        {/* Meta */}
+        <div style={{padding:"16px 20px"}}>
+          <div style={{fontSize:10,fontWeight:700,color:MUTED,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:12}}>Dashboard Meta</div>
+          <div style={{marginBottom:8}}>
+            <div style={{fontSize:10,color:MUTED,marginBottom:4}}>Last Updated label</div>
+            <input value={cms.meta.lastUpdated} onChange={e=>set("meta.lastUpdated",e.target.value)} style={{width:"100%",padding:"6px 10px",border:`1px solid ${BORDER2}`,borderRadius:4,fontSize:13,fontFamily:FONT_BODY,color:TEXT,background:CARD2}}/>
+          </div>
+          <div>
+            <div style={{fontSize:10,color:MUTED,marginBottom:4}}>Period label</div>
+            <input value={cms.meta.period} onChange={e=>set("meta.period",e.target.value)} style={{width:"100%",padding:"6px 10px",border:`1px solid ${BORDER2}`,borderRadius:4,fontSize:13,fontFamily:FONT_BODY,color:TEXT,background:CARD2}}/>
+          </div>
+        </div>
+      </div>
+
+      <div style={{padding:"12px 20px",borderTop:`1px solid ${BORDER}`,background:CARD2}}>
+        <div style={{fontSize:10,color:MUTED,textAlign:"center"}}>Changes save automatically · Persists across sessions</div>
+      </div>
+    </div>
+  );
+}
+
 // ─── APP ──────────────────────────────────────────────────────────────────────
 function App(){
   const [tab,setTab]=useState("company");
+  const [cms,setCms]=useState(loadCMS);
   const tabs=[
     {id:"company",label:"Company"},
     {id:"reps",label:"Sales Reps"},
@@ -1640,119 +2440,51 @@ function App(){
 
   return(
     <div style={{background:BG,minHeight:"100vh",fontFamily:FONT_BODY,color:TEXT}}>
-      {/* Announcement Bar */}
-      <div style={{
-        background:ANNOUNCE,
-        borderBottom:`1px solid ${G_DARK}40`,
-        padding:"7px 20px",
-        textAlign:"center",
-        fontSize:11,
-        fontWeight:600,
-        letterSpacing:"0.8px",
-        color:"#3a6b10",
-        fontFamily:FONT_BODY,
-      }}>
-        ◈ &nbsp; PERFORMANCE &amp; CHURN INTELLIGENCE DASHBOARD &nbsp;·&nbsp; PERIOD 3/16–4/15/2026 &nbsp;·&nbsp; INTERNAL USE ONLY &nbsp;·&nbsp; LAST UPDATED: APR 9, 2026 &nbsp; ◈
+
+      {/* Announcement Bar — dark, minimal */}
+      <div style={{background:ANNOUNCE,padding:"6px 28px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+        <div style={{fontSize:9,fontWeight:600,letterSpacing:"2px",color:"#4fa61a",fontFamily:FONT_BODY,textTransform:"uppercase",display:"flex",alignItems:"center",gap:10}}>
+          <div style={{width:6,height:6,borderRadius:"50%",background:"#4fa61a",boxShadow:"0 0 6px #4fa61a"}}/>
+          Live — {cms.meta.period}
+        </div>
+        <div style={{fontSize:9,color:"#4fa61a55",fontFamily:FONT_BODY,letterSpacing:"1px",textTransform:"uppercase"}}>Internal Use Only · Updated {cms.meta.lastUpdated}</div>
       </div>
 
       {/* Nav Bar */}
-      <div style={{
-        background:"#ffffff",
-        borderBottom:`1px solid ${BORDER}`,
-        padding:"0 24px",
-        display:"flex",
-        alignItems:"center",
-        justifyContent:"space-between",
-        height:52,
-        position:"sticky",
-        top:0,
-        zIndex:100,
-      }}>
-        {/* Logo */}
-        <div style={{display:"flex",alignItems:"center",gap:10}}>
-          <div style={{
-            width:4,
-            height:24,
-            background:G,
-            borderRadius:2,
-          }}/>
+      <div style={{background:CARD,borderBottom:`1px solid ${BORDER}`,padding:"0 28px",display:"flex",alignItems:"center",justifyContent:"space-between",height:58,position:"sticky",top:0,zIndex:100,boxShadow:"0 1px 0 "+BORDER+", 0 4px 16px rgba(0,0,0,0.04)"}}>
+        <div style={{display:"flex",alignItems:"center",gap:12}}>
+          <div style={{width:34,height:34,background:G,borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 2px 8px "+G+"55",flexShrink:0}}>
+            <span style={{fontSize:18,fontWeight:900,color:"#fff",fontFamily:FONT_DISPLAY,lineHeight:1}}>M</span>
+          </div>
           <div>
-            <div style={{
-              fontSize:17,
-              fontWeight:900,
-              color:TEXT,
-              letterSpacing:"2px",
-              textTransform:"uppercase",
-              fontFamily:FONT_DISPLAY,
-              lineHeight:1,
-            }}>MARTAL GROUP</div>
-            <div style={{
-              fontSize:8,
-              color:MUTED,
-              letterSpacing:"1.5px",
-              textTransform:"uppercase",
-              fontFamily:FONT_BODY,
-              marginTop:2,
-            }}>B2B Lead Generation Agency</div>
+            <div style={{fontSize:14,fontWeight:800,color:TEXT,letterSpacing:"1.5px",textTransform:"uppercase",fontFamily:FONT_DISPLAY,lineHeight:1}}>Martal Group</div>
+            <div style={{fontSize:8.5,color:MUTED,letterSpacing:"1px",textTransform:"uppercase",fontFamily:FONT_BODY,marginTop:2}}>Performance Intelligence</div>
           </div>
         </div>
-
-        {/* Nav Tabs */}
-        <div style={{display:"flex",gap:0}}>
+        <div style={{display:"flex",gap:0,alignItems:"center"}}>
           {tabs.map(t=>(
-            <button
-              key={t.id}
-              onClick={()=>setTab(t.id)}
-              style={{
-                padding:"0 18px",
-                height:52,
-                border:"none",
-                borderBottom:tab===t.id?`2px solid ${G}`:"2px solid transparent",
-                cursor:"pointer",
-                fontSize:11,
-                fontWeight:700,
-                letterSpacing:"1px",
-                textTransform:"uppercase",
-                background:"transparent",
-                color:tab===t.id?G:MUTED,
-                fontFamily:FONT_BODY,
-                transition:"color 0.15s, border-color 0.15s",
-              }}
-            >{t.label}</button>
+            <button key={t.id} onClick={()=>setTab(t.id)} style={{padding:"0 18px",height:58,border:"none",borderBottom:tab===t.id?`2px solid ${G}`:"2px solid transparent",cursor:"pointer",fontSize:10.5,fontWeight:700,letterSpacing:"1.2px",textTransform:"uppercase",background:"transparent",color:tab===t.id?G:MUTED,fontFamily:FONT_BODY,transition:"color 0.15s"}}>{t.label}</button>
           ))}
         </div>
       </div>
 
       {/* Page Content */}
-      <div style={{maxWidth:980,margin:"0 auto",padding:"28px 20px"}}>
-
-        {/* Page Header */}
-        <div style={{marginBottom:24}}>
-          <div style={{
-            fontSize:24,
-            fontWeight:900,
-            color:TEXT,
-            textTransform:"uppercase",
-            letterSpacing:"-0.5px",
-            fontFamily:FONT_DISPLAY,
-            lineHeight:1.1,
-          }}>
-            {tab==="company"&&<>Company <span style={{color:G}}>Overview</span></>}
-            {tab==="reps"&&<>Sales <span style={{color:G}}>Reps</span></>}
-            {tab==="soms"&&<>Sales <span style={{color:G}}>Ops Managers</span></>}
-            {tab==="method"&&<>Data <span style={{color:G}}>Methodology</span></>}
+      <div style={{maxWidth:1020,margin:"0 auto",padding:"24px 24px 56px"}}>
+        <div style={{marginBottom:20,display:"flex",alignItems:"flex-end",justifyContent:"space-between",flexWrap:"wrap",gap:8}}>
+          <div>
+            <div style={{fontSize:28,fontWeight:800,color:TEXT,letterSpacing:"-1px",fontFamily:FONT_DISPLAY,lineHeight:1.1}}>
+              {tab==="company"&&<>Company <span style={{color:G}}>Overview</span></>}
+              {tab==="reps"&&<>Sales <span style={{color:G}}>Reps</span></>}
+              {tab==="soms"&&<>Sales <span style={{color:G}}>Ops</span></>}
+              {tab==="method"&&<>Methodology</>}
+            </div>
+            <div style={{width:32,height:3,background:G,borderRadius:2,marginTop:8}}/>
           </div>
-          <div style={{
-            width:40,
-            height:3,
-            background:G,
-            borderRadius:2,
-            marginTop:8,
-          }}/>
+          <div style={{fontSize:10,color:MUTED2,fontFamily:FONT_BODY,letterSpacing:"0.5px"}}>
+            {new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}
+          </div>
         </div>
-
-        {/* Tab Content */}
-        {tab==="company"&&<CompanyTab/>}
+        {tab==="company"&&<CompanyTab cms={cms}/>}
         {tab==="reps"&&<RepsTab/>}
         {tab==="soms"&&<SOMsTab/>}
         {tab==="method"&&(
@@ -1761,29 +2493,15 @@ function App(){
               {t:"SOMs (11 listed)",i:["David Harris, David Rosenthal, Grant Paris, James Bellew, Jason Andrews, Matt Guthrie, Merv Charles, Paige Givinsky (Landbase), Venus Powers — confirmed from org chart","Haset Aklilu (VP of Product) — included because GEA and JPM Chase are assigned to her in the accounts matrix","No SOM Account — accounts without an assigned SOM"]},
               {t:"Reps (36)",i:["Anand Pandey, Angela Hamilton, Alex Prodromou, Ariel Wolfe, Bill O'Leary, Blake Peremel, Cesar Garcia, Chinedu Okafor, Clara Galetti, Daniel Davies, Derek Sindelman, Dominic Libertoski, Edgar Medina, Elisha Johnson, Eric Tuttle, Francois Dore, Harjit Sawhney, Javion Jones, Jesse Shorr, Johan Vrey, Joshua Bylsma, Joshua Crawford, Kellee Madonia, Korbin Kirk, Logan Kennedy, Luis Rodriguez, Mark Kreidler, Michele Harris, Paige Givinsky, Rebecca Barnes, Savannah Peck, Stephanie Hackert, Tim Lan, Alli Fowler, Alyssa Perez, Anthony Allen"]},
               {t:"Churn Formula",i:["Company: Lost ÷ Avg(Active Clients prior 3 months) × 100","Person-level: same formula applied to their account counts by month","Mar 2026 example: 10 ÷ avg(106,105,101) = 9.62%"]},
-              {t:"Data Sources",i:["Cash Flow & Billings — active clients, closed, lost (Feb 2022–Mar 2026)","Accounts Matrix — account→SOM→rep assignments with start/end dates","Cancellations List (Jan–May 2026) — provided directly, all end dates updated","SOM Performance PDF — MQL/SQL/meetings per SOM (Jul 2024–Mar 2026). Rep-level data tracked at SOM level only","Termination Analysis — churn reasons per account","Org Chart — definitive role assignments (SOMs vs Reps)"]},
-              {t:"Churn Score (per person, lower = better)",i:["Rep Issue / Sales Ops Issue: +8 | Lack of Results / No Closed Deals: +6 | Single Rep / No Show: +5 | Poor List / Slow Start: +3 | Budget / Landbase / Didnt Pay: +1","Green 0–14 | Yellow 15–34 | Red 35+"]},
+              {t:"Data Sources",i:["Cash Flow & Billings — active clients, closed, lost (Feb 2022–Mar 2026)","Accounts Matrix — account→SOM→rep assignments with start/end dates","Cancellations List (Jan–May 2026) — provided directly, all end dates updated","SOM Performance PDF — MQL/SQL/meetings per SOM (Jul 2024–Mar 2026)","Termination Analysis — churn reasons per account","Org Chart — definitive role assignments (SOMs vs Reps)"]},
+              {t:"Churn Score (per person, lower = better)",i:["Rep Issue / Sales Ops Issue: +8 | Lack of Results / No Closed Deals: +6 | Single Rep / No Show: +5 | Poor List / Slow Start: +3 | Budget / Landbase / Didnt Pay: +1","Green 0–14 · Yellow 15–34 · Red 35+"]},
             ].map(s=>(
               <div key={s.t} style={{...CS,marginBottom:10}}>
-                <div style={{
-                  color:G,
-                  fontWeight:800,
-                  fontSize:11,
-                  marginBottom:10,
-                  textTransform:"uppercase",
-                  letterSpacing:"1.5px",
-                  fontFamily:FONT_BODY,
-                  display:"flex",
-                  alignItems:"center",
-                  gap:8,
-                }}>
-                  <div style={{width:12,height:12,background:G,borderRadius:2,flexShrink:0}}/>
-                  {s.t}
+                <div style={{color:G,fontWeight:700,fontSize:10,marginBottom:10,textTransform:"uppercase",letterSpacing:"1.5px",fontFamily:FONT_BODY,display:"flex",alignItems:"center",gap:8}}>
+                  <div style={{width:3,height:14,background:G,borderRadius:2,flexShrink:0}}/>{s.t}
                 </div>
-                <ul style={{margin:0,padding:"0 0 0 20px"}}>
-                  {s.i.map((item,i)=>(
-                    <li key={i} style={{marginBottom:5,color:MUTED,fontSize:12,lineHeight:1.7,fontFamily:FONT_BODY}}>{item}</li>
-                  ))}
+                <ul style={{margin:0,padding:"0 0 0 18px"}}>
+                  {s.i.map((item,i)=><li key={i} style={{marginBottom:6,color:MUTED,fontSize:12,lineHeight:1.8,fontFamily:FONT_BODY}}>{item}</li>)}
                 </ul>
               </div>
             ))}
@@ -1793,6 +2511,7 @@ function App(){
     </div>
   );
 }
+
 
 ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
