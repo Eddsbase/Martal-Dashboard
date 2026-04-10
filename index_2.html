@@ -2225,9 +2225,9 @@ function SOMsTab(){
         </button>
         <span style={{marginLeft:12,fontSize:11,color:MUTED,fontFamily:FONT_BODY}}>Opens a print-ready view — use Ctrl+P / ⌘+P to save as PDF</span>
       </div>
-      <PersonCharts accounts={som.accounts} perf={som.perf} hideStats/>
       <ChurnGoalPanel somName={som.name} accounts={som.accounts}/>
       <BookedMeetingsPanel somName={som.name} accounts={som.accounts} perf={som.perf}/>
+      <PersonCharts accounts={som.accounts} perf={som.perf} hideStats/>
       <SomPaceTable reps={som.reps}/>
       <div style={CS}>
         <SectionLabel>SEs in Portfolio</SectionLabel>
