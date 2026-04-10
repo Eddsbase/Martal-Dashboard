@@ -1717,6 +1717,43 @@ function loadScript(src){
   });
 }
 
+async function captureContentToPDF(element, filename){
+  await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+  await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+  const canvas = await html2canvas(element, {scale:2, useCORS:true, backgroundColor:'#f0f0ef', logging:false});
+  const imgData = canvas.toDataURL('image/png');
+  const {jsPDF} = window.jspdf;
+  const pxW = canvas.width, pxH = canvas.height;
+  const pdfW = 210; // A4 width mm
+  const pdfH = (pxH / pxW) * pdfW;
+  const pageH = 297; // A4 height mm
+  if(pdfH <= pageH){
+    const doc = new jsPDF('p','mm','a4');
+    doc.addImage(imgData,'PNG',0,0,pdfW,pdfH);
+    doc.save(filename);
+  } else {
+    // Multi-page: slice the canvas into page-height chunks
+    const doc = new jsPDF('p','mm','a4');
+    const pageCanvasH = Math.floor((pageH / pdfW) * pxW);
+    let y = 0, page = 0;
+    while(y < pxH){
+      if(page > 0) doc.addPage();
+      const sliceH = Math.min(pageCanvasH, pxH - y);
+      const sliceCanvas = document.createElement('canvas');
+      sliceCanvas.width = pxW;
+      sliceCanvas.height = sliceH;
+      const ctx = sliceCanvas.getContext('2d');
+      ctx.drawImage(canvas, 0, y, pxW, sliceH, 0, 0, pxW, sliceH);
+      const sliceImg = sliceCanvas.toDataURL('image/png');
+      const slicePdfH = (sliceH / pxW) * pdfW;
+      doc.addImage(sliceImg,'PNG',0,0,pdfW,slicePdfH);
+      y += sliceH;
+      page++;
+    }
+    doc.save(filename);
+  }
+}
+
 const G_RGB=[90,171,31], DARK_RGB=[13,13,13], MUTED_RGB=[112,112,112], RED_RGB=[239,68,68], BORDER_RGB=[212,212,212], STRIPE_RGB=[243,243,243];
 
 function pdfText(doc,txt,x,y,opts={}){
@@ -2057,14 +2094,19 @@ function RepPrintModal({repName,accs,onClose}){
   const cs=churnScore(accs);
   const today=new Date().toLocaleDateString('en-CA');
   const fname=`${repName.replace(/\s+/g,'_')}_Report_Apr2026.pdf`;
+  const handleDownload=()=>{
+    if(!contentRef.current)return;
+    setLoading(true);
+    captureContentToPDF(contentRef.current, fname).finally(()=>setLoading(false));
+  };
   return(
     <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.65)',zIndex:9999,display:'flex',flexDirection:'column'}}>
       <div style={{background:'#1a1a1a',padding:'10px 20px',display:'flex',gap:12,alignItems:'center',flexShrink:0}}>
-        <button onClick={()=>{setLoading(true);buildRepPDF(repName,accs).finally(()=>setLoading(false));}} disabled={loading}
+        <button onClick={handleDownload} disabled={loading}
           style={{background:loading?MUTED:G,color:'#fff',border:'none',borderRadius:5,padding:'9px 20px',fontSize:12,fontWeight:700,cursor:loading?'wait':'pointer',fontFamily:FONT_BODY}}>
           {loading?'⏳ Generating…':'⬇ Download PDF'}
         </button>
-        <span style={{fontSize:11,color:'#aaa',fontFamily:FONT_BODY}}>Downloads a real .pdf file · may take a few seconds</span>
+        <span style={{fontSize:11,color:'#aaa',fontFamily:FONT_BODY}}>Captures the preview below as a pixel-perfect PDF</span>
         <button onClick={onClose} style={{marginLeft:'auto',background:'transparent',border:'1px solid #555',borderRadius:5,padding:'7px 14px',fontSize:12,cursor:'pointer',fontFamily:FONT_BODY,color:'#ccc'}}>✕ Close</button>
       </div>
       <div style={{flex:1,overflow:'auto',padding:'20px',background:'#bbb'}}>
@@ -2125,14 +2167,19 @@ function SomPrintModal({som,onClose}){
   const rows=som.reps.filter(r=>REP_PACE[r]).map(r=>({name:r,...REP_PACE[r]}))
     .sort((a,b)=>(b.marchRank?1/b.marchRank:0)-(a.marchRank?1/a.marchRank:0));
   const fname=`${som.name.replace(/\s+/g,'_')}_SOM_Report_Apr2026.pdf`;
+  const handleDownload=()=>{
+    if(!contentRef.current)return;
+    setLoading(true);
+    captureContentToPDF(contentRef.current, fname).finally(()=>setLoading(false));
+  };
   return(
     <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.65)',zIndex:9999,display:'flex',flexDirection:'column'}}>
       <div style={{background:'#1a1a1a',padding:'10px 20px',display:'flex',gap:12,alignItems:'center',flexShrink:0}}>
-        <button onClick={()=>{setLoading(true);buildSomPDF(som).finally(()=>setLoading(false));}} disabled={loading}
+        <button onClick={handleDownload} disabled={loading}
           style={{background:loading?MUTED:G,color:'#fff',border:'none',borderRadius:5,padding:'9px 20px',fontSize:12,fontWeight:700,cursor:loading?'wait':'pointer',fontFamily:FONT_BODY}}>
           {loading?'⏳ Generating…':'⬇ Download PDF'}
         </button>
-        <span style={{fontSize:11,color:'#aaa',fontFamily:FONT_BODY}}>Downloads a real .pdf file · may take a few seconds</span>
+        <span style={{fontSize:11,color:'#aaa',fontFamily:FONT_BODY}}>Captures the preview below as a pixel-perfect PDF</span>
         <button onClick={onClose} style={{marginLeft:'auto',background:'transparent',border:'1px solid #555',borderRadius:5,padding:'7px 14px',fontSize:12,cursor:'pointer',fontFamily:FONT_BODY,color:'#ccc'}}>✕ Close</button>
       </div>
       <div style={{flex:1,overflow:'auto',padding:'20px',background:'#bbb'}}>
@@ -2149,6 +2196,8 @@ function SomPrintModal({som,onClose}){
               <span style={{color:"#ef4444",fontWeight:700}}>{churned.length}</span> churned
             </div>
           </div>
+          <ChurnGoalPanel somName={som.name} accounts={som.accounts}/>
+          <BookedMeetingsPanel somName={som.name} accounts={som.accounts} perf={som.perf}/>
           <div style={CS}>
             <SectionLabel>Team PACE — Period MTD vs March Final ({Math.round(APR_ELAPSED*100)}% elapsed)</SectionLabel>
             <div style={{overflowX:'auto'}}>
