@@ -827,6 +827,189 @@ function getRepAccounts(repName) {
   return accs;
 }
 
+// ─── CHURN REDUCTION GOALS ───────────────────────────────────────────────────
+const CHURN_GOALS = {
+  "David Rosenthal":  {q1:2, q2Actual:1, q1Accts:["One River","JumpCloud"], q2Accts:["WRS Health"]},
+  "Matt Guthrie":     {q1:2, q2Actual:2, q1Accts:["Innowell","The Plug T-Shirt Store"], q2Accts:["Risk Ledger","NIFTIT"]},
+  "Venus Powers":     {q1:1, q2Actual:0, q1Accts:["TCS Canada"], q2Accts:[]},
+  "Jason Andrews":    {q1:4, q2Actual:2, q1Accts:["Neat Data","Land Journey AI","DYODE","Slow Road Photo"], q2Accts:["ShiftLab LLC","All Star Digital"]},
+  "Grant Paris":      {q1:3, q2Actual:0, q1Accts:["Itransition","Recruit in Motion","Elevate Cloud"], q2Accts:[]},
+  "James Bellew":     {q1:3, q2Actual:1, q1Accts:["HYCU Inc","Connetra","Bosch Mobility"], q2Accts:["Akquinet"]},
+  "David Harris":     {q1:4, q2Actual:1, q1Accts:["Novahaus","Jellyfish","Campus Ivy","ISG One"], q2Accts:["Website Closers"]},
+  "Merv Charles":     {q1:4, q2Actual:0, q1Accts:["Reten","Fenix","Garantir","WRK"], q2Accts:[]},
+  "Paige Givinsky":   {q1:0, q2Actual:0, q1Accts:[], q2Accts:[]},
+  "Haset Aklilu (VP of Product / GEA & JPM Chase)": {q1:0, q2Actual:0, q1Accts:[], q2Accts:[]},
+  "No SOM Account":   {q1:8, q2Actual:1, q1Accts:["Socket Labs","Schill Insurance","EDGE / EdgeScore","Ovaro","ivalua","Virtual Fudge","Blue Box","Skybridge"], q2Accts:["Betstamp"]},
+};
+function getQ2Target(q1){ return q1===0?0:Math.floor(q1*0.9); }
+function getChurnGoalStatus(actual,target,q1){
+  if(q1===0&&actual===0) return {label:"No Baseline",color:MUTED};
+  if(target===0&&actual>0) return {label:"Over Target",color:"#dc2626"};
+  if(actual>target) return {label:"Over Target",color:"#dc2626"};
+  if(actual===target) return {label:"At Limit",color:"#f97316"};
+  if(target>0&&actual/target>=0.7) return {label:"Approaching",color:"#f5c518"};
+  return {label:"On Track",color:G};
+}
+function ChurnGauge({actual,target,q1,size=120}){
+  const status=getChurnGoalStatus(actual,target,q1);
+  const r=(size-16)/2, cx=size/2, cy=size/2, circ=2*Math.PI*r;
+  let pct=0;
+  if(target>0) pct=Math.min(actual/target,1.5);
+  else if(q1>0&&actual>0) pct=1.5;
+  const bgDash=circ*0.75;
+  return(
+    <div style={{position:"relative",width:size,height:size,flexShrink:0}}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        <circle cx={cx} cy={cy} r={r} fill="none" stroke={CARD3} strokeWidth={8} strokeDasharray={`${bgDash} ${circ}`} strokeLinecap="round" transform={`rotate(135 ${cx} ${cy})`}/>
+        <circle cx={cx} cy={cy} r={r} fill="none" stroke={status.color} strokeWidth={8} strokeDasharray={`${Math.min(pct,1)*bgDash} ${circ}`} strokeLinecap="round" transform={`rotate(135 ${cx} ${cy})`} style={{transition:"stroke-dasharray 0.6s ease"}}/>
+      </svg>
+      <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",textAlign:"center",lineHeight:1.2}}>
+        <div style={{fontSize:Math.round(size*0.23),fontWeight:800,color:status.color,fontFamily:FONT_DISPLAY,letterSpacing:"-1px"}}>{actual}</div>
+        <div style={{fontSize:Math.round(size*0.083),color:MUTED,fontFamily:FONT_BODY,fontWeight:600}}>{target>0?`of ${target} max`:"—"}</div>
+      </div>
+    </div>
+  );
+}
+function ChurnGoalPanel({somName,accounts}){
+  const goal=CHURN_GOALS[somName];
+  if(!goal) return null;
+  const crData=personCR(accounts||[]);
+  const q1Months=crData.filter(d=>["Jan 26","Feb 26","Mar 26"].includes(d.m));
+  const q1Rates=q1Months.map(d=>d.cr);
+  const q1AvgRate=q1Rates.length>0?parseFloat((q1Rates.reduce((s,v)=>s+v,0)/q1Rates.length).toFixed(2)):0;
+  const q2TargetRate=parseFloat((q1AvgRate*0.90).toFixed(2));
+  const aprData=crData.find(d=>d.m==="Apr 26");
+  const curRate=aprData?aprData.cr:null;
+  const janRate=crData.find(d=>d.m==="Jan 26");
+  const febRate=crData.find(d=>d.m==="Feb 26");
+  const marRate=crData.find(d=>d.m==="Mar 26");
+  const target=getQ2Target(goal.q1);
+  const status=getChurnGoalStatus(goal.q2Actual,target,goal.q1);
+  const remaining=Math.max(0,target-goal.q2Actual);
+  const rateStatus=curRate===null?{label:"Awaiting April Data",color:MUTED}:
+    curRate<=q2TargetRate?{label:"Below Target Rate",color:G}:
+    curRate<=q1AvgRate?{label:"Improving but Above Target",color:"#f5c518"}:
+    {label:"Above Q1 Baseline Rate",color:"#dc2626"};
+  const allRates=[...q1Rates,curRate,q2TargetRate,q1AvgRate].filter(v=>v!=null&&v>0);
+  const scaleMax=allRates.length>0?Math.max(...allRates)*1.3:20;
+  const bgTint=status.color==="#dc2626"?"#fef2f2":status.color==="#f97316"?"#fff7ed":status.color==="#f5c518"?"#fefce8":"#f0fdf4";
+  const pos=(v)=>Math.min(Math.max((v/scaleMax)*100,2),98);
+  return(
+    <div style={{...CS,border:`2px solid ${status.color}22`,background:bgTint,marginBottom:14}}>
+      <SectionLabel>Churn Reduction Goal — Q2 2026</SectionLabel>
+      <div style={{display:"flex",gap:20,alignItems:"flex-start",flexWrap:"wrap",marginBottom:18}}>
+        <ChurnGauge actual={goal.q2Actual} target={target} q1={goal.q1} size={120}/>
+        <div style={{flex:1,minWidth:300}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8,marginBottom:10}}>
+            <Stat label="Q1 Avg Churn %" value={q1AvgRate>0?`${q1AvgRate}%`:"—"} color={MUTED} sub="Jan–Mar baseline"/>
+            <Stat label="Q2 Target %" value={q2TargetRate>0?`≤${q2TargetRate}%`:"—"} color={G} sub="10% reduction"/>
+            <Stat label="April Rate" value={curRate!==null?`${curRate}%`:"Pending"} color={rateStatus.color} sub={curRate!==null?(curRate<=q2TargetRate?"On target":"Above target"):"May measurement"}/>
+            <Stat label="Q2 Churns" value={`${goal.q2Actual} / ${target}`} color={status.color} sub={remaining>0?`${remaining} left of ${target}`:"At or over limit"}/>
+          </div>
+        </div>
+      </div>
+      {q1AvgRate>0&&(
+        <div style={{...CS,background:CARD,marginBottom:14,padding:"18px 20px"}}>
+          <div style={{fontSize:9,fontWeight:700,color:MUTED,letterSpacing:"1.4px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:14}}>Churn Rate Scale — Where They Stand</div>
+          <div style={{position:"relative",height:60,marginBottom:24}}>
+            <div style={{position:"absolute",top:24,left:0,right:0,height:12,background:CARD3,borderRadius:6,overflow:"hidden"}}>
+              <div style={{position:"absolute",left:0,width:`${pos(q2TargetRate)}%`,height:"100%",background:`${G}20`,borderRadius:"6px 0 0 6px"}}/>
+              <div style={{position:"absolute",left:`${pos(q2TargetRate)}%`,width:`${pos(q1AvgRate)-pos(q2TargetRate)}%`,height:"100%",background:"#f5c51820"}}/>
+              <div style={{position:"absolute",left:`${pos(q1AvgRate)}%`,right:0,height:"100%",background:"#dc262620",borderRadius:"0 6px 6px 0"}}/>
+            </div>
+            <div style={{position:"absolute",left:`${pos(q2TargetRate)}%`,top:8,transform:"translateX(-50%)",textAlign:"center",zIndex:3}}>
+              <div style={{fontSize:8,fontWeight:700,color:G,fontFamily:FONT_BODY,whiteSpace:"nowrap"}}>TARGET</div>
+              <div style={{width:2,height:28,background:G,margin:"0 auto"}}/>
+              <div style={{fontSize:11,fontWeight:800,color:G,fontFamily:FONT_DISPLAY,marginTop:2}}>{q2TargetRate}%</div>
+            </div>
+            <div style={{position:"absolute",left:`${pos(q1AvgRate)}%`,top:8,transform:"translateX(-50%)",textAlign:"center",zIndex:2}}>
+              <div style={{fontSize:8,fontWeight:700,color:"#dc2626",fontFamily:FONT_BODY,whiteSpace:"nowrap"}}>Q1 AVG</div>
+              <div style={{width:2,height:28,background:"#dc2626",margin:"0 auto",opacity:0.6}}/>
+              <div style={{fontSize:11,fontWeight:800,color:"#dc2626",fontFamily:FONT_DISPLAY,marginTop:2}}>{q1AvgRate}%</div>
+            </div>
+            {curRate!==null&&(
+              <div style={{position:"absolute",left:`${pos(curRate)}%`,top:20,transform:"translateX(-50%)",zIndex:4,textAlign:"center"}}>
+                <div style={{width:20,height:20,background:rateStatus.color,borderRadius:4,transform:"rotate(45deg)",margin:"0 auto",boxShadow:`0 2px 8px ${rateStatus.color}55`,border:"2px solid #fff"}}/>
+                <div style={{fontSize:12,fontWeight:800,color:rateStatus.color,fontFamily:FONT_DISPLAY,marginTop:6}}>{curRate}%</div>
+                <div style={{fontSize:8,fontWeight:700,color:rateStatus.color,fontFamily:FONT_BODY}}>APRIL</div>
+              </div>
+            )}
+            <div style={{position:"absolute",left:0,top:38,fontSize:9,color:MUTED2,fontFamily:FONT_BODY}}>0%</div>
+          </div>
+          <div style={{display:"flex",gap:16,flexWrap:"wrap",alignItems:"center"}}>
+            {[[`${G}30`,G,"On target zone"],["#f5c51830","#f5c518","Improving but above target"],["#dc262630","#dc2626","Above Q1 baseline"]].map(([bg,border,label])=>(
+              <div key={label} style={{display:"flex",alignItems:"center",gap:5}}>
+                <div style={{width:14,height:8,background:bg,borderRadius:2,border:`1px solid ${border}50`}}/><span style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY}}>{label}</span>
+              </div>
+            ))}
+            {curRate!==null&&<div style={{display:"flex",alignItems:"center",gap:5}}>
+              <div style={{width:10,height:10,background:rateStatus.color,borderRadius:2,transform:"rotate(45deg)"}}/><span style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY}}>Current (April)</span>
+            </div>}
+          </div>
+        </div>
+      )}
+      {q1Rates.length>0&&(
+        <div style={{...CS,background:CARD,marginBottom:14,padding:"16px 20px"}}>
+          <div style={{fontSize:9,fontWeight:700,color:MUTED,letterSpacing:"1.4px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:12}}>Monthly Churn Rate Breakdown</div>
+          <div style={{display:"grid",gridTemplateColumns:`repeat(${curRate!==null?5:4},1fr)`,gap:8}}>
+            {[
+              {label:"Jan 26",rate:janRate?.cr,count:janRate?.cl||0},
+              {label:"Feb 26",rate:febRate?.cr,count:febRate?.cl||0},
+              {label:"Mar 26",rate:marRate?.cr,count:marRate?.cl||0},
+              {label:"Q1 Avg",rate:q1AvgRate,count:null,isAvg:true},
+              ...(curRate!==null?[{label:"Apr 26",rate:curRate,count:aprData?.cl||0,isCurrent:true}]:[]),
+            ].map((item,i)=>{
+              const barColor=item.rate==null?CARD3:item.isCurrent?rateStatus.color:item.isAvg?"#dc2626":item.rate<=q2TargetRate?G:item.rate<=q1AvgRate?"#f5c518":"#dc2626";
+              const barPct=item.rate!=null?Math.min((item.rate/scaleMax)*100,100):0;
+              return(
+                <div key={i} style={{textAlign:"center",padding:"10px 8px",background:item.isCurrent?rateStatus.color+"08":item.isAvg?"#dc262608":CARD2,borderRadius:8,border:`1px solid ${item.isCurrent?rateStatus.color+"30":item.isAvg?"#dc262630":BORDER}`}}>
+                  <div style={{fontSize:9,fontWeight:700,color:item.isCurrent?rateStatus.color:item.isAvg?"#dc2626":MUTED,letterSpacing:"1px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:6}}>{item.label}</div>
+                  <div style={{fontSize:22,fontWeight:800,color:barColor,fontFamily:FONT_DISPLAY,lineHeight:1}}>{item.rate!=null?`${item.rate}%`:"—"}</div>
+                  {item.count!==null&&<div style={{fontSize:9,color:MUTED,fontFamily:FONT_BODY,marginTop:4}}>{item.count} lost</div>}
+                  {item.isAvg&&<div style={{fontSize:9,color:"#dc2626",fontFamily:FONT_BODY,marginTop:4,fontWeight:700}}>Baseline</div>}
+                  <div style={{height:4,background:CARD3,borderRadius:2,marginTop:8,overflow:"hidden"}}>
+                    <div style={{height:"100%",width:`${barPct}%`,background:barColor,borderRadius:2}}/>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+      <div style={{marginBottom:14}}>
+        <div style={{fontSize:9,fontWeight:700,color:MUTED,letterSpacing:"1.2px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:6}}>Churn Count Budget</div>
+        <div style={{height:10,background:CARD3,borderRadius:5,overflow:"hidden",position:"relative"}}>
+          <div style={{height:"100%",borderRadius:5,background:status.color,width:target>0?`${Math.min((goal.q2Actual/target)*100,100)}%`:"0%",transition:"width 0.5s ease"}}/>
+          {target>0&&<div style={{position:"absolute",right:0,top:-2,bottom:-2,width:2,background:TEXT,borderRadius:1}}/>}
+        </div>
+        <div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>
+          <span style={{fontSize:10,color:status.color,fontWeight:700,fontFamily:FONT_BODY}}>{goal.q2Actual} of {target} used</span>
+          <Pill label={status.label} color={status.color}/>
+        </div>
+      </div>
+      {(goal.q1Accts.length>0||goal.q2Accts.length>0)&&(
+        <div style={{paddingTop:12,borderTop:`1px solid ${BORDER}`}}>
+          {goal.q1Accts.length>0&&(
+            <div style={{marginBottom:goal.q2Accts.length>0?10:0}}>
+              <div style={{fontSize:9,color:MUTED,fontWeight:700,letterSpacing:"1.2px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:6}}>Q1 Baseline Churns (Jan–Mar)</div>
+              <div style={{display:"flex",flexWrap:"wrap",gap:4}}>{goal.q1Accts.map((a,i)=><Pill key={i} label={a} color={MUTED}/>)}</div>
+            </div>
+          )}
+          {goal.q2Accts.length>0&&(
+            <div>
+              <div style={{fontSize:9,color:"#dc2626",fontWeight:700,letterSpacing:"1.2px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:6}}>Q2 Churns (Apr–Jun)</div>
+              <div style={{display:"flex",flexWrap:"wrap",gap:4}}>{goal.q2Accts.map((a,i)=><Pill key={i} label={a} color="#dc2626"/>)}</div>
+            </div>
+          )}
+        </div>
+      )}
+      <div style={{marginTop:12,fontSize:10,color:MUTED,fontFamily:FONT_BODY,lineHeight:1.6}}>
+        Churn Rate = Lost ÷ Avg(Active prior 3 months) × 100. Q1 Avg = mean of Jan–Mar rates. Q2 Target = Q1 Avg × 0.90. Count target = floor(Q1 churns × 0.90). First Q2 measurement: May (April data).
+      </div>
+    </div>
+  );
+}
+
 // ─── PERSON CHARTS ────────────────────────────────────────────────────────────
 function PersonCharts({accounts,perf,repName}) {
   const crTrend=useMemo(()=>personCR(accounts),[accounts]);
@@ -1933,6 +2116,7 @@ function SOMsTab(){
         <span style={{marginLeft:12,fontSize:11,color:MUTED,fontFamily:FONT_BODY}}>Opens a print-ready view — use Ctrl+P / ⌘+P to save as PDF</span>
       </div>
       <PersonCharts accounts={som.accounts} perf={som.perf}/>
+      <ChurnGoalPanel somName={som.name} accounts={som.accounts}/>
       <SomPaceTable reps={som.reps}/>
       <div style={CS}>
         <SectionLabel>SEs in Portfolio</SectionLabel>
