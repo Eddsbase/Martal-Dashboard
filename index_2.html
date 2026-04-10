@@ -838,7 +838,7 @@ function getRepAccounts(repName) {
 // ─── CHURN REDUCTION GOALS ───────────────────────────────────────────────────
 const CHURN_GOALS = {
   "David Rosenthal":  {q1:2, q2Actual:1, q1Accts:["One River","JumpCloud"], q2Accts:["WRS Health"]},
-  "Matt Guthrie":     {q1:2, q2Actual:2, q1Accts:["Innowell","The Plug T-Shirt Store"], q2Accts:["Risk Ledger","NIFTIT"]},
+  "Matt Guthrie":     {q1:2, q2Actual:3, q1Accts:["Innowell","The Plug T-Shirt Store"], q2Accts:["Risk Ledger","NIFTIT","Rodan Energy"]},
   "Venus Powers":     {q1:1, q2Actual:0, q1Accts:["TCS Canada"], q2Accts:[]},
   "Jason Andrews":    {q1:4, q2Actual:2, q1Accts:["Neat Data","Land Journey AI","DYODE","Slow Road Photo"], q2Accts:["ShiftLab LLC","All Star Digital"]},
   "Grant Paris":      {q1:3, q2Actual:0, q1Accts:["Itransition","Recruit in Motion","Elevate Cloud"], q2Accts:[]},
@@ -1121,7 +1121,7 @@ function BookedMeetingsPanel({somName,accounts,perf}){
 }
 
 // ─── PERSON CHARTS ────────────────────────────────────────────────────────────
-function PersonCharts({accounts,perf,repName}) {
+function PersonCharts({accounts,perf,repName,hideStats}) {
   const crTrend=useMemo(()=>personCR(accounts),[accounts]);
   const moAc=useMemo(()=>personMonthly(accounts),[accounts]);
   const active=accounts.filter(a=>!a.end).length;
@@ -1135,14 +1135,14 @@ function PersonCharts({accounts,perf,repName}) {
   return(
     <div>
       {repName&&<PacePanel repName={repName}/>}
-      <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:14,alignItems:"stretch"}}>
+      {!hideStats&&<div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:14,alignItems:"stretch"}}>
         <Stat label="Active Accounts" value={active} color="#3a8c0f"/>
         <Stat label="Churned" value={lost} color="#f87171"/>
         <Stat label="Acct Churn Rate" value={`${cr}%`} color={crCol(parseFloat(cr))} sub="churned ÷ total"/>
         <Stat label="Latest Monthly CR" value={latest?`${latest.cr}%`:"-"} color={crCol(latest?.cr)} sub={latest?.m||""}/>
         <Stat label="12-Mo Avg CR" value={`${avgCR}%`} color="#8dc63f"/>
         <Stat label="Churn Score" value={cs} color={cs<15?"#3a8c0f":cs<35?"#8dc63f":"#bcd97a"} sub="lower = better"/>
-      </div>
+      </div>}
       {crTrend.length>0&&<div style={CS}>
         <SectionLabel>Churn Rate Trend — Lost ÷ Avg Active (prior 3 months)</SectionLabel>
         <SvgBarChart data={crTrend} dataKey="cr" colorFn={crCol} xKey="m" yFmt={v=>`${v}%`} height={130}/>
@@ -2225,7 +2225,7 @@ function SOMsTab(){
         </button>
         <span style={{marginLeft:12,fontSize:11,color:MUTED,fontFamily:FONT_BODY}}>Opens a print-ready view — use Ctrl+P / ⌘+P to save as PDF</span>
       </div>
-      <PersonCharts accounts={som.accounts} perf={som.perf}/>
+      <PersonCharts accounts={som.accounts} perf={som.perf} hideStats/>
       <ChurnGoalPanel somName={som.name} accounts={som.accounts}/>
       <BookedMeetingsPanel somName={som.name} accounts={som.accounts} perf={som.perf}/>
       <SomPaceTable reps={som.reps}/>
