@@ -225,7 +225,7 @@ const Stat=({label,value,color,sub})=>(
     background:CARD,
     border:`1px solid ${BORDER}`,
     borderRadius:10,
-    padding:"20px 20px 16px",
+    padding:"14px 16px 12px",
     flex:"1 1 130px",
     minWidth:130,
     height:100,
@@ -242,28 +242,36 @@ const Stat=({label,value,color,sub})=>(
     }}/>
     <div style={{
       color:MUTED,
-      fontSize:9.5,
+      fontSize:9,
       textTransform:"uppercase",
-      letterSpacing:"1.4px",
+      letterSpacing:"1.2px",
       fontWeight:600,
       fontFamily:FONT_BODY,
       lineHeight:1.3,
+      minHeight:22,
     }}>{label}</div>
     <div>
       <div style={{
         color:color||TEXT,
-        fontSize:28,
+        fontSize:26,
         fontWeight:800,
         letterSpacing:"-1.5px",
         lineHeight:1,
         fontFamily:FONT_DISPLAY,
+        whiteSpace:"nowrap",
+        overflow:"hidden",
+        textOverflow:"ellipsis",
       }}>{value??"-"}</div>
-      {sub&&<div style={{
+      <div style={{
         color:MUTED2,
         fontSize:9,
         marginTop:4,
         fontFamily:FONT_BODY,
-      }}>{sub}</div>}
+        minHeight:13,
+        whiteSpace:"nowrap",
+        overflow:"hidden",
+        textOverflow:"ellipsis",
+      }}>{sub||"\u00A0"}</div>
     </div>
   </div>
 );
@@ -878,19 +886,13 @@ function ChurnGoalPanel({somName,accounts}){
   const q1Rates=q1Months.map(d=>d.cr);
   const q1AvgRate=q1Rates.length>0?parseFloat((q1Rates.reduce((s,v)=>s+v,0)/q1Rates.length).toFixed(2)):0;
   const q2TargetRate=parseFloat((q1AvgRate*0.90).toFixed(2));
-  const aprData=crData.find(d=>d.m==="Apr 26");
-  const curRate=aprData?aprData.cr:null;
   const janRate=crData.find(d=>d.m==="Jan 26");
   const febRate=crData.find(d=>d.m==="Feb 26");
   const marRate=crData.find(d=>d.m==="Mar 26");
   const target=getQ2Target(goal.q1);
   const status=getChurnGoalStatus(goal.q2Actual,target,goal.q1);
   const remaining=Math.max(0,target-goal.q2Actual);
-  const rateStatus=curRate===null?{label:"Awaiting April Data",color:MUTED}:
-    curRate<=q2TargetRate?{label:"Below Target Rate",color:G}:
-    curRate<=q1AvgRate?{label:"Improving but Above Target",color:"#f5c518"}:
-    {label:"Above Q1 Baseline Rate",color:"#dc2626"};
-  const allRates=[...q1Rates,curRate,q2TargetRate,q1AvgRate].filter(v=>v!=null&&v>0);
+  const allRates=[...q1Rates,q2TargetRate,q1AvgRate].filter(v=>v!=null&&v>0);
   const scaleMax=allRates.length>0?Math.max(...allRates)*1.3:20;
   const bgTint=status.color==="#dc2626"?"#fef2f2":status.color==="#f97316"?"#fff7ed":status.color==="#f5c518"?"#fefce8":"#f0fdf4";
   const pos=(v)=>Math.min(Math.max((v/scaleMax)*100,2),98);
@@ -900,10 +902,9 @@ function ChurnGoalPanel({somName,accounts}){
       <div style={{display:"flex",gap:20,alignItems:"flex-start",flexWrap:"wrap",marginBottom:18}}>
         <ChurnGauge actual={goal.q2Actual} target={target} q1={goal.q1} size={120}/>
         <div style={{flex:1,minWidth:300}}>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8,marginBottom:10}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:10}}>
             <Stat label="Q1 Avg Churn %" value={q1AvgRate>0?`${q1AvgRate}%`:"—"} color={MUTED} sub="Jan–Mar baseline"/>
             <Stat label="Q2 Target %" value={q2TargetRate>0?`≤${q2TargetRate}%`:"—"} color={G} sub="10% reduction"/>
-            <Stat label="April Rate" value={curRate!==null?`${curRate}%`:"Pending"} color={rateStatus.color} sub={curRate!==null?(curRate<=q2TargetRate?"On target":"Above target"):"May measurement"}/>
             <Stat label="Q2 Churns" value={`${goal.q2Actual} / ${target}`} color={status.color} sub={remaining>0?`${remaining} left of ${target}`:"At or over limit"}/>
           </div>
         </div>
@@ -927,13 +928,6 @@ function ChurnGoalPanel({somName,accounts}){
               <div style={{width:2,height:28,background:"#dc2626",margin:"0 auto",opacity:0.6}}/>
               <div style={{fontSize:11,fontWeight:800,color:"#dc2626",fontFamily:FONT_DISPLAY,marginTop:2}}>{q1AvgRate}%</div>
             </div>
-            {curRate!==null&&(
-              <div style={{position:"absolute",left:`${pos(curRate)}%`,top:20,transform:"translateX(-50%)",zIndex:4,textAlign:"center"}}>
-                <div style={{width:20,height:20,background:rateStatus.color,borderRadius:4,transform:"rotate(45deg)",margin:"0 auto",boxShadow:`0 2px 8px ${rateStatus.color}55`,border:"2px solid #fff"}}/>
-                <div style={{fontSize:12,fontWeight:800,color:rateStatus.color,fontFamily:FONT_DISPLAY,marginTop:6}}>{curRate}%</div>
-                <div style={{fontSize:8,fontWeight:700,color:rateStatus.color,fontFamily:FONT_BODY}}>APRIL</div>
-              </div>
-            )}
             <div style={{position:"absolute",left:0,top:38,fontSize:9,color:MUTED2,fontFamily:FONT_BODY}}>0%</div>
           </div>
           <div style={{display:"flex",gap:16,flexWrap:"wrap",alignItems:"center"}}>
@@ -942,28 +936,24 @@ function ChurnGoalPanel({somName,accounts}){
                 <div style={{width:14,height:8,background:bg,borderRadius:2,border:`1px solid ${border}50`}}/><span style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY}}>{label}</span>
               </div>
             ))}
-            {curRate!==null&&<div style={{display:"flex",alignItems:"center",gap:5}}>
-              <div style={{width:10,height:10,background:rateStatus.color,borderRadius:2,transform:"rotate(45deg)"}}/><span style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY}}>Current (April)</span>
-            </div>}
           </div>
         </div>
       )}
       {q1Rates.length>0&&(
         <div style={{...CS,background:CARD,marginBottom:14,padding:"16px 20px"}}>
           <div style={{fontSize:9,fontWeight:700,color:MUTED,letterSpacing:"1.4px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:12}}>Monthly Churn Rate Breakdown</div>
-          <div style={{display:"grid",gridTemplateColumns:`repeat(${curRate!==null?5:4},1fr)`,gap:8}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8}}>
             {[
               {label:"Jan 26",rate:janRate?.cr,count:janRate?.cl||0},
               {label:"Feb 26",rate:febRate?.cr,count:febRate?.cl||0},
               {label:"Mar 26",rate:marRate?.cr,count:marRate?.cl||0},
               {label:"Q1 Avg",rate:q1AvgRate,count:null,isAvg:true},
-              ...(curRate!==null?[{label:"Apr 26",rate:curRate,count:aprData?.cl||0,isCurrent:true}]:[]),
             ].map((item,i)=>{
-              const barColor=item.rate==null?CARD3:item.isCurrent?rateStatus.color:item.isAvg?"#dc2626":item.rate<=q2TargetRate?G:item.rate<=q1AvgRate?"#f5c518":"#dc2626";
+              const barColor=item.rate==null?CARD3:item.isAvg?"#dc2626":item.rate<=q2TargetRate?G:item.rate<=q1AvgRate?"#f5c518":"#dc2626";
               const barPct=item.rate!=null?Math.min((item.rate/scaleMax)*100,100):0;
               return(
-                <div key={i} style={{textAlign:"center",padding:"10px 8px",background:item.isCurrent?rateStatus.color+"08":item.isAvg?"#dc262608":CARD2,borderRadius:8,border:`1px solid ${item.isCurrent?rateStatus.color+"30":item.isAvg?"#dc262630":BORDER}`}}>
-                  <div style={{fontSize:9,fontWeight:700,color:item.isCurrent?rateStatus.color:item.isAvg?"#dc2626":MUTED,letterSpacing:"1px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:6}}>{item.label}</div>
+                <div key={i} style={{textAlign:"center",padding:"10px 8px",background:item.isAvg?"#dc262608":CARD2,borderRadius:8,border:`1px solid ${item.isAvg?"#dc262630":BORDER}`}}>
+                  <div style={{fontSize:9,fontWeight:700,color:item.isAvg?"#dc2626":MUTED,letterSpacing:"1px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:6}}>{item.label}</div>
                   <div style={{fontSize:22,fontWeight:800,color:barColor,fontFamily:FONT_DISPLAY,lineHeight:1}}>{item.rate!=null?`${item.rate}%`:"—"}</div>
                   {item.count!==null&&<div style={{fontSize:9,color:MUTED,fontFamily:FONT_BODY,marginTop:4}}>{item.count} lost</div>}
                   {item.isAvg&&<div style={{fontSize:9,color:"#dc2626",fontFamily:FONT_BODY,marginTop:4,fontWeight:700}}>Baseline</div>}
@@ -1004,7 +994,127 @@ function ChurnGoalPanel({somName,accounts}){
         </div>
       )}
       <div style={{marginTop:12,fontSize:10,color:MUTED,fontFamily:FONT_BODY,lineHeight:1.6}}>
-        Churn Rate = Lost ÷ Avg(Active prior 3 months) × 100. Q1 Avg = mean of Jan–Mar rates. Q2 Target = Q1 Avg × 0.90. Count target = floor(Q1 churns × 0.90). First Q2 measurement: May (April data).
+        Churn Rate = Lost ÷ Avg(Active prior 3 months) × 100. Q1 Avg = mean of Jan–Mar rates. Q2 Target = Q1 Avg × 0.90. Count target = floor(Q1 churns × 0.90). Churn measured monthly — first Q2 rate measurement in May (using April data).
+      </div>
+    </div>
+  );
+}
+
+// ─── BOOKED MEETINGS GOAL — separate widget ──────────────────────────────────
+// Actual SOM meetings data — from ranking report (3/16–4/15 period)
+// mtg = total booked meetings, accts = active accounts, avg = mtg/accts
+const SOM_MTG_DATA = {
+  "David Harris":       {mtg:34, accts:13, avg:2.62},
+  "David Rosenthal":    {mtg:29, accts:16, avg:1.81},
+  "Grant Paris":        {mtg:23, accts:11, avg:2.09},
+  "Haset Aklilu (VP of Product / GEA & JPM Chase)": {mtg:13, accts:2, avg:6.50},
+  "James Bellew":       {mtg:16, accts:7,  avg:2.29},
+  "Jason Andrews":      {mtg:18, accts:10, avg:1.80},
+  "Matt Guthrie":       {mtg:37, accts:16, avg:2.31},
+  "Merv Charles":       {mtg:16, accts:13, avg:1.23},
+  "No SOM Account":     {mtg:34, accts:14, avg:2.43},
+  "Venus Powers":       {mtg:26, accts:13, avg:2.00},
+  "Paige Givinsky":     {mtg:0,  accts:9,  avg:0},
+};
+
+function BookedMeetingsPanel({somName,accounts,perf}){
+  const d=SOM_MTG_DATA[somName];
+  if(!d||d.accts===0) return null;
+  const totalMtg=d.mtg;
+  const numAccts=d.accts;
+  const avgPerAcct=d.avg;
+  const GOAL=4.0; // 1 flip per account per week = 4/month
+  const pctOfGoal=Math.round((avgPerAcct/GOAL)*100);
+  const gap=parseFloat((avgPerAcct-GOAL).toFixed(2));
+  const needed=Math.max(0,Math.round(numAccts*GOAL)-totalMtg);
+
+  const status=avgPerAcct>=GOAL?{label:"Meeting Goal",color:G}:
+    avgPerAcct>=GOAL*0.75?{label:"Near Goal",color:"#f5c518"}:
+    avgPerAcct>=GOAL*0.5?{label:"Below Goal",color:"#f97316"}:
+    {label:"Well Below",color:"#dc2626"};
+
+  // Historical trend from perf data (avg mtg/acct/month)
+  const withMtg=(perf||[]).filter(d=>d.mtg!=null);
+  const avg3=withMtg.length>=3?parseFloat((withMtg.slice(-3).reduce((s,d)=>s+d.mtg,0)/3).toFixed(2)):null;
+  const scaleMax=Math.max(GOAL*1.5,...withMtg.map(d=>d.mtg),avgPerAcct);
+
+  const bgTint=status.color==="#dc2626"?"#fef2f2":status.color==="#f97316"?"#fff7ed":status.color==="#f5c518"?"#fefce8":"#f0fdf4";
+
+  return(
+    <div style={{...CS,border:`2px solid ${status.color}22`,background:bgTint,marginBottom:14}}>
+      <SectionLabel>Booked Meetings Goal — 1 Flip Per Account Per Week</SectionLabel>
+
+      {/* Top stats */}
+      <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:16,alignItems:"stretch"}}>
+        <Stat label="Active Accounts" value={numAccts} color={G}/>
+        <Stat label="Total Meetings" value={totalMtg} color={status.color} sub="current period"/>
+        <Stat label="Avg / Account" value={avgPerAcct} color={status.color} sub={`goal: ${GOAL.toFixed(1)}`}/>
+        <Stat label="% of Goal" value={`${pctOfGoal}%`} color={status.color} sub={gap>=0?`+${gap} above`:`${Math.abs(gap)} below`}/>
+        <Stat label="Gap to Goal" value={needed>0?`${needed} more`:"✓"} color={needed>0?"#dc2626":G} sub={needed>0?`need ${numAccts*GOAL} total`:"target met"}/>
+      </div>
+
+      {/* Gauge: avg per account vs 4.0 goal */}
+      <div style={{...CS,background:CARD,marginBottom:14,padding:"16px 20px"}}>
+        <div style={{fontSize:9,fontWeight:700,color:MUTED,letterSpacing:"1.4px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:14}}>Average Meetings Per Account vs Goal</div>
+        <div style={{position:"relative",height:56,marginBottom:20}}>
+          <div style={{position:"absolute",top:22,left:0,right:0,height:12,background:CARD3,borderRadius:6,overflow:"hidden"}}>
+            <div style={{position:"absolute",left:0,width:`${(GOAL*0.5/scaleMax)*100}%`,height:"100%",background:"#dc262612"}}/>
+            <div style={{position:"absolute",left:`${(GOAL*0.5/scaleMax)*100}%`,width:`${((GOAL*0.75-GOAL*0.5)/scaleMax)*100}%`,height:"100%",background:"#f9731612"}}/>
+            <div style={{position:"absolute",left:`${(GOAL*0.75/scaleMax)*100}%`,width:`${((GOAL-GOAL*0.75)/scaleMax)*100}%`,height:"100%",background:"#f5c51812"}}/>
+            <div style={{position:"absolute",left:`${(GOAL/scaleMax)*100}%`,right:0,height:"100%",background:`${G}12`}}/>
+          </div>
+          {/* Goal marker */}
+          <div style={{position:"absolute",left:`${Math.min((GOAL/scaleMax)*100,98)}%`,top:6,transform:"translateX(-50%)",textAlign:"center",zIndex:3}}>
+            <div style={{fontSize:8,fontWeight:700,color:G,fontFamily:FONT_BODY}}>GOAL</div>
+            <div style={{width:2,height:28,background:G,margin:"0 auto"}}/>
+            <div style={{fontSize:11,fontWeight:800,color:G,fontFamily:FONT_DISPLAY}}>{GOAL.toFixed(1)}</div>
+          </div>
+          {/* Current avg marker */}
+          <div style={{position:"absolute",left:`${Math.min(Math.max((avgPerAcct/scaleMax)*100,2),98)}%`,top:18,transform:"translateX(-50%)",zIndex:4,textAlign:"center"}}>
+            <div style={{width:18,height:18,background:status.color,borderRadius:4,transform:"rotate(45deg)",margin:"0 auto",border:"2px solid #fff",boxShadow:`0 2px 6px ${status.color}44`}}/>
+            <div style={{fontSize:13,fontWeight:800,color:status.color,fontFamily:FONT_DISPLAY,marginTop:6}}>{avgPerAcct}</div>
+            <div style={{fontSize:8,fontWeight:700,color:status.color,fontFamily:FONT_BODY}}>CURRENT</div>
+          </div>
+          <div style={{position:"absolute",left:0,top:36,fontSize:9,color:MUTED2,fontFamily:FONT_BODY}}>0</div>
+        </div>
+        <div style={{display:"flex",gap:14,flexWrap:"wrap",alignItems:"center"}}>
+          {[[`${G}25`,G,"At/above goal (≥4.0)"],["#f5c51825","#f5c518","Near (3.0–3.99)"],["#f9731625","#f97316","Below (2.0–2.99)"],["#dc262625","#dc2626","Well below (<2.0)"]].map(([bg,border,label])=>(
+            <div key={label} style={{display:"flex",alignItems:"center",gap:4}}>
+              <div style={{width:12,height:7,background:bg,borderRadius:2,border:`1px solid ${border}40`}}/><span style={{fontSize:9,color:MUTED,fontFamily:FONT_BODY}}>{label}</span>
+            </div>
+          ))}
+          <Pill label={status.label} color={status.color}/>
+        </div>
+      </div>
+
+      {/* Historical monthly trend */}
+      {withMtg.length>1&&(
+        <div style={{...CS,background:CARD,marginBottom:14,padding:"16px 20px"}}>
+          <div style={{fontSize:9,fontWeight:700,color:MUTED,letterSpacing:"1.4px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:12}}>Monthly Avg Meetings / Account — Trend</div>
+          <div style={{display:"flex",gap:4,alignItems:"flex-end",height:80,marginBottom:4}}>
+            {withMtg.slice(-8).map((d,i)=>{
+              const h=Math.max(4,(d.mtg/scaleMax)*72);
+              const col=d.mtg>=GOAL?G:d.mtg>=GOAL*0.75?"#f5c518":d.mtg>=GOAL*0.5?"#f97316":"#dc2626";
+              return(
+                <div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-end",height:"100%"}}>
+                  <div style={{fontSize:9,fontWeight:700,color:col,fontFamily:FONT_DISPLAY,marginBottom:2}}>{d.mtg.toFixed(1)}</div>
+                  <div style={{width:"70%",height:h,background:col,borderRadius:"3px 3px 0 0"}}/>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{display:"flex",gap:4}}>
+            {withMtg.slice(-8).map((d,i)=>(<div key={i} style={{flex:1,textAlign:"center",fontSize:8,color:MUTED,fontFamily:FONT_BODY}}>{d.m}</div>))}
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginTop:8}}>
+            <div style={{width:20,height:0,borderTop:`2px dashed ${G}`}}/><span style={{fontSize:9,color:G,fontWeight:700,fontFamily:FONT_BODY}}>4.0 goal</span>
+            <span style={{fontSize:9,color:MUTED,fontFamily:FONT_BODY,marginLeft:8}}>= 1 booked meeting (flip) per account per week</span>
+          </div>
+        </div>
+      )}
+
+      <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY,lineHeight:1.6}}>
+        Goal: 1 booked meeting per account per week (4/month). Avg/Account = Total Meetings ÷ Active Accounts. Source: ranking report period data.
       </div>
     </div>
   );
@@ -1025,7 +1135,7 @@ function PersonCharts({accounts,perf,repName}) {
   return(
     <div>
       {repName&&<PacePanel repName={repName}/>}
-      <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:14}}>
+      <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:14,alignItems:"stretch"}}>
         <Stat label="Active Accounts" value={active} color="#3a8c0f"/>
         <Stat label="Churned" value={lost} color="#f87171"/>
         <Stat label="Acct Churn Rate" value={`${cr}%`} color={crCol(parseFloat(cr))} sub="churned ÷ total"/>
@@ -1972,7 +2082,7 @@ function RepPrintModal({repName,accs,onClose}){
             </div>
           </div>
           <PacePanel repName={repName}/>
-          <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:14}}>
+          <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:14,alignItems:"stretch"}}>
             <Stat label="Active Accounts" value={active.length} color="#3a8c0f"/>
             <Stat label="Churned" value={churned.length} color="#f87171"/>
             <Stat label="Acct Churn Rate" value={`${cr}%`} color={crCol(parseFloat(cr))} sub="churned ÷ total"/>
@@ -2117,6 +2227,7 @@ function SOMsTab(){
       </div>
       <PersonCharts accounts={som.accounts} perf={som.perf}/>
       <ChurnGoalPanel somName={som.name} accounts={som.accounts}/>
+      <BookedMeetingsPanel somName={som.name} accounts={som.accounts} perf={som.perf}/>
       <SomPaceTable reps={som.reps}/>
       <div style={CS}>
         <SectionLabel>SEs in Portfolio</SectionLabel>
@@ -2125,8 +2236,129 @@ function SOMsTab(){
         </div>
       </div>
     </div>):(
-      <div style={{color:MUTED2,fontSize:13,padding:"48px 0",textAlign:"center",fontFamily:FONT_BODY}}>
-        Select a SOM above to load their dashboard.
+      <div>
+        {(()=>{
+          const somGoals=SOMS.filter(s=>CHURN_GOALS[s.name]).map(s=>{
+            const g=CHURN_GOALS[s.name]; const target=getQ2Target(g.q1);
+            const status=getChurnGoalStatus(g.q2Actual,target,g.q1);
+            const crData=personCR(s.accounts||[]);
+            const q1M=crData.filter(d=>["Jan 26","Feb 26","Mar 26"].includes(d.m));
+            const q1Rates=q1M.map(d=>d.cr);
+            const q1Avg=q1Rates.length>0?parseFloat((q1Rates.reduce((a,b)=>a+b,0)/q1Rates.length).toFixed(2)):0;
+            const q2Target=parseFloat((q1Avg*0.9).toFixed(2));
+            const active=s.accounts.filter(a=>!a.end).length; const churned=s.accounts.filter(a=>a.end).length;
+            const somMtg=SOM_MTG_DATA[s.name]||{mtg:0,accts:0,avg:0};
+            const repMtg=somMtg.mtg;
+            const mtgTarget=somMtg.accts*4; const mtgAvg=somMtg.avg;
+            const mtgPct=Math.round((mtgAvg/4)*100);
+            const mtgStatus=mtgTarget===0?{label:"—",color:MUTED}:mtgAvg>=4?{label:"Meeting Goal",color:G}:mtgAvg>=3?{label:"Near",color:"#f5c518"}:mtgAvg>=2?{label:"Below",color:"#f97316"}:{label:"Well Below",color:"#dc2626"};
+            return {name:s.name,g,target,status,q1Avg,q2Target,active,churned,repMtg,mtgTarget,mtgAvg,mtgPct,mtgStatus};
+          });
+          const totalQ1=somGoals.reduce((s,r)=>s+r.g.q1,0);
+          const totalQ2=somGoals.reduce((s,r)=>s+r.g.q2Actual,0);
+          const totalTarget=somGoals.reduce((s,r)=>s+r.target,0);
+          const overCount=somGoals.filter(r=>r.target>0&&r.g.q2Actual>r.target).length;
+          const onTrackCount=somGoals.filter(r=>r.status.color===G||r.status.color===MUTED).length;
+          const totalMtg=somGoals.reduce((s,r)=>s+r.repMtg,0);
+          const totalAccts=somGoals.reduce((s,r)=>s+r.active,0);
+          const totalMtgAvg=totalAccts>0?parseFloat((totalMtg/totalAccts).toFixed(2)):0;
+          const totalMtgPct=Math.round((totalMtgAvg/4)*100);
+          return(<div>
+            <div style={{display:"flex",gap:10,flexWrap:"wrap",marginBottom:16,alignItems:"stretch"}}>
+              <Stat label="Q1 Total Churns" value={totalQ1} color={MUTED} sub="Jan–Mar baseline"/>
+              <Stat label="Q2 Churn Target" value={`≤${totalTarget}`} color={G} sub={`${totalTarget-totalQ2} remaining`}/>
+              <Stat label="Q2 Churns" value={totalQ2} color={totalQ2>totalTarget?"#dc2626":G}/>
+              <Stat label="Over Target" value={overCount} color={overCount>0?"#dc2626":G}/>
+              <Stat label="Avg Mtg/Acct" value={totalMtgAvg} color={totalMtgPct>=100?G:totalMtgPct>=75?"#f5c518":"#dc2626"} sub={`${totalMtg} mtg · ${totalAccts} accts · ${totalMtgPct}% of 4.0`}/>
+            </div>
+            <div style={{display:"flex",gap:10,marginBottom:16}}>
+              <div style={{...CS,flex:1}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+                  <span style={{fontSize:9,fontWeight:700,color:MUTED,textTransform:"uppercase",letterSpacing:"1.2px",fontFamily:FONT_BODY}}>Company Churn Budget</span>
+                  <span style={{fontSize:11,fontWeight:700,color:totalQ2>totalTarget?"#dc2626":G,fontFamily:FONT_BODY}}>{totalQ2}/{totalTarget}</span>
+                </div>
+                <div style={{height:10,background:CARD3,borderRadius:5,overflow:"hidden"}}>
+                  <div style={{height:"100%",borderRadius:5,background:totalQ2/totalTarget>0.7?"#f5c518":G,width:`${totalTarget>0?Math.min((totalQ2/totalTarget)*100,100):0}%`}}/>
+                </div>
+              </div>
+              <div style={{...CS,flex:1}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+                  <span style={{fontSize:9,fontWeight:700,color:MUTED,textTransform:"uppercase",letterSpacing:"1.2px",fontFamily:FONT_BODY}}>Company Avg Mtg/Acct</span>
+                  <span style={{fontSize:11,fontWeight:700,color:totalMtgPct>=100?G:totalMtgPct>=75?"#f5c518":"#dc2626",fontFamily:FONT_BODY}}>{totalMtgAvg} / 4.0 goal ({totalMtgPct}%)</span>
+                </div>
+                <div style={{position:"relative",height:10,background:CARD3,borderRadius:5}}>
+                  <div style={{height:"100%",borderRadius:5,background:totalMtgPct>=100?G:totalMtgPct>=75?"#f5c518":"#dc2626",width:`${Math.min(totalMtgPct,100)}%`}}/>
+                  <div style={{position:"absolute",left:`${Math.round(APR_ELAPSED*100)}%`,top:-2,bottom:-2,width:2,background:TEXT,borderRadius:1}}/>
+                </div>
+              </div>
+            </div>
+            <SectionLabel>Sales Ops Managers — Q2 Goals</SectionLabel>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:10,marginBottom:16}}>
+              {somGoals.filter(r=>r.name!=="No SOM Account").map(r=>{
+                const pctUsed=r.target>0?Math.round((r.g.q2Actual/r.target)*100):0;
+                return(
+                  <div key={r.name} onClick={()=>setSel(r.name)} style={{...CS,cursor:"pointer",border:`1.5px solid ${r.status.color}30`,position:"relative",overflow:"hidden",transition:"box-shadow 0.15s"}} onMouseEnter={e=>e.currentTarget.style.boxShadow=SHADOW_MD} onMouseLeave={e=>e.currentTarget.style.boxShadow=SHADOW}>
+                    <div style={{position:"absolute",top:0,left:0,width:4,height:"100%",background:r.status.color,borderRadius:"10px 0 0 10px"}}/>
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10,paddingLeft:8}}>
+                      <div>
+                        <div style={{fontSize:15,fontWeight:800,color:TEXT,fontFamily:FONT_DISPLAY}}>{r.name}</div>
+                        <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY,marginTop:2}}><span style={{color:G,fontWeight:600}}>{r.active}</span> active · <span style={{color:"#dc2626",fontWeight:600}}>{r.churned}</span> churned</div>
+                      </div>
+                      <Pill label={r.status.label} color={r.status.color}/>
+                    </div>
+                    <div style={{display:"flex",gap:12,paddingLeft:8,marginBottom:10}}>
+                      <div style={{flex:1}}>
+                        <div style={{fontSize:8,color:MUTED,fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",fontFamily:FONT_BODY}}>Churn Budget</div>
+                        <div style={{fontSize:16,fontWeight:800,color:r.status.color,fontFamily:FONT_DISPLAY}}>{r.g.q2Actual} / {r.target}</div>
+                        <div style={{height:5,background:CARD3,borderRadius:3,overflow:"hidden",marginTop:3}}>
+                          <div style={{height:"100%",borderRadius:3,background:r.status.color,width:r.target>0?`${Math.min(pctUsed,100)}%`:"0%"}}/>
+                        </div>
+                      </div>
+                      <div style={{flex:1}}>
+                        <div style={{fontSize:8,color:MUTED,fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",fontFamily:FONT_BODY}}>Avg Mtg/Acct</div>
+                        <div style={{fontSize:16,fontWeight:800,color:r.mtgStatus.color,fontFamily:FONT_DISPLAY}}>{r.mtgAvg} <span style={{fontSize:11,color:MUTED,fontWeight:500}}>/ 4.0</span></div>
+                        <div style={{height:5,background:CARD3,borderRadius:3,overflow:"hidden",marginTop:3,position:"relative"}}>
+                          <div style={{height:"100%",borderRadius:3,background:r.mtgStatus.color,width:`${Math.min(r.mtgPct,100)}%`}}/>
+                        </div>
+                        <div style={{fontSize:8,color:r.mtgStatus.color,fontFamily:FONT_BODY,fontWeight:600,marginTop:2}}>{r.repMtg} mtg · {r.active} accts · {r.mtgPct}% of goal</div>
+                      </div>
+                    </div>
+                    <div style={{fontSize:9,color:MUTED2,fontFamily:FONT_BODY,paddingLeft:8}}>Click to view full detail →</div>
+                  </div>);
+              })}
+            </div>
+            {(()=>{ const ns=somGoals.find(r=>r.name==="No SOM Account"); if(!ns) return null; return(
+              <div style={{...CS,border:"1.5px solid #f9741640",background:"#fff7ed",marginBottom:16}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:14,fontWeight:800,color:"#f97316",fontFamily:FONT_DISPLAY}}>⚠ No SOM Account</span><Pill label={ns.status.label} color={ns.status.color}/></div>
+                  <span style={{fontSize:11,color:MUTED,fontFamily:FONT_BODY}}>Q1: {ns.g.q1} · Q2: {ns.g.q2Actual}/{ns.target}</span>
+                </div>
+              </div>);
+            })()}
+            <div style={CS}>
+              <SectionLabel>All SOMs — Goal Summary</SectionLabel>
+              <div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",fontSize:11,fontFamily:FONT_BODY}}>
+                <thead><tr style={{borderBottom:`2px solid ${BORDER2}`}}>
+                  {["SOM","Active","Q1 Churns","Q2 Tgt","Q2 Actual","Budget","Total Mtg","Avg/Acct","% of 4.0","Status"].map(h=>(<th key={h} style={{padding:"5px 8px",textAlign:h==="SOM"?"left":"center",color:MUTED,fontWeight:700,fontSize:9,textTransform:"uppercase",letterSpacing:"1px",whiteSpace:"nowrap"}}>{h}</th>))}
+                </tr></thead>
+                <tbody>{somGoals.map((r,i)=>(
+                  <tr key={r.name} style={{borderBottom:`1px solid ${BORDER}`,background:i%2?CARD3:"transparent",cursor:"pointer"}} onClick={()=>setSel(r.name)}>
+                    <td style={{padding:"6px 8px",fontWeight:600,color:r.name==="No SOM Account"?"#f97316":G,whiteSpace:"nowrap"}}>{r.name==="No SOM Account"?"⚠ "+r.name:r.name}</td>
+                    <td style={{padding:"6px 8px",textAlign:"center",color:G,fontWeight:600}}>{r.active}</td>
+                    <td style={{padding:"6px 8px",textAlign:"center"}}>{r.g.q1}</td>
+                    <td style={{padding:"6px 8px",textAlign:"center",color:G,fontWeight:700}}>≤{r.target}</td>
+                    <td style={{padding:"6px 8px",textAlign:"center",fontWeight:700,color:r.status.color}}>{r.g.q2Actual}</td>
+                    <td style={{padding:"6px 8px",textAlign:"center"}}><div style={{display:"flex",alignItems:"center",gap:3,justifyContent:"center"}}><div style={{width:36,height:4,background:CARD3,borderRadius:2,overflow:"hidden"}}><div style={{height:"100%",background:r.status.color,width:`${r.target>0?Math.min((r.g.q2Actual/r.target)*100,100):0}%`,borderRadius:2}}/></div><span style={{fontSize:9,fontWeight:700,color:r.status.color}}>{r.target>0?Math.round((r.g.q2Actual/r.target)*100):0}%</span></div></td>
+                    <td style={{padding:"6px 8px",textAlign:"center",fontWeight:700,color:r.mtgStatus.color}}>{r.repMtg}</td>
+                    <td style={{padding:"6px 8px",textAlign:"center",fontWeight:700,color:r.mtgStatus.color}}>{r.mtgAvg}</td>
+                    <td style={{padding:"6px 8px",textAlign:"center"}}><div style={{display:"flex",alignItems:"center",gap:3,justifyContent:"center"}}><div style={{width:36,height:4,background:CARD3,borderRadius:2,overflow:"hidden"}}><div style={{height:"100%",background:r.mtgStatus.color,width:`${Math.min(r.mtgPct,100)}%`,borderRadius:2}}/></div><span style={{fontSize:9,fontWeight:700,color:r.mtgStatus.color}}>{r.mtgPct}%</span></div></td>
+                    <td style={{padding:"6px 8px",textAlign:"center"}}><Pill label={r.status.label} color={r.status.color}/></td>
+                  </tr>
+                ))}</tbody>
+              </table></div>
+            </div>
+          </div>);
+        })()}
       </div>
     )}
   </div>);
@@ -2174,8 +2406,74 @@ function RepsTab(){
         </div>
       )}
     </div>):(
-      <div style={{color:MUTED2,fontSize:13,padding:"48px 0",textAlign:"center",fontFamily:FONT_BODY}}>
-        Select a rep above to load their dashboard.
+      <div>
+        {(()=>{
+          const reps=Object.entries(REP_PACE).map(([name,p])=>{
+            const sdr=SDR_SCORES[name]; const band=sdr?(sdr.avg>=SDR_PASS_THRESHOLD?"pass":sdr.avg>=SDR_OBS_THRESHOLD?"observe":"below"):"below";
+            const bandColor=band==="pass"?G:band==="observe"?"#f5c518":"#ef4444";
+            const bandLbl=band==="pass"?"PASS":band==="observe"?"OBSERVE":"BELOW";
+            const st=sqlPaceStatus(p.curSQL,p.marchSQL); const accs=getRepAccounts(name);
+            return {name,p,sdr,band,bandColor,bandLbl,sqlStatus:st,active:accs.filter(a=>!a.end).length,churned:accs.filter(a=>a.end).length};
+          }).filter(r=>r.p.curMQL>0||r.p.curSQL>0||r.p.curMtg>0||(r.p.marchRank!=null));
+          const sorted=[...reps].sort((a,b)=>(b.p.curMtg||0)-(a.p.curMtg||0));
+          const teamMtg=reps.reduce((s,r)=>s+(r.p.curMtg||0),0);
+          const teamSQL=reps.reduce((s,r)=>s+(r.p.curSQL||0),0);
+          const teamMQL=reps.reduce((s,r)=>s+(r.p.curMQL||0),0);
+          const passCount=reps.filter(r=>r.band==="pass").length;
+          const obsCount=reps.filter(r=>r.band==="observe").length;
+          const belowCount=reps.filter(r=>r.band==="below").length;
+          const aheadCount=reps.filter(r=>r.sqlStatus&&r.sqlStatus.color==="#3a8c0f").length;
+          return(<div>
+            <div style={{display:"flex",gap:10,flexWrap:"wrap",marginBottom:16,alignItems:"stretch"}}>
+              <Stat label="Team Meetings" value={teamMtg} color={G}/>
+              <Stat label="Team SQLs" value={teamSQL} color="#38bdf8"/>
+              <Stat label="Team MQLs" value={teamMQL} color="#a78bfa"/>
+              <Stat label="Ahead of Pace" value={aheadCount} color="#3a8c0f" sub={`of ${reps.length}`}/>
+              <Stat label="Pass / Obs / Below" value={`${passCount}/${obsCount}/${belowCount}`} color={G}/>
+            </div>
+            <SectionLabel>All Reps — Current Period (3/16–4/15)</SectionLabel>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(270px,1fr))",gap:10,marginBottom:16}}>
+              {sorted.map(r=>(
+                <div key={r.name} onClick={()=>setSel(r.name)} style={{...CS,cursor:"pointer",border:`1.5px solid ${r.bandColor}25`,position:"relative",overflow:"hidden",transition:"box-shadow 0.15s"}} onMouseEnter={e=>e.currentTarget.style.boxShadow=SHADOW_MD} onMouseLeave={e=>e.currentTarget.style.boxShadow=SHADOW}>
+                  <div style={{position:"absolute",top:0,left:0,width:4,height:"100%",background:r.bandColor,borderRadius:"10px 0 0 10px"}}/>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8,paddingLeft:8}}>
+                    <div>
+                      <div style={{fontSize:14,fontWeight:800,color:TEXT,fontFamily:FONT_DISPLAY}}>{r.name}</div>
+                      <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY,marginTop:2}}>{r.p.marchRank!=null?`#${r.p.marchRank} March`:"New"} · {r.active} active</div>
+                    </div>
+                    <div style={{display:"flex",gap:4,alignItems:"center"}}><Pill label={r.bandLbl} color={r.bandColor}/>{r.sdr&&<span style={{fontSize:12,fontWeight:800,color:r.bandColor,fontFamily:FONT_DISPLAY}}>{r.sdr.avg.toFixed(1)}</span>}</div>
+                  </div>
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,paddingLeft:8,marginBottom:6}}>
+                    {[{l:"Mtg",v:r.p.curMtg,pv:r.p.marchFlips,c:paceCol(r.p.curMtg,"mtg")},{l:"SQL",v:r.p.curSQL,pv:r.p.marchSQL,c:paceCol(r.p.curSQL,"sql")},{l:"MQL",v:r.p.curMQL,pv:r.p.marchMQL,c:paceCol(r.p.curMQL,"mql")}].map(m=>(
+                      <div key={m.l}><div style={{fontSize:8,color:MUTED,fontWeight:700,letterSpacing:"1px",fontFamily:FONT_BODY}}>{m.l}</div><div style={{fontSize:18,fontWeight:800,color:m.c,fontFamily:FONT_DISPLAY,lineHeight:1.1}}>{m.v}</div><div style={{fontSize:9,color:MUTED2,fontFamily:FONT_BODY}}>{m.pv!=null?`prev: ${m.pv}`:"—"}</div></div>
+                    ))}
+                  </div>
+                  {r.sqlStatus&&<div style={{paddingLeft:8,display:"flex",alignItems:"center",gap:5}}><div style={{width:7,height:7,borderRadius:4,background:r.sqlStatus.color}}/><span style={{fontSize:10,color:r.sqlStatus.color,fontWeight:700,fontFamily:FONT_BODY}}>{r.sqlStatus.label}</span></div>}
+                </div>
+              ))}
+            </div>
+            <div style={CS}>
+              <SectionLabel>All Reps — Summary</SectionLabel>
+              <div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",fontSize:11,fontFamily:FONT_BODY}}>
+                <thead><tr style={{borderBottom:`2px solid ${BORDER2}`}}>{["Rep","Rank","Mtg","prev","SQL","prev","MQL","Score","Tier","Pace"].map(h=>(<th key={h} style={{padding:"5px 8px",textAlign:h==="Rep"?"left":"center",color:MUTED,fontWeight:700,fontSize:9,textTransform:"uppercase",letterSpacing:"1px",whiteSpace:"nowrap"}}>{h}</th>))}</tr></thead>
+                <tbody>{sorted.map((r,i)=>(
+                  <tr key={r.name} style={{borderBottom:`1px solid ${BORDER}`,background:i%2?CARD3:"transparent",cursor:"pointer"}} onClick={()=>setSel(r.name)}>
+                    <td style={{padding:"6px 8px",fontWeight:600,color:G,whiteSpace:"nowrap"}}>{r.name}</td>
+                    <td style={{padding:"6px 8px",textAlign:"center",color:MUTED}}>{r.p.marchRank!=null?`#${r.p.marchRank}`:"—"}</td>
+                    <td style={{padding:"6px 8px",textAlign:"center",fontWeight:700,color:paceCol(r.p.curMtg,"mtg")}}>{r.p.curMtg}</td>
+                    <td style={{padding:"6px 8px",textAlign:"center",color:MUTED,fontSize:10}}>{r.p.marchFlips??'—'}</td>
+                    <td style={{padding:"6px 8px",textAlign:"center",fontWeight:700,color:paceCol(r.p.curSQL,"sql")}}>{r.p.curSQL}</td>
+                    <td style={{padding:"6px 8px",textAlign:"center",color:MUTED,fontSize:10}}>{r.p.marchSQL??'—'}</td>
+                    <td style={{padding:"6px 8px",textAlign:"center",color:"#a78bfa"}}>{r.p.curMQL}</td>
+                    <td style={{padding:"6px 8px",textAlign:"center",fontWeight:700,color:r.bandColor}}>{r.sdr?r.sdr.avg.toFixed(1):"—"}</td>
+                    <td style={{padding:"6px 8px",textAlign:"center"}}><Pill label={r.bandLbl} color={r.bandColor}/></td>
+                    <td style={{padding:"6px 8px",textAlign:"center"}}>{r.sqlStatus?<span style={{fontSize:10,fontWeight:700,color:r.sqlStatus.color}}>{r.sqlStatus.label}</span>:"—"}</td>
+                  </tr>
+                ))}</tbody>
+              </table></div>
+            </div>
+          </div>);
+        })()}
       </div>
     )}
   </div>);
