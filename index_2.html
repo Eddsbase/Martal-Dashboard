@@ -621,14 +621,13 @@ const REP_PACE={
 };
 
 function sqlPaceStatus(cur, marchSQL){
-  if(marchSQL===null||marchSQL===undefined) return null;
-  const projected=Math.round(cur/APR_ELAPSED);
-  const pct=marchSQL>0?projected/marchSQL:null;
-  if(pct===null) return {label:"No March data",color:MUTED,projected};
-  if(pct>=1.1)   return {label:"Ahead of March pace",color:"#3a8c0f",projected};
-  if(pct>=0.85)  return {label:"On March pace",color:"#f5c518",projected};
-  if(pct>=0.5)   return {label:"Behind March pace",color:"#f97316",projected};
-  return           {label:"Well behind March pace",color:"#ef4444",projected};
+  if(marchSQL===null||marchSQL===undefined) return {label:"No March baseline",color:MUTED};
+  const pct=marchSQL>0?cur/marchSQL:null;
+  if(pct===null) return {label:"No March data",color:MUTED};
+  if(pct>=1.1)   return {label:"Exceeding March",color:G};
+  if(pct>=0.95)  return {label:"Matching March",color:"#f5c518"};
+  if(pct>=0.5)   return {label:"Below March",color:"#f97316"};
+  return           {label:"Well below March",color:"#ef4444"};
 }
 
 function paceCol(val,key){
@@ -642,67 +641,52 @@ function PacePanel({repName}){
   const p=REP_PACE[repName];
   if(!p) return null;
   const sqlStatus=sqlPaceStatus(p.curSQL,p.marchSQL);
-  const borderCol=sqlStatus?.color||BORDER2;
+  const borderCol=sqlStatus?.color||BORDER;
+  const rankMove = (p.marchRank!=null && p.aprRank!=null) ? p.marchRank - p.aprRank : null;
 
-  // Helper: one comparison row for any metric
+  // Helper: one comparison row for any metric (no projections, final vs March)
   function MetricRow({label,marchVal,curVal,marchMax,key}){
-    const proj=Math.round(curVal/APR_ELAPSED);
-    const delta=marchVal!=null?curVal-Math.round(marchVal*APR_ELAPSED):null;
-    const projCol=marchVal!=null?(proj>=marchVal*1.1?"#3a8c0f":proj>=marchVal*0.85?"#f5c518":"#ef4444"):paceCol(curVal,key);
-    const barMax=marchMax||Math.max(marchVal||1,curVal,proj,1);
-    const barTrack={flex:1,height:5,background:"#2a2a2a",borderRadius:3,overflow:"hidden"};
-    const subLabel={fontSize:10,color:MUTED,fontFamily:FONT_BODY,width:74,flexShrink:0};
-    const numStyle=(c)=>({fontWeight:700,fontSize:14,color:c,fontFamily:FONT_DISPLAY,minWidth:32,textAlign:"right"});
-    const curPct  = marchVal!=null&&marchVal>0 ? Math.round((curVal/marchVal)*100) : null;
-    const projPct = marchVal!=null&&marchVal>0 ? Math.round((proj/marchVal)*100)   : null;
-    const pctCol=(pct)=>pct==null?MUTED:pct>=110?"#3a8c0f":pct>=85?"#f5c518":"#ef4444";
+    const delta = marchVal!=null ? curVal - marchVal : null;
+    const pct = marchVal!=null && marchVal>0 ? Math.round((curVal/marchVal)*100) : null;
+    const pctCol = pct==null ? MUTED : pct>=110?G:pct>=95?"#f5c518":pct>=50?"#f97316":"#ef4444";
+    const deltaCol = delta==null ? MUTED : delta>0?G:delta<0?"#ef4444":"#f5c518";
+    const barMax = marchMax || Math.max(marchVal||1,curVal,1);
+    const barTrack = {flex:1,height:5,background:"#2a2a2a",borderRadius:3,overflow:"hidden"};
+    const subLabel = {fontSize:10,color:MUTED,fontFamily:FONT_BODY,width:90,flexShrink:0};
+    const numStyle = (c)=>({fontWeight:700,fontSize:14,color:c,fontFamily:FONT_DISPLAY,minWidth:34,textAlign:"right"});
     return(
-      <div style={{padding:"9px 0",borderBottom:`1px solid ${BORDER}`}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:5}}>
+      <div style={{padding:"10px 0",borderBottom:`1px solid ${BORDER}`}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6,flexWrap:"wrap",gap:6}}>
           <div style={{fontSize:9,fontWeight:800,letterSpacing:"1.5px",textTransform:"uppercase",color:MUTED,fontFamily:FONT_BODY}}>{label}</div>
-          {(curPct!=null||projPct!=null)&&(
-            <div style={{display:"flex",gap:6,alignItems:"center"}}>
-              {curPct!=null&&(
-                <span style={{fontSize:11,fontWeight:800,color:pctCol(curPct),fontFamily:FONT_DISPLAY,background:"#1a1a1a",borderRadius:4,padding:"1px 7px"}}>
-                  {curPct}% now
-                </span>
-              )}
-              {projPct!=null&&(
-                <span style={{fontSize:11,fontWeight:800,color:pctCol(projPct),fontFamily:FONT_DISPLAY,background:pctCol(projPct)==="#3a8c0f"?"#14200d":pctCol(projPct)==="#f5c518"?"#2a1e0e":"#2a1214",borderRadius:4,padding:"1px 7px",border:`1px solid ${pctCol(projPct)}33`}}>
-                  → {projPct}% proj
-                </span>
-              )}
-            </div>
-          )}
-        </div>
-        {/* March final */}
-        <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:3}}>
-          <span style={subLabel}>March final</span>
-          <span style={numStyle(MUTED)}>{marchVal??'—'}</span>
-          <div style={{...barTrack}}>
-            <div style={{width:`${Math.min(100,marchVal!=null?marchVal/barMax*100:0)}%`,height:"100%",background:"#c0c0c0",borderRadius:3}}/>
+          <div style={{display:"flex",gap:6,alignItems:"center"}}>
+            {pct!=null && (
+              <span style={{fontSize:11,fontWeight:800,color:pctCol,fontFamily:FONT_DISPLAY,background:pctCol===G?"#14200d":pctCol==="#f5c518"?"#2a1e0e":"#2a1214",borderRadius:4,padding:"2px 8px",border:`1px solid ${pctCol}33`}}>
+                {pct}% of March
+              </span>
+            )}
+            {delta!=null && (
+              <span style={{fontSize:11,fontWeight:800,color:deltaCol,fontFamily:FONT_DISPLAY,whiteSpace:"nowrap"}}>
+                {delta>0?"+":""}{delta} vs March
+              </span>
+            )}
           </div>
         </div>
-        {/* April 15 Final */}
-        <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:3}}>
-          <span style={{...subLabel,color:paceCol(curVal,key),fontWeight:700}}>Period MTD</span>
+        {/* March final bar */}
+        <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:4}}>
+          <span style={subLabel}>March Final</span>
+          <span style={numStyle(MUTED)}>{marchVal??'—'}</span>
+          <div style={barTrack}>
+            <div style={{width:`${Math.min(100,marchVal!=null?marchVal/barMax*100:0)}%`,height:"100%",background:"#bebebe",borderRadius:3}}/>
+          </div>
+        </div>
+        {/* Current period bar */}
+        <div style={{display:"flex",alignItems:"center",gap:6}}>
+          <span style={{...subLabel,color:paceCol(curVal,key),fontWeight:700}}>April 15 Final</span>
           <span style={numStyle(paceCol(curVal,key))}>{curVal}</span>
-          <div style={{...barTrack}}>
+          <div style={barTrack}>
             <div style={{width:`${Math.min(100,curVal/barMax*100)}%`,height:"100%",background:paceCol(curVal,key),borderRadius:3}}/>
           </div>
-          {delta!=null&&<span style={{fontSize:10,fontWeight:700,color:delta>=0?"#3a8c0f":"#ef4444",fontFamily:FONT_BODY,whiteSpace:"nowrap",marginLeft:2}}>{delta>=0?"+":""}{delta} vs pace</span>}
         </div>
-        {/* Projected */}
-        {marchVal!=null&&(
-          <div style={{display:"flex",alignItems:"center",gap:6}}>
-            <span style={{...subLabel,color:projCol,fontWeight:700}}>Proj EOM</span>
-            <span style={numStyle(projCol)}>{proj}</span>
-            <div style={{...barTrack}}>
-              <div style={{width:`${Math.min(100,proj/barMax*100)}%`,height:"100%",background:projCol,borderRadius:3,opacity:0.55}}/>
-            </div>
-            <span style={{fontSize:10,color:projCol,fontWeight:700,fontFamily:FONT_BODY,whiteSpace:"nowrap",marginLeft:2}}>vs {marchVal} last mo</span>
-          </div>
-        )}
       </div>
     );
   }
@@ -711,26 +695,39 @@ function PacePanel({repName}){
     <div style={{...CS,border:`2px solid ${borderCol}`,background:"#141e0d",marginBottom:12}}>
       <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:10,flexWrap:"wrap",gap:8}}>
         <div>
-          <div style={{fontSize:11,fontWeight:800,letterSpacing:"2px",textTransform:"uppercase",color:MUTED,fontFamily:FONT_BODY}}>Performance Pulse — Period MTD (3/16–4/15)</div>
-          {sqlStatus&&<div style={{fontSize:12,fontWeight:700,color:sqlStatus.color,marginTop:4,fontFamily:FONT_BODY}}>{sqlStatus.label}</div>}
+          <div style={{fontSize:11,fontWeight:800,letterSpacing:"2px",textTransform:"uppercase",color:MUTED,fontFamily:FONT_BODY}}>Performance — April 15 Period Complete (3/16 – 4/15)</div>
+          {sqlStatus && <div style={{fontSize:13,fontWeight:800,color:sqlStatus.color,marginTop:4,fontFamily:FONT_BODY}}>{sqlStatus.label}</div>}
         </div>
-        {p.marchRank!=null&&(
-          <div style={{textAlign:"center",background:"#0d0d0d",color:"#fff",borderRadius:8,padding:"6px 14px"}}>
-            <div style={{fontSize:9,fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",opacity:0.6,fontFamily:FONT_BODY}}>March Rank</div>
-            <div style={{fontSize:22,fontWeight:800,fontFamily:FONT_DISPLAY,lineHeight:1.1}}>#{p.marchRank}</div>
+        {(p.marchRank!=null || p.aprRank!=null) && (
+          <div style={{display:"flex",gap:6,alignItems:"stretch"}}>
+            {p.marchRank!=null && (
+              <div style={{textAlign:"center",background:"#0a0a0a",color:"#fff",border:"1px solid "+BORDER,borderRadius:8,padding:"6px 14px",minWidth:76}}>
+                <div style={{fontSize:9,fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",color:MUTED,fontFamily:FONT_BODY}}>March Rank</div>
+                <div style={{fontSize:22,fontWeight:800,fontFamily:FONT_DISPLAY,lineHeight:1.1,color:"#bebebe"}}>#{p.marchRank}</div>
+              </div>
+            )}
+            {p.aprRank!=null && (
+              <div style={{textAlign:"center",background:"#0a0a0a",color:"#fff",border:"1px solid "+G+"55",borderRadius:8,padding:"6px 14px",minWidth:76,position:"relative"}}>
+                <div style={{fontSize:9,fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",color:MUTED,fontFamily:FONT_BODY}}>April Rank</div>
+                <div style={{fontSize:22,fontWeight:800,fontFamily:FONT_DISPLAY,lineHeight:1.1,color:G}}>#{p.aprRank}</div>
+                {rankMove!=null && rankMove!==0 && (
+                  <div style={{fontSize:9,fontWeight:800,color:rankMove>0?G:"#ef4444",fontFamily:FONT_BODY,marginTop:2}}>{rankMove>0?"↑ +":"↓ "}{rankMove}</div>
+                )}
+                {rankMove===0 && <div style={{fontSize:9,fontWeight:800,color:MUTED,fontFamily:FONT_BODY,marginTop:2}}>↔ same</div>}
+              </div>
+            )}
           </div>
         )}
       </div>
-      <MetricRow label="SQLs"     marchVal={p.marchSQL}   curVal={p.curSQL}  key_="sql" marchMax={60}  key="sql"/>
-      <MetricRow label="Meetings" marchVal={p.marchFlips} curVal={p.curMtg}  key_="mtg" marchMax={35}  key="mtg"/>
-      <MetricRow label="MQLs"     marchVal={p.marchMQL}   curVal={p.curMQL}  key_="mql" marchMax={160} key="mql"/>
-      <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY,marginTop:8}}>
-        "vs pace" = MTD minus expected at {Math.round(APR_ELAPSED*100)}% elapsed · Proj = MTD ÷ {Math.round(APR_ELAPSED*100)}%
+      <MetricRow label="SQLs"     marchVal={p.marchSQL}   curVal={p.curSQL}  marchMax={60}  key="sql"/>
+      <MetricRow label="Meetings" marchVal={p.marchFlips} curVal={p.curMtg}  marchMax={35}  key="mtg"/>
+      <MetricRow label="MQLs"     marchVal={p.marchMQL}   curVal={p.curMQL}  marchMax={160} key="mql"/>
+      <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY,marginTop:8,fontStyle:"italic"}}>
+        Ranking period complete. Totals reflect 30-day window 3/16–4/15/2026. Next ranking period ends May 15.
       </div>
     </div>
   );
 }
-
 // SOM-level pace aggregate table
 function SomPaceTable({reps}){
   const rows=reps.filter(r=>REP_PACE[r]).map(r=>({name:r,...REP_PACE[r]}));
