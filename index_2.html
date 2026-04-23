@@ -53,7 +53,7 @@ const RAW = [
   {m:"Oct 25",ac:99,dc:19,cl:13},{m:"Nov 25",ac:94,dc:12,cl:16},
   {m:"Dec 25",ac:101,dc:23,cl:15},{m:"Jan 26",ac:105,dc:22,cl:15},
   {m:"Feb 26",ac:106,dc:23,cl:17},{m:"Mar 26",ac:112,dc:14,cl:11},
-  {m:"Apr 26",ac:103,dc:6,cl:9},
+  {m:"Apr 26",ac:102,dc:6,cl:13},
 ];
 const MO = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const mIdx = m => { const p=m.split(" "); return parseInt(p[1])*12+MO.indexOf(p[0]); };
@@ -400,7 +400,7 @@ const SOMS=[
    reps:["Michele Harris","Tim Lan","Francois Dore","Alli Fowler","Anand Pandey","Logan Kennedy","Cesar Garcia","Savannah Peck","Jesse Shorr","Joshua Crawford","Harjit Sawhney","Dominic Libertoski","Blake Peremel","Joshua Bylsma","Rebecca Barnes"],
    accounts:[
      {name:"Solver Inc",start:"Mar 25",end:null,reps:["Michele Harris","Tim Lan"]},
-     {name:"Whale",start:"Dec 25",end:null,reps:["Tim Lan","Alli Fowler"]},
+     {name:"Whale",start:"Dec 25",end:"Apr 26",reps:["Tim Lan","Alli Fowler"]},
      {name:"KIS Solutions",start:"Jan 26",end:null,reps:["Cesar Garcia","Javion Jones"]},
      {name:"Jiffy Junk",start:"Jan 26",end:null,reps:["Alli Fowler","Savannah Peck"]},
      {name:"Quality Engenharia",start:"Feb 26",end:null,reps:["Jesse Shorr"]},
@@ -458,7 +458,7 @@ const SOMS=[
    perf:[{m:"Mar 25",mql:3,sql:1,mtg:null},{m:"Apr 25",mql:19,sql:5,mtg:null},{m:"May 25",mql:21.8,sql:6.4,mtg:null},{m:"Jun 25",mql:16.8,sql:4,mtg:null},{m:"Jul 25",mql:21.7,sql:6.4,mtg:null},{m:"Aug 25",mql:34.4,sql:10.4,mtg:1.9},{m:"Sep 25",mql:43.2,sql:13.7,mtg:1.4},{m:"Oct 25",mql:38.7,sql:13.2,mtg:6.2},{m:"Nov 25",mql:29.5,sql:7.2,mtg:3.3},{m:"Dec 25",mql:27,sql:6.7,mtg:1.7},{m:"Jan 26",mql:28,sql:5.8,mtg:2.7},{m:"Feb 26",mql:25.6,sql:6.4,mtg:2.7},{m:"Mar 26",mql:16.6,sql:3,mtg:1.2}],
    reps:["Michele Harris","Derek Sindelman","Daniel Davies","Joshua Bylsma","Jesse Shorr","Korbin Kirk","Angela Hamilton","Harjit Sawhney","Bill O'Leary","Alyssa Perez","Anand Pandey","Javion Jones","Savannah Peck","Tim Lan","Johan Vrey","Rebecca Barnes"],
    accounts:[
-     {name:"IDEMIA",start:"Jun 25",end:null,reps:["Michele Harris","Derek Sindelman"]},
+     {name:"IDEMIA",start:"Jun 25",end:"Apr 26",reps:["Michele Harris","Derek Sindelman"]},
      {name:"Noratel",start:"Oct 25",end:null,reps:["Daniel Davies"]},
      {name:"Pocket-E",start:"Nov 25",end:null,reps:["Joshua Bylsma"]},
      {name:"Upstream - Matter of Voice",start:"Nov 25",end:null,reps:["Jesse Shorr","Korbin Kirk"]},
@@ -488,7 +488,6 @@ const SOMS=[
      {name:"Nordex Global",start:"Jan 26",end:null,reps:["Paige Givinsky"]},
      {name:"SME",start:"Jan 26",end:null,reps:["Paige Givinsky"]},
      {name:"Trifork Products",start:"Jan 26",end:null,reps:["Paige Givinsky"]},
-     {name:"OneCore Media",start:"Feb 26",end:"Apr 26",reason:"Trial Ended",reps:["Paige Givinsky"]},
    ]},
   {name:"Haset Aklilu (VP of Product / GEA & JPM Chase)",
    perf:[],
@@ -496,6 +495,7 @@ const SOMS=[
    accounts:[
      {name:"GEA Group",start:"May 24",end:null,reps:["Cesar Garcia","Angela Hamilton","Anand Pandey","Harjit Sawhney","Logan Kennedy"]},
      {name:"JPM Chase",start:"Jun 25",end:null,reps:["Bill O'Leary","Stephanie Hackert","Ariel Wolfe","Derek Sindelman","Harjit Sawhney","Javion Jones","Alli Fowler","Anand Pandey","Eric Tuttle","Paige Givinsky","Daniel Davies","Alyssa Perez","Logan Kennedy"]},
+     {name:"OneCore Media",start:"Feb 26",end:"Apr 26",reason:"Trial Ended",reps:["Paige Givinsky"]},
    ]},
   {name:"No SOM Account",
    perf:[],
@@ -508,7 +508,7 @@ const SOMS=[
      {name:"Direct Defense",start:"Mar 26",end:null,reps:["Tim Lan"]},
      {name:"Lean Excellence",start:"Mar 26",end:null,reps:["Jesse Shorr"]},
      {name:"MicroServe",start:"Feb 26",end:null,reps:["Angela Hamilton"]},
-     {name:"PMC Treasury",start:"Jan 26",end:"Apr 26",reason:"Budget Issue",reps:["Ariel Wolfe","Bill O'Leary"]},
+     {name:"PMC Treasury",start:"Jan 26",end:"May 26",reason:"Budget Issue",reps:["Ariel Wolfe","Bill O'Leary"]},
      {name:"Betstamp",start:"Oct 25",end:"Apr 26",reason:"Budget Issue",reps:[]},
      {name:"ApplyHere",start:"Jan 26",end:null,reps:["Alli Fowler"]},
      {name:"Digital Seniority",start:"Feb 26",end:"May 26",reason:"Budget Issue",reps:["Tim Lan","Dominic Libertoski"]},
@@ -577,49 +577,49 @@ const SDR_SCORES = {
 const SDR_PASS_THRESHOLD = 3.5;
 const SDR_OBS_THRESHOLD  = 3.0;
 
-const APR_ELAPSED = 0.83; // 4/09: 19 of 23 business days elapsed in 3/16–4/15 period
+const APR_ELAPSED = 1.0; // April 15: period closed (30-day ranking 3/16 → 4/15)
 
 // Company-level: March final vs current period MTD (summed from ranking report 4/09)
 const MARCH_CO = {mql:1700, sql:407, mtg:218};
-const APR_MTD_CO = {mql:1193, sql:465, mtg:241};
+const APR_MTD_CO = {mql:2472, sql:685, mtg:270};
 
 const REP_PACE={
-  "Dominic Libertoski":{marchRank:1,  marchSQL:48, marchFlips:30, marchMQL:84,  curMQL:89, curSQL:49, curMtg:29},
-  "Eric Tuttle":        {marchRank:2,  marchSQL:24, marchFlips:17, marchMQL:28,  curMQL:7,  curSQL:5,  curMtg:4},
-  "Francois Dore":      {marchRank:3,  marchSQL:34, marchFlips:19, marchMQL:118, curMQL:30, curSQL:19, curMtg:16},
-  "Anand Pandey":       {marchRank:4,  marchSQL:32, marchFlips:14, marchMQL:150, curMQL:81, curSQL:45, curMtg:13},
-  "Jesse Shorr":        {marchRank:5,  marchSQL:18, marchFlips:15, marchMQL:53,  curMQL:60, curSQL:30, curMtg:20},
-  "Ariel Wolfe":        {marchRank:6,  marchSQL:21, marchFlips:14, marchMQL:79,  curMQL:52, curSQL:13, curMtg:9},
-  "Kellee Madonia":     {marchRank:7,  marchSQL:10, marchFlips:7,  marchMQL:14,  curMQL:12, curSQL:24, curMtg:14},
-  "Harjit Sawhney":     {marchRank:8,  marchSQL:19, marchFlips:10, marchMQL:45,  curMQL:37, curSQL:17, curMtg:10},
-  "Savannah Peck":      {marchRank:9,  marchSQL:18, marchFlips:11, marchMQL:90,  curMQL:65, curSQL:24, curMtg:11},
-  "Blake Peremel":      {marchRank:10, marchSQL:13, marchFlips:9,  marchMQL:96,  curMQL:88, curSQL:19, curMtg:11},
-  "Elisha Johnson":     {marchRank:11, marchSQL:4,  marchFlips:2,  marchMQL:5,   curMQL:0,  curSQL:0,  curMtg:0},
-  "Cesar Garcia":       {marchRank:12, marchSQL:22, marchFlips:9,  marchMQL:92,  curMQL:52, curSQL:27, curMtg:7},
-  "Tim Lan":            {marchRank:13, marchSQL:18, marchFlips:8,  marchMQL:74,  curMQL:58, curSQL:23, curMtg:13},
-  "Joshua Crawford":    {marchRank:14, marchSQL:11, marchFlips:7,  marchMQL:58,  curMQL:65, curSQL:8,  curMtg:1},
-  "Alli Fowler":        {marchRank:15, marchSQL:15, marchFlips:6,  marchMQL:102, curMQL:32, curSQL:27, curMtg:15},
-  "Bill O'Leary":       {marchRank:16, marchSQL:16, marchFlips:8,  marchMQL:67,  curMQL:43, curSQL:9,  curMtg:5},
-  "Daniel Davies":      {marchRank:17, marchSQL:13, marchFlips:6,  marchMQL:23,  curMQL:9,  curSQL:5,  curMtg:4},
-  "Mark Kreidler":      {marchRank:18, marchSQL:3,  marchFlips:1,  marchMQL:4,   curMQL:0,  curSQL:0,  curMtg:0},
-  "Stephanie Hackert":  {marchRank:19, marchSQL:7,  marchFlips:3,  marchMQL:124, curMQL:46, curSQL:10, curMtg:7},
-  "Rebecca Barnes":     {marchRank:20, marchSQL:11, marchFlips:4,  marchMQL:33,  curMQL:20, curSQL:6,  curMtg:2},
-  "Alyssa Perez":       {marchRank:21, marchSQL:9,  marchFlips:5,  marchMQL:38,  curMQL:75, curSQL:14, curMtg:10},
-  "Paige Givinsky":     {marchRank:22, marchSQL:6,  marchFlips:4,  marchMQL:30,  curMQL:35, curSQL:5,  curMtg:1},
-  "Michele Harris":     {marchRank:23, marchSQL:3,  marchFlips:1,  marchMQL:58,  curMQL:24, curSQL:1,  curMtg:0},
-  "Logan Kennedy":      {marchRank:24, marchSQL:7,  marchFlips:3,  marchMQL:33,  curMQL:11, curSQL:2,  curMtg:0},
-  "Joshua Bylsma":      {marchRank:25, marchSQL:12, marchFlips:2,  marchMQL:55,  curMQL:26, curSQL:23, curMtg:5},
-  "Korbin Kirk":        {marchRank:26, marchSQL:4,  marchFlips:1,  marchMQL:16,  curMQL:6,  curSQL:11, curMtg:6},
-  "Derek Sindelman":    {marchRank:27, marchSQL:3,  marchFlips:2,  marchMQL:105, curMQL:78, curSQL:9,  curMtg:4},
-  "Javion Jones":       {marchRank:28, marchSQL:5,  marchFlips:0,  marchMQL:35,  curMQL:45, curSQL:7,  curMtg:1},
-  "Edgar Medina":       {marchRank:29, marchSQL:1,  marchFlips:0,  marchMQL:8,   curMQL:1,  curSQL:0,  curMtg:0},
-  "Anthony Allen":      {marchRank:30, marchSQL:0,  marchFlips:0,  marchMQL:0,   curMQL:8,  curSQL:1,  curMtg:0},
-  "Angela Hamilton":    {marchRank:null,marchSQL:null,marchFlips:null,marchMQL:null,curMQL:38,curSQL:32,curMtg:23},
+  "Dominic Libertoski":{marchRank:1,  marchSQL:48, marchFlips:30, marchMQL:84,  curMQL:175, curSQL:63, curMtg:36},
+  "Eric Tuttle":        {marchRank:2,  marchSQL:24, marchFlips:17, marchMQL:28,  curMQL:26, curSQL:10, curMtg:6},
+  "Francois Dore":      {marchRank:3,  marchSQL:34, marchFlips:19, marchMQL:118, curMQL:64, curSQL:22, curMtg:19},
+  "Anand Pandey":       {marchRank:4,  marchSQL:32, marchFlips:14, marchMQL:150, curMQL:179, curSQL:66, curMtg:28},
+  "Jesse Shorr":        {marchRank:5,  marchSQL:18, marchFlips:15, marchMQL:53,  curMQL:101, curSQL:34, curMtg:19},
+  "Ariel Wolfe":        {marchRank:6,  marchSQL:21, marchFlips:14, marchMQL:79,  curMQL:95, curSQL:21, curMtg:14},
+  "Kellee Madonia":     {marchRank:7,  marchSQL:10, marchFlips:7,  marchMQL:14,  curMQL:45, curSQL:34, curMtg:18},
+  "Harjit Sawhney":     {marchRank:8,  marchSQL:19, marchFlips:10, marchMQL:45,  curMQL:78, curSQL:28, curMtg:11},
+  "Savannah Peck":      {marchRank:9,  marchSQL:18, marchFlips:11, marchMQL:90,  curMQL:115, curSQL:30, curMtg:14},
+  "Blake Peremel":      {marchRank:10, marchSQL:13, marchFlips:9,  marchMQL:96,  curMQL:148, curSQL:28, curMtg:16},
+  "Elisha Johnson":     {marchRank:11, marchSQL:4,  marchFlips:2,  marchMQL:5,   curMQL:0, curSQL:0, curMtg:0},
+  "Cesar Garcia":       {marchRank:12, marchSQL:22, marchFlips:9,  marchMQL:92,  curMQL:100, curSQL:32, curMtg:12},
+  "Tim Lan":            {marchRank:13, marchSQL:18, marchFlips:8,  marchMQL:74,  curMQL:110, curSQL:30, curMtg:17},
+  "Joshua Crawford":    {marchRank:14, marchSQL:11, marchFlips:7,  marchMQL:58,  curMQL:70, curSQL:10, curMtg:1},
+  "Alli Fowler":        {marchRank:15, marchSQL:15, marchFlips:6,  marchMQL:102, curMQL:69, curSQL:32, curMtg:19},
+  "Bill O'Leary":       {marchRank:16, marchSQL:16, marchFlips:8,  marchMQL:67,  curMQL:101, curSQL:24, curMtg:11},
+  "Daniel Davies":      {marchRank:17, marchSQL:13, marchFlips:6,  marchMQL:23,  curMQL:65, curSQL:21, curMtg:10},
+  "Mark Kreidler":      {marchRank:18, marchSQL:3,  marchFlips:1,  marchMQL:4,   curMQL:34, curSQL:1, curMtg:1},
+  "Stephanie Hackert":  {marchRank:19, marchSQL:7,  marchFlips:3,  marchMQL:124, curMQL:118, curSQL:18, curMtg:9},
+  "Rebecca Barnes":     {marchRank:20, marchSQL:11, marchFlips:4,  marchMQL:33,  curMQL:32, curSQL:10, curMtg:3},
+  "Alyssa Perez":       {marchRank:21, marchSQL:9,  marchFlips:5,  marchMQL:38,  curMQL:148, curSQL:19, curMtg:12},
+  "Paige Givinsky":     {marchRank:22, marchSQL:6,  marchFlips:4,  marchMQL:30,  curMQL:51, curSQL:8, curMtg:3},
+  "Michele Harris":     {marchRank:23, marchSQL:3,  marchFlips:1,  marchMQL:58,  curMQL:30, curSQL:1, curMtg:0},
+  "Logan Kennedy":      {marchRank:24, marchSQL:7,  marchFlips:3,  marchMQL:33,  curMQL:50, curSQL:13, curMtg:3},
+  "Joshua Bylsma":      {marchRank:25, marchSQL:12, marchFlips:2,  marchMQL:55,  curMQL:58, curSQL:31, curMtg:12},
+  "Korbin Kirk":        {marchRank:26, marchSQL:4,  marchFlips:1,  marchMQL:16,  curMQL:24, curSQL:15, curMtg:8},
+  "Derek Sindelman":    {marchRank:27, marchSQL:3,  marchFlips:2,  marchMQL:105, curMQL:127, curSQL:11, curMtg:4},
+  "Javion Jones":       {marchRank:28, marchSQL:5,  marchFlips:0,  marchMQL:35,  curMQL:77, curSQL:10, curMtg:1},
+  "Edgar Medina":       {marchRank:29, marchSQL:1,  marchFlips:0,  marchMQL:8,   curMQL:1, curSQL:0, curMtg:0},
+  "Anthony Allen":      {marchRank:30, marchSQL:0,  marchFlips:0,  marchMQL:0,   curMQL:18, curSQL:9, curMtg:3},
+  "Angela Hamilton":    {marchRank:null,marchSQL:null,marchFlips:null,marchMQL:null,curMQL:0, curSQL:0, curMtg:0},
   "Alex Prodromou":     {marchRank:null,marchSQL:null,marchFlips:null,marchMQL:null,curMQL:0, curSQL:0, curMtg:0},
   "Clara Galetti":      {marchRank:null,marchSQL:null,marchFlips:null,marchMQL:null,curMQL:0, curSQL:0, curMtg:0},
   "Luis Rodriguez":     {marchRank:null,marchSQL:null,marchFlips:null,marchMQL:null,curMQL:0, curSQL:0, curMtg:0},
   "Chinedu Okafor":     {marchRank:null,marchSQL:null,marchFlips:null,marchMQL:null,curMQL:0, curSQL:0, curMtg:0},
-  "Johan Vrey":         {marchRank:null,marchSQL:null,marchFlips:null,marchMQL:null,curMQL:0, curSQL:0, curMtg:0},
+  "Johan Vrey":         {marchRank:null,marchSQL:null,marchFlips:null,marchMQL:null,curMQL:16, curSQL:9, curMtg:7},
 };
 
 function sqlPaceStatus(cur, marchSQL){
@@ -685,7 +685,7 @@ function PacePanel({repName}){
             <div style={{width:`${Math.min(100,marchVal!=null?marchVal/barMax*100:0)}%`,height:"100%",background:"#c0c0c0",borderRadius:3}}/>
           </div>
         </div>
-        {/* April MTD */}
+        {/* April 15 Final */}
         <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:3}}>
           <span style={{...subLabel,color:paceCol(curVal,key),fontWeight:700}}>Period MTD</span>
           <span style={numStyle(paceCol(curVal,key))}>{curVal}</span>
@@ -941,7 +941,7 @@ function CompanyPaceCard(){
         <div style={{background:"#0d0d0d",color:"#fff",borderRadius:8,padding:"6px 16px",textAlign:"center"}}>
           <div style={{fontSize:9,opacity:0.6,fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",fontFamily:FONT_BODY}}>Month elapsed</div>
           <div style={{fontSize:20,fontWeight:800,fontFamily:FONT_DISPLAY}}>{Math.round(APR_ELAPSED*100)}%</div>
-          <div style={{fontSize:9,opacity:0.5,fontFamily:FONT_BODY}}>19 of 23 days</div>
+          <div style={{fontSize:9,opacity:0.5,fontFamily:FONT_BODY}}>Period complete</div>
         </div>
       </div>
 
@@ -967,7 +967,7 @@ function CompanyPaceCard(){
             <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:8}}>
               {[
                 {k:"March Final", v:march, c:MUTED, pct:null},
-                {k:"April MTD",   v:mtd,   c:paceCol(mtd,"sql"), pct:mtdPct},
+                {k:"April 15 Final",   v:mtd,   c:paceCol(mtd,"sql"), pct:mtdPct},
                 {k:"Proj EOM",    v:p,     c:projCol,             pct:projPct},
               ].map(({k,v,c,pct})=>(
                 <div key={k} style={{flex:1,minWidth:90,textAlign:"center",background:"#fff",border:`1px solid ${BORDER}`,borderRadius:6,padding:"8px 10px"}}>
@@ -1096,7 +1096,7 @@ function CompanyTab({cms}){
     {section==="overview"&&<div>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:10,marginBottom:12}}>
         <div>
-          <div style={{fontSize:9,fontWeight:700,color:MUTED,letterSpacing:"1.5px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:6}}>SDR Score Overview — Feb 2026 · 3-Month Rolling Average</div>
+          <div style={{fontSize:9,fontWeight:700,color:MUTED,letterSpacing:"1.5px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:6}}>SDR Score Overview — Mar 2026 · 3-Month Rolling Average</div>
           <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY,marginBottom:8}}>
             <span style={{color:G,fontWeight:700}}>Pass ≥3.5</span> &nbsp;·&nbsp;
             <span style={{color:"#f5c518",fontWeight:700}}>Observe 3.0–3.49</span> &nbsp;·&nbsp;
@@ -1922,6 +1922,296 @@ function SomPrintModal({som,onClose}){
   );
 }
 
+
+// ─── SOM MONTHLY METRICS (churn + booked meetings) ───────────────────────
+const CHURN_GOALS = {
+  "David Rosenthal":{active:13,churned:7,q1:4,q2:2,apr:1,q1r:7.43,q2tr:6.69,aprR:6.67,budget:3,janR:0.0,febR:10.53,marR:11.76,jan:0,feb:2,mar:2,may:1,q1n:["Infolink Tax","One River","TigerPak","JumpCloud"],q2n:["WRS Health","Focus Bankers"],mtgApr:2.47,mtgMar:2.3,mtgFeb:2.1,mtgDelta:0.17,mtgPct:62,aprAccts:15,aprFlips:37,mtgGoal:4},
+  "Matt Guthrie":{active:13,churned:6,q1:2,q2:3,apr:3,q1r:3.81,q2tr:3.43,aprR:18.75,budget:1,janR:5.56,febR:5.88,marR:0.0,jan:1,feb:1,mar:0,may:0,q1n:["Innowell","The Plug T-Shirt Store"],q2n:["NIFTIT","Risk Ledger","Rodan Energy"],mtgApr:2.69,mtgMar:2.9,mtgFeb:2.8,mtgDelta:-0.21,mtgPct:67,aprAccts:16,aprFlips:43,mtgGoal:4},
+  "Venus Powers":{active:12,churned:2,q1:1,q2:1,apr:0,q1r:2.38,q2tr:2.14,aprR:0.0,budget:1,janR:7.14,febR:0.0,marR:0.0,jan:1,feb:0,mar:0,may:1,q1n:["TCS Canada"],q2n:["Lexbe"],mtgApr:2.3,mtgMar:1.1,mtgFeb:1.7,mtgDelta:1.2,mtgPct:57,aprAccts:10,aprFlips:23,mtgGoal:4},
+  "Jason Andrews":{active:10,churned:8,q1:4,q2:3,apr:3,q1r:8.36,q2tr:7.52,aprR:23.08,budget:3,janR:11.76,febR:13.33,marR:0.0,jan:2,feb:2,mar:0,may:0,q1n:["Neat Data","Land Journey AI","DYODE","Slow Road Photo"],q2n:["Paydoff","ShiftLab LLC","All Star Digital"],mtgApr:2.0,mtgMar:1.3,mtgFeb:1.1,mtgDelta:0.7,mtgPct:50,aprAccts:9,aprFlips:18,mtgGoal:4},
+  "Grant Paris":{active:9,churned:6,q1:3,q2:1,apr:1,q1r:8.16,q2tr:7.34,aprR:10.0,budget:2,janR:15.38,febR:0.0,marR:9.09,jan:2,feb:0,mar:1,may:0,q1n:["Recruit in Motion","Itransition","Elevate Cloud"],q2n:["Whale"],mtgApr:1.56,mtgMar:0.8,mtgFeb:1.4,mtgDelta:0.76,mtgPct:39,aprAccts:9,aprFlips:14,mtgGoal:4},
+  "James Bellew":{active:8,churned:6,q1:3,q2:1,apr:1,q1r:8.89,q2tr:8.0,aprR:11.11,budget:2,janR:16.67,febR:10.0,marR:0.0,jan:2,feb:1,mar:0,may:0,q1n:["HYCU Inc","Bosch Mobility","Connetra"],q2n:["Akquinet"],mtgApr:2.88,mtgMar:0.75,mtgFeb:2.7,mtgDelta:2.13,mtgPct:72,aprAccts:8,aprFlips:23,mtgGoal:4},
+  "David Harris":{active:8,churned:7,q1:6,q2:1,apr:1,q1r:14.86,q2tr:13.37,aprR:11.11,budget:5,janR:6.67,febR:7.14,marR:30.77,jan:1,feb:1,mar:4,may:0,q1n:["Novahaus","Jellyfish","Dynamic PMO","MTechZilla","Campus Ivy","ISG One"],q2n:["Website Closers"],mtgApr:3.92,mtgMar:2.2,mtgFeb:2.5,mtgDelta:1.72,mtgPct:98,aprAccts:12,aprFlips:47,mtgGoal:4},
+  "Merv Charles":{active:11,churned:6,q1:4,q2:1,apr:1,q1r:8.81,q2tr:7.93,aprR:8.33,budget:3,janR:0.0,febR:18.75,marR:7.69,jan:0,feb:3,mar:1,may:0,q1n:["Reten","Garantir","WRK","Fenix"],q2n:["IDEMIA"],mtgApr:1.6,mtgMar:1.2,mtgFeb:2.7,mtgDelta:0.4,mtgPct:40,aprAccts:10,aprFlips:16,mtgGoal:4},
+  "Paige Givinsky":{active:8,churned:0,q1:0,q2:0,apr:0,q1r:0,q2tr:0.0,aprR:0.0,budget:0,janR:0.0,febR:0.0,marR:0.0,jan:0,feb:0,mar:0,may:0,q1n:[],q2n:[],mtgApr:null,mtgMar:1.0,mtgFeb:1.0,mtgDelta:null,mtgPct:0,aprAccts:0,aprFlips:0,mtgGoal:4},
+  "Haset Aklilu (VP of Product / GEA & JPM Chase)":{active:2,churned:1,q1:0,q2:1,apr:1,q1r:0,q2tr:0.0,aprR:33.33,budget:0,janR:0.0,febR:0.0,marR:0.0,jan:0,feb:0,mar:0,may:0,q1n:[],q2n:["OneCore Media"],mtgApr:11.0,mtgMar:null,mtgFeb:null,mtgDelta:null,mtgPct:275,aprAccts:2,aprFlips:22,mtgGoal:4},
+  "No SOM Account":{active:8,churned:14,q1:10,q2:4,apr:1,q1r:17.88,q2tr:16.09,aprR:8.33,budget:9,janR:18.18,febR:27.78,marR:7.69,jan:4,feb:5,mar:1,may:3,q1n:["ivalua","Virtual Fudge","Blue Box","Skybridge","Socket Labs","Precision Motion Health","Schill Insurance","EDGE / EdgeScore","Ovaro","Alpha BPO"],q2n:["Betstamp","Zito Media","PMC Treasury","Digital Seniority"],mtgApr:3.0,mtgMar:null,mtgFeb:null,mtgDelta:null,mtgPct:75,aprAccts:9,aprFlips:27,mtgGoal:4}
+};
+
+// Helpers
+function somStatus(g){
+  if(!g) return {label:"—",color:"#9ca3af",bg:"#f3f4f6"};
+  if(g.mtgApr === null && g.q1 === 0) return {label:"NO ACTIVITY",color:"#9ca3af",bg:"#f3f4f6"};
+  if(g.q1 === 0) return {label:"NO BASELINE",color:"#9ca3af",bg:"#f3f4f6"};
+  if(g.q2 > g.budget) return {label:"OVER TARGET",color:"#dc2626",bg:"#fef2f2"};
+  if(g.q2 === g.budget) return {label:"AT LIMIT",color:"#ea580c",bg:"#fff7ed"};
+  if(g.aprR <= g.q2tr) return {label:"ON TRACK",color:"#16a34a",bg:"#f0fdf4"};
+  return {label:"WATCH",color:"#f59e0b",bg:"#fef7ed"};
+}
+
+function KpiCard(props){
+  return (<div style={{flex:1,minWidth:140,background:"#fff",border:"1px solid "+BORDER2,borderRadius:6,padding:"12px 14px",minHeight:90,display:"flex",flexDirection:"column",justifyContent:"space-between"}}>
+    <div style={{fontSize:9,letterSpacing:"1.2px",textTransform:"uppercase",color:MUTED,fontFamily:FONT_BODY,fontWeight:700}}>{props.label}</div>
+    <div style={{fontSize:24,fontWeight:800,color:props.valColor||TEXT,fontFamily:FONT_DISPLAY,whiteSpace:"nowrap",margin:"6px 0"}}>{props.value}</div>
+    <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY,minHeight:12}}>{props.sub||"\u00A0"}</div>
+  </div>);
+}
+
+
+// ─── CHURN REDUCTION GOAL PANEL (per SOM, quarterly) ─────────────────────
+function ChurnGoalPanel(props){
+  const g = CHURN_GOALS[props.somName];
+  if(!g) return null;
+  const hasBaseline = g.q1 > 0;
+  const overTarget = g.aprR > g.q2tr;
+  const overBudget = g.q2 > g.budget;
+  const onTrack = hasBaseline && !overTarget;
+  const status = !hasBaseline ? {label:"NO BASELINE",color:"#9ca3af",bg:"#f3f4f6"}
+    : (overBudget ? {label:"OVER TARGET",color:"#dc2626",bg:"#fef2f2"}
+    : (g.q2===g.budget ? {label:"AT LIMIT",color:"#ea580c",bg:"#fff7ed"}
+    : (onTrack ? {label:"ON TRACK",color:"#16a34a",bg:"#f0fdf4"}
+    : {label:"WATCH",color:"#f59e0b",bg:"#fef7ed"})));
+  
+  const ChurnGauge = ({used, budget}) => {
+    const pct = budget > 0 ? Math.min(used/budget, 1) : 0;
+    const color = used > budget ? "#dc2626" : used === budget ? "#ea580c" : "#4fa61a";
+    const r = 40, cx = 60, cy = 60, C = 2*Math.PI*r, dash = pct*C;
+    return (<div style={{position:"relative",width:120,height:120,flexShrink:0}}>
+      <svg width="120" height="120">
+        <circle cx={cx} cy={cy} r={r} stroke="#e5e7eb" strokeWidth="10" fill="none"/>
+        <circle cx={cx} cy={cy} r={r} stroke={color} strokeWidth="10" fill="none" strokeDasharray={dash+" "+C} transform={"rotate(-90 "+cx+" "+cy+")"} strokeLinecap="round"/>
+      </svg>
+      <div style={{position:"absolute",top:0,left:0,width:120,height:120,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
+        <div style={{fontSize:30,fontWeight:800,fontFamily:FONT_DISPLAY,color:"#4fa61a",lineHeight:1}}>{used}</div>
+        <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY,marginTop:2}}>of {budget} max</div>
+      </div>
+    </div>);
+  };
+  
+  return (<div style={{background:"#fafafa",padding:"18px 22px",borderRadius:8,marginBottom:18,border:"1px solid "+BORDER2}}>
+    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
+      <div style={{width:16,height:2,background:"#4fa61a"}}/>
+      <div style={{fontSize:11,letterSpacing:"1.5px",textTransform:"uppercase",color:"#555",fontFamily:FONT_BODY,fontWeight:700}}>Churn Reduction Goal — Q2 2026 (10% reduction target)</div>
+    </div>
+    <div style={{display:"flex",gap:12,alignItems:"stretch",marginBottom:14,flexWrap:"wrap"}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"center",padding:"0 8px"}}>
+        <ChurnGauge used={g.q2} budget={g.budget}/>
+      </div>
+      <KpiCard label="Q1 BASELINE %" value={hasBaseline?g.q1r+"%":"—"} sub="Jan–Mar avg" valColor={hasBaseline?"#dc2626":MUTED}/>
+      <KpiCard label="Q2 TARGET %" value={hasBaseline?"≤"+g.q2tr+"%":"—"} sub="10% reduction" valColor={hasBaseline?"#4fa61a":MUTED}/>
+      <KpiCard label="APRIL RATE %" value={g.aprR+"%"} sub={hasBaseline?(g.aprR<=g.q2tr?"On target":"Above target"):"No baseline"} valColor={!hasBaseline?TEXT:(g.aprR<=g.q2tr?"#16a34a":"#dc2626")}/>
+      <KpiCard label="Q2 CHURNS" value={g.q2+" / "+g.budget} sub={g.budget>0?(Math.max(0,g.budget-g.q2)+" left"):"—"} valColor={overBudget?"#dc2626":(g.q2===g.budget?"#ea580c":TEXT)}/>
+    </div>
+    
+    {hasBaseline && (<div style={{background:"#fff",border:"1px solid "+BORDER2,borderRadius:6,padding:"12px 14px",marginBottom:10}}>
+      <div style={{fontSize:9,letterSpacing:"1.2px",textTransform:"uppercase",color:MUTED,fontFamily:FONT_BODY,fontWeight:700,marginBottom:8}}>Monthly Churn Rate Breakdown</div>
+      <div style={{display:"flex",gap:8}}>
+        {[
+          {m:"JAN 26", r:g.janR, n:g.jan, baseline:false},
+          {m:"FEB 26", r:g.febR, n:g.feb, baseline:false},
+          {m:"MAR 26", r:g.marR, n:g.mar, baseline:false},
+          {m:"Q1 AVG", r:g.q1r, n:g.q1, baseline:true},
+          {m:"APR 26", r:g.aprR, n:g.apr, baseline:false, current:true}
+        ].map((c,i)=>{
+          const isAvg = c.baseline;
+          const cardBg = isAvg ? "#fef2f2" : (c.current ? "#f0fdf4" : "#f9fafb");
+          const valCol = c.r === 0 ? "#9ca3af" : (c.r <= g.q2tr ? "#16a34a" : (c.r <= g.q1r ? "#f59e0b" : "#dc2626"));
+          return (<div key={i} style={{flex:1,background:cardBg,border:"1px solid "+BORDER2,borderRadius:6,padding:"10px 8px",textAlign:"center"}}>
+            <div style={{fontSize:9,fontWeight:700,letterSpacing:"1px",color:MUTED,fontFamily:FONT_BODY}}>{c.m}</div>
+            <div style={{fontSize:20,fontWeight:800,color:valCol,fontFamily:FONT_DISPLAY,margin:"4px 0"}}>{c.r}%</div>
+            <div style={{fontSize:9,color:MUTED,fontFamily:FONT_BODY}}>{isAvg?"Baseline":(c.n+" lost")}</div>
+          </div>);
+        })}
+      </div>
+    </div>)}
+    
+    <div style={{marginBottom:10}}>
+      <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
+        <div style={{fontSize:9,letterSpacing:"1.2px",textTransform:"uppercase",color:MUTED,fontFamily:FONT_BODY,fontWeight:700}}>Churn Count Budget</div>
+        <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY}}>{g.q2} of {g.budget} used</div>
+      </div>
+      <div style={{display:"flex",alignItems:"center",gap:12}}>
+        <div style={{flex:1,height:8,background:"#e5e7eb",borderRadius:4,overflow:"hidden"}}>
+          <div style={{width:(g.budget>0?Math.min(100,(g.q2/g.budget)*100):0)+"%",height:"100%",background:status.color,borderRadius:4}}/>
+        </div>
+        <div style={{fontSize:9,fontWeight:800,letterSpacing:"1.2px",padding:"4px 10px",background:status.bg,color:status.color,borderRadius:4,fontFamily:FONT_BODY,whiteSpace:"nowrap",border:"1px solid "+status.color+"55"}}>{status.label}</div>
+      </div>
+    </div>
+    
+    {g.q1n.length>0 && (<div style={{marginBottom:8}}>
+      <div style={{fontSize:9,letterSpacing:"1px",textTransform:"uppercase",color:MUTED,fontFamily:FONT_BODY,fontWeight:700,marginBottom:6}}>Q1 Baseline Churns (Jan–Mar)</div>
+      <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
+        {g.q1n.map((n,i)=><span key={i} style={{fontSize:10,padding:"4px 10px",background:"#f3f4f6",color:"#555",borderRadius:3,fontFamily:FONT_BODY,fontWeight:600}}>{n}</span>)}
+      </div>
+    </div>)}
+    {g.q2n.length>0 && (<div>
+      <div style={{fontSize:9,letterSpacing:"1px",textTransform:"uppercase",color:MUTED,fontFamily:FONT_BODY,fontWeight:700,marginBottom:6}}>Q2 Churns (Apr–Jun)</div>
+      <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
+        {g.q2n.map((n,i)=><span key={i} style={{fontSize:10,padding:"4px 10px",background:"#fef2f2",color:"#dc2626",borderRadius:3,fontFamily:FONT_BODY,fontWeight:600,border:"1px solid #fecaca"}}>{n}</span>)}
+      </div>
+    </div>)}
+  </div>);
+}
+
+// ─── BOOKED MEETINGS PANEL (per SOM) ──────────────────────────────────────
+function BookedMeetingsPanel(props){
+  const g = CHURN_GOALS[props.somName];
+  if(!g) return null;
+  const mtgApr = g.mtgApr;
+  const mtgMar = g.mtgMar;
+  const mtgDelta = g.mtgDelta;
+  const hasApr = mtgApr !== null;
+  const hasMar = mtgMar !== null;
+  const pctOfGoal = g.mtgPct;
+  const deltaColor = mtgDelta !== null ? (mtgDelta > 0 ? "#16a34a" : (mtgDelta < 0 ? "#dc2626" : MUTED)) : MUTED;
+  const deltaSign = mtgDelta !== null && mtgDelta > 0 ? "+" : "";
+  const goalColor = pctOfGoal >= 100 ? "#16a34a" : (pctOfGoal >= 75 ? "#f59e0b" : "#dc2626");
+  const barWidth = Math.min(150, pctOfGoal);
+  
+  return (<div style={{background:"#f0fbe8",padding:"18px 22px",borderRadius:8,marginBottom:18,border:"1px solid #d4ecc0"}}>
+    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
+      <div style={{width:16,height:2,background:"#4fa61a"}}/>
+      <div style={{fontSize:11,letterSpacing:"1.5px",textTransform:"uppercase",color:"#555",fontFamily:FONT_BODY,fontWeight:700}}>Booked Meetings — Avg per Account per Month (Goal: 4)</div>
+    </div>
+    <div style={{display:"flex",gap:12,alignItems:"stretch",marginBottom:14,flexWrap:"wrap"}}>
+      <KpiCard label="LAST MONTH (Mar 26)" value={hasMar?mtgMar.toFixed(2):"—"} sub={hasMar?"per account":"No perf data"} valColor={hasMar && mtgMar>=4 ? "#16a34a" : (hasMar && mtgMar>=3 ? "#f59e0b" : TEXT)}/>
+      <KpiCard label="THIS MONTH (April 15)" value={hasApr?mtgApr.toFixed(2):"N/A"} sub={hasApr?(g.aprFlips+" flips / "+g.aprAccts+" accts"):"No April SDR activity"} valColor={hasApr && mtgApr>=4 ? "#16a34a" : (hasApr && mtgApr>=3 ? "#f59e0b" : (hasApr?"#dc2626":MUTED))}/>
+      <KpiCard label="% OF GOAL (4/mo)" value={hasApr?(pctOfGoal+"%"):"—"} sub={hasApr ? (pctOfGoal>=100 ? "Goal exceeded" : (pctOfGoal>=75 ? "Near goal" : (4-mtgApr).toFixed(2)+" short of goal")) : ""} valColor={hasApr?goalColor:MUTED}/>
+      <KpiCard label="CHANGE VS LAST MO" value={mtgDelta!==null?(deltaSign+mtgDelta.toFixed(2)):"—"} sub={mtgDelta!==null?(mtgDelta>0?"Improving":(mtgDelta<0?"Declining":"Flat")):""} valColor={deltaColor}/>
+    </div>
+    {hasApr && (<div>
+      <div style={{display:"flex",justifyContent:"space-between",marginBottom:6,alignItems:"center"}}>
+        <div style={{fontSize:9,letterSpacing:"1.2px",textTransform:"uppercase",color:MUTED,fontFamily:FONT_BODY,fontWeight:700}}>Progress toward 4/account/month goal</div>
+        <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY}}>{mtgApr.toFixed(2)} / 4.00</div>
+      </div>
+      <div style={{position:"relative",height:10,background:"#e5e7eb",borderRadius:5,overflow:"hidden"}}>
+        <div style={{width:Math.min(100, (mtgApr/4)*100)+"%",height:"100%",background:goalColor,borderRadius:5}}/>
+        {mtgApr>4 && (<div style={{position:"absolute",right:4,top:-1,bottom:-1,fontSize:9,fontWeight:800,color:"#16a34a",display:"flex",alignItems:"center",fontFamily:FONT_BODY}}>+{(mtgApr-4).toFixed(2)} above goal</div>)}
+      </div>
+    </div>)}
+  </div>);
+}
+
+// ─── SOM OVERVIEW (when no SOM selected) ──────────────────────────────────
+function SOMOverview(props){
+  const onSelect = props.onSelect;
+  const allSoms = Object.keys(CHURN_GOALS).filter(n => n !== "No SOM Account");
+  const noSom = CHURN_GOALS["No SOM Account"];
+  
+  // Company totals (only SOMs with baseline + activity)
+  const activeSoms = allSoms.filter(n => CHURN_GOALS[n].mtgApr !== null);
+  const totals = activeSoms.reduce((acc, n) => {
+    const g = CHURN_GOALS[n];
+    acc.aprChurns += g.apr;
+    acc.marChurns += g.mar;
+    acc.q2Churns += g.q2;
+    acc.q2Budget += g.budget;
+    acc.aprAccts += g.aprAccts;
+    acc.aprFlips += g.aprFlips;
+    if(g.q1 > 0 && g.aprR <= g.q2tr) acc.onTrack++;
+    else if(g.q2 > g.budget) acc.overTarget++;
+    if(g.mtgPct >= 100) acc.goalMet++;
+    else if(g.mtgPct >= 75) acc.nearGoal++;
+    return acc;
+  }, {aprChurns:0, marChurns:0, q2Churns:0, q2Budget:0, aprAccts:0, aprFlips:0, onTrack:0, overTarget:0, goalMet:0, nearGoal:0});
+  
+  const companyMtgAvg = totals.aprAccts > 0 ? (totals.aprFlips / totals.aprAccts) : 0;
+  const companyPctOfGoal = Math.round((companyMtgAvg / 4) * 100);
+  
+  return (<div>
+    <div style={{display:"flex",gap:10,marginBottom:14,flexWrap:"wrap"}}>
+      <KpiCard label="APRIL CHURNS" value={totals.aprChurns} sub={"vs "+totals.marChurns+" in March"} valColor={totals.aprChurns>totals.marChurns?"#dc2626":(totals.aprChurns<totals.marChurns?"#16a34a":TEXT)}/>
+      <KpiCard label="Q2 BUDGET USED" value={totals.q2Churns+" / "+totals.q2Budget} sub="10% reduction target" valColor={totals.q2Churns>totals.q2Budget?"#dc2626":(totals.q2Churns===totals.q2Budget?"#ea580c":"#16a34a")}/>
+      <KpiCard label="SOMs ON TRACK" value={totals.onTrack+" / "+activeSoms.length} sub={totals.overTarget+" over target"} valColor={totals.onTrack>activeSoms.length/2?"#16a34a":"#ea580c"}/>
+      <KpiCard label="AVG MTG / ACCOUNT" value={companyMtgAvg.toFixed(2)} sub="company-wide, April" valColor={companyMtgAvg>=4?"#16a34a":(companyMtgAvg>=3?"#f59e0b":"#dc2626")}/>
+      <KpiCard label="MTG GOAL (4/MO)" value={companyPctOfGoal+"%"} sub={totals.goalMet+" SOMs at goal"} valColor={companyPctOfGoal>=100?"#16a34a":(companyPctOfGoal>=75?"#f59e0b":"#dc2626")}/>
+    </div>
+    
+    <div style={{fontSize:11,letterSpacing:"1.5px",textTransform:"uppercase",color:MUTED,fontFamily:FONT_BODY,fontWeight:700,marginBottom:10,display:"flex",alignItems:"center",gap:8}}>
+      <div style={{width:16,height:2,background:"#4fa61a"}}/>SOM Performance — April 2026
+    </div>
+    
+    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit, minmax(300px, 1fr))",gap:12,marginBottom:18}}>
+      {allSoms.map(name=>{
+        const g = CHURN_GOALS[name];
+        const st = somStatus(g);
+        const hasParen = name.indexOf(" (") !== -1;
+        const displayName = hasParen ? name.split(" (")[0] : name;
+        const subtitle = hasParen ? name.substring(name.indexOf("(")) : null;
+        const mtgColor = g.mtgApr === null ? MUTED : (g.mtgPct>=100?"#16a34a":(g.mtgPct>=75?"#f59e0b":"#dc2626"));
+        return (<div key={name} onClick={()=>onSelect(name)} style={{background:st.bg,border:"1px solid "+st.color+"33",borderLeft:"3px solid "+st.color,borderRadius:6,padding:16,cursor:"pointer"}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:4,gap:8}}>
+            <div style={{minWidth:0,flex:1}}>
+              <div style={{fontSize:15,fontWeight:800,color:TEXT,fontFamily:FONT_DISPLAY,lineHeight:1.2}}>{displayName}</div>
+              {subtitle && <div style={{fontSize:9,color:MUTED,fontFamily:FONT_BODY,marginTop:2}}>{subtitle}</div>}
+            </div>
+            <div style={{fontSize:8,fontWeight:800,letterSpacing:"1px",padding:"3px 7px",background:"#fff",color:st.color,borderRadius:3,fontFamily:FONT_BODY,whiteSpace:"nowrap",border:"1px solid "+st.color+"55"}}>{st.label}</div>
+          </div>
+          <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY,marginBottom:14}}>
+            <span style={{color:"#4fa61a",fontWeight:700}}>{g.active}</span> active &nbsp;·&nbsp; <span style={{color:"#dc2626",fontWeight:700}}>{g.churned}</span> churned
+          </div>
+          
+          {/* CHURN ROW — Q1 → Q2 target → April */}
+          <div style={{background:"#fff",borderRadius:4,padding:"10px 12px",marginBottom:8,border:"1px solid "+BORDER2}}>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
+              <div style={{fontSize:8,color:MUTED,fontFamily:FONT_BODY,fontWeight:700,letterSpacing:"0.8px"}}>CHURN — Q1 BASELINE → Q2 TARGET → APR</div>
+              <div style={{fontSize:8,color:MUTED,fontFamily:FONT_BODY,fontWeight:700,letterSpacing:"0.8px"}}>BUDGET: {g.q2}/{g.budget}</div>
+            </div>
+            {g.q1 > 0 ? (
+              <div style={{display:"flex",alignItems:"baseline",gap:8}}>
+                <div><span style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY}}>Q1: </span><span style={{fontSize:13,fontWeight:700,color:"#dc2626",fontFamily:FONT_DISPLAY}}>{g.q1r}%</span></div>
+                <div style={{color:MUTED,fontFamily:FONT_BODY,fontSize:11}}>→</div>
+                <div><span style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY}}>Tgt: </span><span style={{fontSize:13,fontWeight:700,color:"#4fa61a",fontFamily:FONT_DISPLAY}}>≤{g.q2tr}%</span></div>
+                <div style={{color:MUTED,fontFamily:FONT_BODY,fontSize:11}}>↔</div>
+                <div><span style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY}}>Apr: </span><span style={{fontSize:13,fontWeight:700,color:g.aprR<=g.q2tr?"#16a34a":"#dc2626",fontFamily:FONT_DISPLAY}}>{g.aprR}%</span></div>
+              </div>
+            ) : (
+              <div style={{display:"flex",alignItems:"baseline",gap:8}}>
+                <div style={{fontSize:11,color:MUTED,fontFamily:FONT_BODY,fontStyle:"italic"}}>No Q1 baseline</div>
+                <div style={{marginLeft:"auto"}}><span style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY}}>Apr: </span><span style={{fontSize:13,fontWeight:700,color:g.aprR>0?"#dc2626":TEXT,fontFamily:FONT_DISPLAY}}>{g.aprR}%</span></div>
+              </div>
+            )}
+          </div>
+          
+          {/* MEETINGS ROW */}
+          <div style={{background:"#fff",borderRadius:4,padding:"10px 12px",border:"1px solid "+BORDER2}}>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
+              <div style={{fontSize:8,color:MUTED,fontFamily:FONT_BODY,fontWeight:700,letterSpacing:"0.8px"}}>BOOKED MEETINGS / ACCT</div>
+              <div style={{fontSize:8,color:MUTED,fontFamily:FONT_BODY,fontWeight:700,letterSpacing:"0.8px"}}>GOAL: 4</div>
+            </div>
+            {g.mtgApr !== null ? (
+              <div>
+                <div style={{display:"flex",alignItems:"baseline",gap:10,marginBottom:5}}>
+                  <div style={{fontSize:16,fontWeight:800,color:mtgColor,fontFamily:FONT_DISPLAY}}>{g.mtgApr.toFixed(2)}</div>
+                  <div style={{fontSize:11,color:MUTED,fontFamily:FONT_BODY}}>({g.mtgPct}% of goal)</div>
+                  {g.mtgDelta !== null && <div style={{marginLeft:"auto",fontSize:11,fontWeight:700,color:g.mtgDelta>0?"#16a34a":(g.mtgDelta<0?"#dc2626":MUTED),fontFamily:FONT_DISPLAY}}>{g.mtgDelta>0?"+":""}{g.mtgDelta.toFixed(2)} vs Mar</div>}
+                </div>
+                <div style={{height:4,background:"#e5e7eb",borderRadius:2,overflow:"hidden"}}>
+                  <div style={{width:Math.min(100, g.mtgPct)+"%",height:"100%",background:mtgColor}}/>
+                </div>
+              </div>
+            ) : (
+              <div style={{fontSize:11,color:MUTED,fontFamily:FONT_BODY,fontStyle:"italic"}}>No April SDR activity (Landbase accounts)</div>
+            )}
+          </div>
+          
+          <div style={{fontSize:9,color:MUTED,fontFamily:FONT_BODY,marginTop:10,fontStyle:"italic"}}>Click to view full detail →</div>
+        </div>);
+      })}
+    </div>
+    
+    {noSom && (<div style={{background:"#fff7ed",border:"1px solid #fed7aa",borderLeft:"3px solid #ea580c",borderRadius:6,padding:"12px 16px",marginBottom:20,cursor:"pointer"}} onClick={()=>onSelect("No SOM Account")}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8}}>
+        <div>
+          <div style={{fontSize:13,fontWeight:800,color:TEXT,fontFamily:FONT_DISPLAY}}>No SOM Account (Structural Risk)</div>
+          <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY,marginTop:2}}>{noSom.active} active &middot; {noSom.churned} churned &middot; Q1: {noSom.q1r}% → Q2 Tgt: ≤{noSom.q2tr}% ↔ Apr: {noSom.aprR}% &middot; Mtg/acct: {noSom.mtgApr!==null?noSom.mtgApr.toFixed(2):"—"}</div>
+        </div>
+        <div style={{fontSize:10,color:"#ea580c",fontFamily:FONT_BODY,fontWeight:700,whiteSpace:"nowrap"}}>View detail →</div>
+      </div>
+    </div>)}
+  </div>);
+}
+
 function SOMsTab(){
   const roster=useMemo(()=>loadRoster(),[]);
   const visibleSOMs=SOMS.filter(s=>somShowsInDashboard(s.name,roster));
@@ -1954,6 +2244,8 @@ function SOMsTab(){
         </button>
         <span style={{marginLeft:12,fontSize:11,color:MUTED,fontFamily:FONT_BODY}}>Opens a print-ready view — use Ctrl+P / ⌘+P to save as PDF</span>
       </div>
+      <ChurnGoalPanel somName={som.name}/>
+      <BookedMeetingsPanel somName={som.name}/>
       <PersonCharts accounts={som.accounts} perf={som.perf}/>
       <SomPaceTable reps={som.reps}/>
       <div style={CS}>
@@ -1963,9 +2255,7 @@ function SOMsTab(){
         </div>
       </div>
     </div>):(
-      <div style={{color:MUTED2,fontSize:13,padding:"48px 0",textAlign:"center",fontFamily:FONT_BODY}}>
-        Select a SOM above to load their dashboard.
-      </div>
+      <SOMOverview onSelect={setSel}/>
     )}
   </div>);
 }
@@ -2347,9 +2637,9 @@ const DEFAULT_CMS = {
   },
   churn:{
     locked:true,
-    lockedValue:"9.62",
-    lockedMonth:"Mar 26",
-    lockedLabel:"Previous Month Churn (March 2026)",
+    lockedValue:"12.07",
+    lockedMonth:"Apr 26",
+    lockedLabel:"April Churn Rate (Final)",
   },
   meta:{
     lastUpdated:"Apr 9, 2026",
