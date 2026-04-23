@@ -756,13 +756,13 @@ function SomPaceTable({reps}){
   };
   return(
     <div style={{...CS,border:`1px solid #3a3a3a`,background:"#141e0d"}}>
-      <SectionLabel>Team PACE — Period MTD vs March Final</SectionLabel>
+      <SectionLabel>Team Performance — April 15 Period Complete</SectionLabel>
       <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY,marginBottom:8}}>% columns: <strong>now%</strong> → <strong>proj%</strong> of March final</div>
       <div style={{overflowX:"auto"}}>
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:12,fontFamily:FONT_BODY}}>
           <thead>
             <tr style={{borderBottom:`2px solid ${BORDER2}`}}>
-              {["Rep","Mar Rank","SQLs","% of Mar","Proj EOM","Meetings","% of Mar","MQLs","% of Mar","Status"].map(h=>(
+              {["Rep","Mar Rank","Apr Rank","SQLs","% of Mar","Meetings","% of Mar","MQLs","% of Mar","Status"].map(h=>(
                 <th key={h} style={{padding:"6px 8px",textAlign:h==="Rep"?"left":"center",color:MUTED,fontWeight:700,fontSize:9,textTransform:"uppercase",letterSpacing:"1px",whiteSpace:"nowrap"}}>{h}</th>
               ))}
             </tr>
@@ -776,18 +776,18 @@ function SomPaceTable({reps}){
                   <td style={{padding:"6px 8px",textAlign:"center",color:MUTED}}>{r.marchRank!=null?`#${r.marchRank}`:"—"}</td>
                   <td style={{padding:"6px 8px",textAlign:"center"}}>
                     <div style={{fontWeight:700,color:paceCol(r.curSQL,"sql")}}>{r.curSQL}</div>
-                    <div style={{fontSize:9,color:MUTED}}>{r.marchSQL??'—'} last mo</div>
+                    <div style={{fontSize:9,color:MUTED}}>{r.marchSQL??'—'} March final</div>
                   </td>
                   <td style={{padding:"4px 8px",textAlign:"center"}}>{pctBadge(r.curSQL,r.marchSQL)}</td>
                   <td style={{padding:"6px 8px",textAlign:"center",fontWeight:700,color:status?.color||MUTED}}>{status?.projected??'—'}</td>
                   <td style={{padding:"6px 8px",textAlign:"center"}}>
                     <div style={{fontWeight:600,color:paceCol(r.curMtg,"mtg")}}>{r.curMtg}</div>
-                    <div style={{fontSize:9,color:MUTED}}>{r.marchFlips??'—'} last mo</div>
+                    <div style={{fontSize:9,color:MUTED}}>{r.marchFlips??'—'} March final</div>
                   </td>
                   <td style={{padding:"4px 8px",textAlign:"center"}}>{pctBadge(r.curMtg,r.marchFlips)}</td>
                   <td style={{padding:"6px 8px",textAlign:"center"}}>
                     <div style={{color:paceCol(r.curMQL,"mql")}}>{r.curMQL}</div>
-                    <div style={{fontSize:9,color:MUTED}}>{r.marchMQL??'—'} last mo</div>
+                    <div style={{fontSize:9,color:MUTED}}>{r.marchMQL??'—'} March final</div>
                   </td>
                   <td style={{padding:"4px 8px",textAlign:"center"}}>{pctBadge(r.curMQL,r.marchMQL)}</td>
                   <td style={{padding:"6px 8px",textAlign:"center"}}>
@@ -801,18 +801,18 @@ function SomPaceTable({reps}){
               <td/>
               <td style={{padding:"6px 8px",textAlign:"center"}}>
                 <div style={{fontWeight:700}}>{totals.sql}</div>
-                <div style={{fontSize:9,color:MUTED}}>{totals.marchSQL} last mo</div>
+                <div style={{fontSize:9,color:MUTED}}>{totals.marchSQL} March final</div>
               </td>
               <td style={{padding:"4px 8px",textAlign:"center"}}>{pctBadge(totals.sql,totals.marchSQL)}</td>
               <td/>
               <td style={{padding:"6px 8px",textAlign:"center"}}>
                 <div style={{fontWeight:700}}>{totals.mtg}</div>
-                <div style={{fontSize:9,color:MUTED}}>{totals.marchMtg} last mo</div>
+                <div style={{fontSize:9,color:MUTED}}>{totals.marchMtg} March final</div>
               </td>
               <td style={{padding:"4px 8px",textAlign:"center"}}>{pctBadge(totals.mtg,totals.marchMtg)}</td>
               <td style={{padding:"6px 8px",textAlign:"center"}}>
                 <div style={{fontWeight:700}}>{totals.mql}</div>
-                <div style={{fontSize:9,color:MUTED}}>{totals.marchMQL} last mo</div>
+                <div style={{fontSize:9,color:MUTED}}>{totals.marchMQL} March final</div>
               </td>
               <td style={{padding:"4px 8px",textAlign:"center"}}>{pctBadge(totals.mql,totals.marchMQL)}</td>
               <td/>
@@ -1442,90 +1442,102 @@ async function buildRepPDF(repName, accs){
   pdfText(doc,`Sales Rep  ·  Period 3/16–4/15  ·  ${active.length} active  ·  ${churned.length} churned`,M,y); y+=5;
   doc.setDrawColor(...BORDER_RGB); doc.line(M,y,W-M,y); y+=7;
 
-  // ── Performance Pulse ──
+  // ── Performance — April 15 Period Complete ──
   if(p){
-    // Section label + March Rank badge
+    // Section label + rank badges (March + April)
     doc.setFontSize(7); doc.setFont('helvetica','bold');
     doc.setTextColor(...MUTED_RGB);
-    pdfText(doc,'PERFORMANCE PULSE — PERIOD MTD (3/16–4/15)',M,y);
+    pdfText(doc,'PERFORMANCE — APRIL 15 PERIOD COMPLETE (3/16–4/15)',M,y);
+    // Two stacked rank badges on right: March Rank + April Rank
+    const rankW=26, rankH=10, rankGap=2;
+    let rx = W - M - (rankW*2 + rankGap);
     if(p.marchRank!=null){
       doc.setFillColor(...DARK_RGB);
-      doc.roundedRect(W-38,y-6,28,10,1.5,1.5,'F');
+      doc.roundedRect(rx,y-6,rankW,rankH,1.5,1.5,'F');
       doc.setTextColor(255,255,255);
-      doc.setFontSize(6);
-      pdfText(doc,'MARCH RANK',W-24,y-2,{align:'center'});
-      doc.setFontSize(10); doc.setFont('helvetica','bold');
-      pdfText(doc,`#${p.marchRank}`,W-24,y+3,{align:'center'});
+      doc.setFontSize(5.5);
+      pdfText(doc,'MARCH RANK',rx+rankW/2,y-2,{align:'center'});
+      doc.setFontSize(9); doc.setFont('helvetica','bold');
+      pdfText(doc,`#${p.marchRank}`,rx+rankW/2,y+3,{align:'center'});
+      rx += rankW + rankGap;
+    }
+    if(p.aprRank!=null){
+      doc.setFillColor(...DARK_RGB);
+      doc.roundedRect(rx,y-6,rankW,rankH,1.5,1.5,'F');
+      doc.setTextColor(...G_RGB);
+      doc.setFontSize(5.5); doc.setFont('helvetica','bold');
+      pdfText(doc,'APRIL RANK',rx+rankW/2,y-2,{align:'center'});
+      doc.setFontSize(9);
+      pdfText(doc,`#${p.aprRank}`,rx+rankW/2,y+3,{align:'center'});
     }
     y+=8;
+
+    // Overall status line (Exceeding / Matching / Below March)
+    if(p.marchSQL && p.curSQL!=null){
+      const sqlPct = p.curSQL / p.marchSQL;
+      const statusLabel = sqlPct>=1.1 ? 'Exceeding March' : sqlPct>=0.95 ? 'Matching March' : sqlPct>=0.5 ? 'Below March' : 'Well below March';
+      const statusCol = sqlPct>=1.1 ? G_RGB : sqlPct>=0.95 ? [245,197,24] : sqlPct>=0.5 ? [249,115,22] : RED_RGB;
+      doc.setFontSize(8); doc.setFont('helvetica','bold');
+      doc.setTextColor(...statusCol);
+      pdfText(doc,statusLabel,M,y);
+      y+=5;
+    }
 
     const metrics=[
       {label:'SQLs',    march:p.marchSQL,   cur:p.curSQL,  key:'sql', barMax:60},
       {label:'Meetings',march:p.marchFlips, cur:p.curMtg,  key:'mtg', barMax:35},
       {label:'MQLs',    march:p.marchMQL,   cur:p.curMQL,  key:'mql', barMax:160},
     ];
-    const barL=46, barR=W-M-32, barW=barR-barL;  // leave 32mm on right for text labels
-    const pctCol=(pct)=>pct>=110?G_RGB:pct>=85?[245,197,24]:[239,68,68];
+    const barL=46, barR=W-M-40, barW=barR-barL;  // leave 40mm on right for text labels
+    const pctCol=(pct)=>pct>=110?G_RGB:pct>=95?[245,197,24]:pct>=50?[249,115,22]:[239,68,68];
 
     for(const m of metrics){
-      const proj=Math.round(m.cur/APR_ELAPSED);
-      const nowPct=m.march>0?Math.round((m.cur/m.march)*100):null;
-      const projPct=m.march>0?Math.round((proj/m.march)*100):null;
-      const delta=m.march!=null?m.cur-Math.round(m.march*APR_ELAPSED):null;
-      const bMax=Math.max(m.march||1,m.cur,proj,1);
-      const pCol=projPct!=null?pctCol(projPct):G_RGB;
+      const delta = m.march!=null ? m.cur - m.march : null;
+      const pct = m.march>0 ? Math.round((m.cur/m.march)*100) : null;
+      const bMax = Math.max(m.march||1, m.cur, 1);
 
-      // Metric header row — labels on far right with plenty of space
+      // Metric header with % of March + delta vs March on right
       doc.setFontSize(7); doc.setFont('helvetica','bold');
       doc.setTextColor(...MUTED_RGB);
       pdfText(doc,m.label.toUpperCase(),M,y);
-      if(nowPct!=null){
-        doc.setTextColor(...pctCol(nowPct));
-        pdfText(doc,`${nowPct}% now`,barR+2,y);
-        doc.setTextColor(...pctCol(projPct??0));
-        pdfText(doc,`→ ${projPct}% proj`,W-M,y,{align:'right'});
+      if(pct!=null){
+        doc.setTextColor(...pctCol(pct));
+        pdfText(doc,`${pct}% of March`,barR+2,y);
+      }
+      if(delta!=null){
+        const dc = delta>0 ? G_RGB : delta<0 ? RED_RGB : [245,197,24];
+        doc.setTextColor(...dc);
+        pdfText(doc,`${delta>0?'+':''}${delta} vs March`,W-M,y,{align:'right'});
       }
       y+=4.5;
 
-      // March final row
+      // March Final row
       doc.setFontSize(7.5); doc.setFont('helvetica','normal');
       doc.setTextColor(...MUTED_RGB);
-      pdfText(doc,'March final',M,y);
+      pdfText(doc,'March Final',M,y);
       pdfText(doc,String(m.march??'—'),barL-2,y,{align:'right'});
-      doc.setFillColor(200,200,200);
-      const mW=m.march!=null?(m.march/bMax)*barW:0;
-      doc.rect(barL,y-2.8,mW,2,'F');
+      doc.setFillColor(190,190,190);
+      const mW = m.march!=null ? (m.march/bMax)*barW : 0;
+      doc.rect(barL, y-2.8, mW, 2, 'F');
       y+=4;
 
-      // Period MTD row
+      // April 15 Final row
       doc.setFont('helvetica','bold');
       doc.setTextColor(...G_RGB);
-      pdfText(doc,'Period MTD',M,y);
+      pdfText(doc,'April 15 Final',M,y);
       pdfText(doc,String(m.cur),barL-2,y,{align:'right'});
       doc.setFillColor(...G_RGB);
-      doc.rect(barL,y-2.8,(m.cur/bMax)*barW,2,'F');
-      if(delta!=null){
-        const dc=delta>=0?G_RGB:RED_RGB;
-        doc.setTextColor(...dc); doc.setFontSize(6.5);
-        pdfText(doc,`${delta>=0?'+':''}${delta} vs pace`,W-M,y,{align:'right'});
-        doc.setFontSize(7.5);
-      }
-      y+=4;
-
-      // Proj EOM row
-      doc.setTextColor(...pCol);
-      pdfText(doc,'Proj EOM',M,y);
-      pdfText(doc,String(proj),barL-2,y,{align:'right'});
-      doc.setFillColor(...pCol);
-      doc.rect(barL,y-2.8,(proj/bMax)*barW,2,'F');
-      doc.setFontSize(6.5);
-      pdfText(doc,`vs ${m.march} last mo`,W-M,y,{align:'right'});
-      doc.setFontSize(7.5);
+      doc.rect(barL, y-2.8, (m.cur/bMax)*barW, 2, 'F');
       y+=4;
 
       doc.setDrawColor(...BORDER_RGB); doc.line(M,y,W-M,y); y+=3.5;
     }
-    y+=2;
+
+    // Footer note
+    doc.setFontSize(6.5); doc.setFont('helvetica','italic');
+    doc.setTextColor(...MUTED_RGB);
+    pdfText(doc,'Ranking period complete. Totals reflect 30-day window 3/16–4/15/2026. Next ranking period ends May 15.',M,y);
+    y+=5;
   }
 
   // ── Churn stat cards (single row) ──
@@ -1641,7 +1653,7 @@ async function buildSomPDF(som){
   // Team PACE table
   doc.setFontSize(7); doc.setFont('helvetica','bold');
   doc.setTextColor(...MUTED_RGB);
-  pdfText(doc,`TEAM PACE — PERIOD MTD VS MARCH FINAL (${Math.round(APR_ELAPSED*100)}% ELAPSED)`,M,y); y+=4;
+  pdfText(doc,`TEAM PERFORMANCE — APRIL 15 PERIOD COMPLETE`,M,y); y+=4;
   doc.setDrawColor(...BORDER_RGB); doc.line(M,y,W-M,y); y+=4;
 
   const tc=[M,52,65,80,100,115,131,150,167];
@@ -1836,10 +1848,10 @@ function SomPrintModal({som,onClose}){
             </div>
           </div>
           <div style={CS}>
-            <SectionLabel>Team PACE — Period MTD vs March Final ({Math.round(APR_ELAPSED*100)}% elapsed)</SectionLabel>
+            <SectionLabel>Team Performance — April 15 Period Complete</SectionLabel>
             <div style={{overflowX:'auto'}}>
               <table style={{width:"100%",borderCollapse:"collapse",fontSize:11,fontFamily:FONT_BODY}}>
-                <thead><tr style={{borderBottom:`2px solid ${BORDER2}`}}>{['Rep','Mar Rank','SQLs','% now→proj','Proj','Meetings','% now→proj','MQLs','% now→proj'].map(h=><th key={h} style={{padding:"5px 8px",textAlign:h==='Rep'?'left':'center',color:MUTED,fontWeight:700,fontSize:9,textTransform:'uppercase',letterSpacing:'1px',whiteSpace:'nowrap'}}>{h}</th>)}</tr></thead>
+                <thead><tr style={{borderBottom:`2px solid ${BORDER2}`}}>{['Rep','Mar Rank','Apr Rank','SQLs','% of Mar','Meetings','% of Mar','MQLs','% of Mar'].map(h=><th key={h} style={{padding:"5px 8px",textAlign:h==='Rep'?'left':'center',color:MUTED,fontWeight:700,fontSize:9,textTransform:'uppercase',letterSpacing:'1px',whiteSpace:'nowrap'}}>{h}</th>)}</tr></thead>
                 <tbody>{rows.map((r,i)=>{
                   const status=sqlPaceStatus(r.curSQL,r.marchSQL);
                   return(<tr key={r.name} style={{borderBottom:`1px solid ${BORDER}`,background:i%2?CARD3:'transparent'}}>
