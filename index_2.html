@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>åå
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Martal Group — Performance Intelligence Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -53,6 +53,7 @@ const RAW = [
   {m:"Oct 25",ac:99,dc:19,cl:13},{m:"Nov 25",ac:94,dc:12,cl:16},
   {m:"Dec 25",ac:101,dc:23,cl:15},{m:"Jan 26",ac:105,dc:22,cl:15},
   {m:"Feb 26",ac:106,dc:23,cl:17},{m:"Mar 26",ac:110,dc:14,cl:11},
+  {m:"Apr 26",ac:114,dc:19,cl:13},
 ];
 const MO = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const mIdx = m => { const p=m.split(" "); return parseInt(p[1])*12+MO.indexOf(p[0]); };
@@ -324,7 +325,7 @@ const SOMS=[
      {name:"Infolink Tax",start:"Nov 25",end:"Feb 26",reason:"Budget Issue",reps:["Blake Peremel"]},
      {name:"Nava Software",start:"Dec 25",end:"Dec 25",reason:"Budget Issue",reps:["Eric Tuttle","Anand Pandey"]},
      {name:"One River",start:"Jan 25",end:"Feb 26",reason:"Budget Issue",reps:["Eric Tuttle"]},
-     {name:"WRS Health",start:"Jan 26",end:null,reps:["Angela Hamilton"]},
+     {name:"WRS Health",start:"Jan 26",end:"Apr 26",reps:["Angela Hamilton"]},
      {name:"JumpCloud",start:"Jan 25",end:"Mar 26",reason:"Lack of Results",reps:["Eric Tuttle"]},
    ]},
   {name:"Matt Guthrie",
@@ -333,13 +334,13 @@ const SOMS=[
    accounts:[
      {name:"Adippsa",start:"Oct 25",end:null,reps:["Angela Hamilton","Joshua Crawford"]},
      {name:"Envirolyte",start:"Dec 25",end:null,reps:["Dominic Libertoski","Jesse Shorr"]},
-     {name:"NIFTIT",start:"Dec 25",end:null,reps:["Eric Tuttle","Dominic Libertoski"]},
+     {name:"NIFTIT",start:"Dec 25",end:"Apr 26",reps:["Eric Tuttle","Dominic Libertoski"]},
      {name:"Prediction Data",start:"Dec 25",end:null,reps:["Dominic Libertoski","Rebecca Barnes"]},
      {name:"Upstream Thinking",start:"Dec 25",end:null,reps:["Tim Lan"]},
-     {name:"Risk Ledger",start:"Jan 26",end:null,reps:["Blake Peremel","Rebecca Barnes","Javion Jones","Kellee Madonia"]},
+     {name:"Risk Ledger",start:"Jan 26",end:"Apr 26",reps:["Blake Peremel","Rebecca Barnes","Javion Jones","Kellee Madonia"]},
      {name:"Trifork",start:"Jan 26",end:null,reps:["Blake Peremel"]},
      {name:"Genomadix",start:"Jan 26",end:null,reps:["Kellee Madonia","Rebecca Barnes"]},
-     {name:"Rodan Energy",start:"Jan 26",end:null,reps:["Joshua Bylsma"]},
+     {name:"Rodan Energy",start:"Jan 26",end:"Apr 26",reps:["Joshua Bylsma"]},
      {name:"Intellect",start:"Jan 26",end:null,reps:["Anand Pandey","Korbin Kirk","Derek Sindelman","Dominic Libertoski"]},
      {name:"Working Backwards",start:"Feb 26",end:null,reps:["Bill O'Leary","Anand Pandey","Alyssa Perez","Dominic Libertoski","Mark Kreidler"]},
      {name:"LRDG Online",start:"Feb 26",end:null,reps:["Blake Peremel"]},
@@ -375,9 +376,9 @@ const SOMS=[
    reps:["Paige Givinsky","Jesse Shorr","Blake Peremel","Savannah Peck","Joshua Crawford","Anand Pandey","Rebecca Barnes","Alyssa Perez","Tim Lan","Kellee Madonia","Johan Vrey","Stephanie Hackert","Joshua Bylsma"],
    accounts:[
      {name:"Vistaar",start:"Apr 24",end:null,reps:["Paige Givinsky","Jesse Shorr"]},
-     {name:"Paydoff",start:"Dec 25",end:null,reps:["Blake Peremel"]},
-     {name:"ShiftLab LLC",start:"Jan 26",end:null,reps:["Savannah Peck","Joshua Crawford"]},
-     {name:"All Star Digital",start:"Jan 26",end:null,reps:["Anand Pandey","Rebecca Barnes"]},
+     {name:"Paydoff",start:"Dec 25",end:"Apr 26",reps:["Blake Peremel"]},
+     {name:"ShiftLab LLC",start:"Jan 26",end:"Apr 26",reps:["Savannah Peck","Joshua Crawford"]},
+     {name:"All Star Digital",start:"Jan 26",end:"Apr 26",reps:["Anand Pandey","Rebecca Barnes"]},
      {name:"Heinsohn",start:"Feb 26",end:null,reps:["Alyssa Perez","Blake Peremel"]},
      {name:"United Salon Technologies",start:"Mar 26",end:null,reps:["Anand Pandey","Kellee Madonia"]},
      {name:"Pacific Forge",start:"Mar 26",end:null,reps:["Jesse Shorr"]},
@@ -398,7 +399,7 @@ const SOMS=[
    reps:["Michele Harris","Tim Lan","Francois Dore","Alli Fowler","Anand Pandey","Logan Kennedy","Cesar Garcia","Savannah Peck","Jesse Shorr","Joshua Crawford","Harjit Sawhney","Dominic Libertoski","Blake Peremel","Joshua Bylsma","Rebecca Barnes"],
    accounts:[
      {name:"Solver Inc",start:"Mar 25",end:null,reps:["Michele Harris","Tim Lan"]},
-     {name:"Whale",start:"Dec 25",end:null,reps:["Tim Lan","Alli Fowler"]},
+     {name:"Whale",start:"Dec 25",end:"Apr 26",reps:["Tim Lan","Alli Fowler"]},
      {name:"KIS Solutions",start:"Jan 26",end:null,reps:["Cesar Garcia","Javion Jones"]},
      {name:"Jiffy Junk",start:"Jan 26",end:null,reps:["Alli Fowler","Savannah Peck"]},
      {name:"Quality Engenharia",start:"Feb 26",end:null,reps:["Jesse Shorr"]},
@@ -420,7 +421,7 @@ const SOMS=[
      {name:"GESAC",start:"Mar 25",end:null,reps:["Ariel Wolfe","Francois Dore"]},
      {name:"Westhire",start:"Jan 26",end:null,reps:["Ariel Wolfe"]},
      {name:"Access Charity",start:"Jan 26",end:null,reps:["Ariel Wolfe"]},
-     {name:"Akquinet",start:"Jan 26",end:null,reps:["Ariel Wolfe","Francois Dore","Elisha Johnson"]},
+     {name:"Akquinet",start:"Jan 26",end:"Apr 26",reps:["Ariel Wolfe","Francois Dore","Elisha Johnson"]},
      {name:"Gaichu Managed Services",start:"Jan 26",end:null,reps:["Francois Dore","Elisha Johnson"]},
      {name:"Next Ray",start:"Feb 26",end:null,reps:["Francois Dore"]},
      {name:"PostProcess",start:"Mar 26",end:null,reps:["Francois Dore","Ariel Wolfe"]},
@@ -436,7 +437,7 @@ const SOMS=[
    perf:[{m:"Aug 25",mql:21.9,sql:7.4,mtg:3.5},{m:"Sep 25",mql:20.3,sql:7.5,mtg:3.5},{m:"Oct 25",mql:18,sql:6.6,mtg:2.1},{m:"Nov 25",mql:23.2,sql:7.2,mtg:3.23},{m:"Dec 25",mql:20.7,sql:6.3,mtg:4.8},{m:"Jan 26",mql:19.8,sql:9,mtg:0.8},{m:"Feb 26",mql:14.3,sql:4.3,mtg:2.5},{m:"Mar 26",mql:21.6,sql:6.1,mtg:2.2},{m:"Apr 26",mql:26.3,sql:11.4,mtg:3.9}],
    reps:["Bill O'Leary","Alyssa Perez","Stephanie Hackert","Logan Kennedy","Harjit Sawhney","Daniel Davies","Alli Fowler","Javion Jones","Korbin Kirk","Tim Lan","Anand Pandey","Cesar Garcia","Jesse Shorr","Savannah Peck"],
    accounts:[
-     {name:"Website Closers",start:"Jul 25",end:null,reps:["Bill O'Leary","Alyssa Perez"]},
+     {name:"Website Closers",start:"Jul 25",end:"Apr 26",reps:["Bill O'Leary","Alyssa Perez"]},
      {name:"Dynamic PMO",start:"Aug 25",end:"Mar 26",reason:"Budget Issue",reps:["Harjit Sawhney","Daniel Davies"]},
      {name:"Blue Penguin",start:"Sep 25",end:null,reps:["Alli Fowler","Dominic Libertoski"]},
      {name:"Winegard",start:"Nov 25",end:null,reps:["Bill O'Leary","Dominic Libertoski"]},
@@ -457,7 +458,7 @@ const SOMS=[
    reps:["Michele Harris","Derek Sindelman","Daniel Davies","Joshua Bylsma","Jesse Shorr","Korbin Kirk","Angela Hamilton","Harjit Sawhney","Bill O'Leary","Alyssa Perez","Anand Pandey","Javion Jones","Savannah Peck","Tim Lan","Johan Vrey","Rebecca Barnes"],
    accounts:[
      {name:"OneCore Media",start:"Feb 26",end:null,reps:["Paige Givinsky"]},
-     {name:"IDEMIA",start:"Jun 25",end:null,reps:["Michele Harris","Derek Sindelman"]},
+     {name:"IDEMIA",start:"Jun 25",end:"Apr 26",reps:["Michele Harris","Derek Sindelman"]},
      {name:"Noratel",start:"Oct 25",end:null,reps:["Daniel Davies"]},
      {name:"Pocket-E",start:"Nov 25",end:null,reps:["Joshua Bylsma"]},
      {name:"Upstream - Matter of Voice",start:"Nov 25",end:null,reps:["Jesse Shorr","Korbin Kirk"]},
@@ -507,10 +508,10 @@ const SOMS=[
      {name:"Lean Excellence",start:"Mar 26",end:null,reps:["Jesse Shorr"]},
      {name:"MicroServe",start:"Feb 26",end:null,reps:["Angela Hamilton"]},
      {name:"PMC Treasury",start:"Jan 26",end:null,reps:["Ariel Wolfe","Bill O'Leary"]},
-     {name:"Betstamp",start:"Oct 25",end:null,reps:[]},
+     {name:"Betstamp",start:"Oct 25",end:"Apr 26",reps:[]},
      {name:"ApplyHere",start:"Jan 26",end:null,reps:["Alli Fowler"]},
      {name:"Digital Seniority",start:"Feb 26",end:null,reps:["Tim Lan","Dominic Libertoski"]},
-     {name:"Validato (NSA)",start:"Jan 26",end:null,reps:["Ariel Wolfe"]},
+     {name:"Validato (NSA)",start:"Jan 26",end:"Apr 26",reps:["Ariel Wolfe"]},
      {name:"Socket Labs",start:"Nov 25",end:"Feb 26",reason:"Budget Issue",reps:["Angela Hamilton"]},
      {name:"Precision Motion Health",start:"Oct 25",end:"Feb 26",reason:"Budget Issue",reps:["Jesse Shorr"]},
      {name:"Schill Insurance",start:"Dec 25",end:"Feb 26",reason:"Budget Issue",reps:["Angela Hamilton"]},
@@ -1032,7 +1033,7 @@ function CompanyTab({cms}){
     {/* Always-visible stat cards */}
     <div style={{display:"flex",gap:10,flexWrap:"wrap",marginBottom:16,alignItems:"stretch"}}>
       <Stat label="Active Clients" value={lat.ac} color={G}/>
-      <Stat label="March Lost" value={lat.cl} color="#ef4444"/>
+      <Stat label="April Lost" value={lat.cl} color="#ef4444"/>
       <Stat label={churnLabel} value={`${churnVal}%`} color={crCol(parseFloat(churnVal))} sub={churnSub}/>
       <Stat label="6-Mo Avg" value={`${a6}%`} color="#8dc63f"/>
       <Stat label="12-Mo Avg" value={`${a12}%`} color="#5aab1f"/>
@@ -1936,18 +1937,20 @@ function SomPrintModal({som,onClose}){
 
 
 // ─── SOM MONTHLY METRICS (churn + booked meetings) ───────────────────────
+// April 2026 close: q2/apr/aprR/q2n filled from end-of-month measurement (May 4, 2026)
+// aprR = April churns ÷ avg(active Jan/Feb/Mar 26) × 100 (canonical personCR formula)
 const CHURN_GOALS = {
-  "David Rosenthal":{active:14,churned:5,q1:4,q2:0,apr:0,q1r:7.87,q2tr:7.08,aprR:null,budget:3,janR:0.0,febR:11.11,marR:12.5,jan:0,feb:2,mar:2,q1n:["Infolink Tax","One River","TigerPak","JumpCloud"],q2n:[],mtgApr:2.7,mtgMar:2.3,mtgFeb:2.1,mtgDelta:0.4,mtgPct:68,aprAccts:15,aprFlips:37,mtgGoal:4},
-  "Matt Guthrie":{active:16,churned:3,q1:2,q2:0,apr:0,q1r:3.81,q2tr:3.43,aprR:null,budget:1,janR:5.56,febR:5.88,marR:0.0,jan:1,feb:1,mar:0,q1n:["Innowell","The Plug T-Shirt Store"],q2n:[],mtgApr:2.7,mtgMar:2.9,mtgFeb:2.8,mtgDelta:-0.2,mtgPct:68,aprAccts:16,aprFlips:43,mtgGoal:4},
-  "Venus Powers":{active:13,churned:1,q1:1,q2:0,apr:0,q1r:2.38,q2tr:2.14,aprR:null,budget:1,janR:7.14,febR:0.0,marR:0.0,jan:1,feb:0,mar:0,q1n:["TCS Canada"],q2n:[],mtgApr:2.3,mtgMar:1.1,mtgFeb:1.7,mtgDelta:1.2,mtgPct:57,aprAccts:10,aprFlips:23,mtgGoal:4},
-  "Jason Andrews":{active:13,churned:5,q1:4,q2:0,apr:0,q1r:8.36,q2tr:7.52,aprR:null,budget:3,janR:11.76,febR:13.33,marR:0.0,jan:2,feb:2,mar:0,q1n:["Neat Data","Land Journey AI","DYODE","Slow Road Photo"],q2n:[],mtgApr:2.0,mtgMar:1.3,mtgFeb:1.1,mtgDelta:0.7,mtgPct:50,aprAccts:9,aprFlips:18,mtgGoal:4},
-  "Grant Paris":{active:10,churned:5,q1:3,q2:0,apr:0,q1r:8.16,q2tr:7.34,aprR:null,budget:2,janR:15.38,febR:0.0,marR:9.09,jan:2,feb:0,mar:1,q1n:["Recruit in Motion","Itransition","Elevate Cloud"],q2n:[],mtgApr:1.6,mtgMar:0.8,mtgFeb:1.4,mtgDelta:0.8,mtgPct:40,aprAccts:9,aprFlips:14,mtgGoal:4},
-  "James Bellew":{active:9,churned:5,q1:3,q2:0,apr:0,q1r:8.89,q2tr:8.0,aprR:null,budget:2,janR:16.67,febR:10.0,marR:0.0,jan:2,feb:1,mar:0,q1n:["HYCU Inc","Bosch Mobility","Connetra"],q2n:[],mtgApr:2.9,mtgMar:0.75,mtgFeb:2.7,mtgDelta:2.15,mtgPct:72,aprAccts:8,aprFlips:23,mtgGoal:4},
-  "David Harris":{active:9,churned:6,q1:6,q2:0,apr:0,q1r:14.86,q2tr:13.37,aprR:null,budget:5,janR:6.67,febR:7.14,marR:30.77,jan:1,feb:1,mar:4,q1n:["Novahaus","Jellyfish","Dynamic PMO","MTechZilla","Campus Ivy","ISG One"],q2n:[],mtgApr:3.9,mtgMar:2.2,mtgFeb:2.5,mtgDelta:1.7,mtgPct:98,aprAccts:12,aprFlips:47,mtgGoal:4},
-  "Merv Charles":{active:13,churned:5,q1:4,q2:0,apr:0,q1r:8.26,q2tr:7.43,aprR:null,budget:3,janR:0.0,febR:17.65,marR:7.14,jan:0,feb:3,mar:1,q1n:["Reten","Garantir","WRK","Fenix"],q2n:[],mtgApr:1.6,mtgMar:1.2,mtgFeb:2.7,mtgDelta:0.4,mtgPct:40,aprAccts:10,aprFlips:16,mtgGoal:4},
-  "Paige Givinsky":{active:8,churned:0,q1:0,q2:0,apr:0,q1r:0,q2tr:0.0,aprR:null,budget:0,janR:0.0,febR:0.0,marR:0.0,jan:0,feb:0,mar:0,q1n:[],q2n:[],mtgApr:null,mtgMar:1.0,mtgFeb:1.0,mtgDelta:null,mtgPct:0,aprAccts:0,aprFlips:0,mtgGoal:4},
-  "Haset Aklilu (VP of Product / GEA & JPM Chase)":{active:2,churned:0,q1:0,q2:0,apr:0,q1r:0,q2tr:0.0,aprR:null,budget:0,janR:0.0,febR:0.0,marR:0.0,jan:0,feb:0,mar:0,q1n:[],q2n:[],mtgApr:11.0,mtgMar:null,mtgFeb:null,mtgDelta:null,mtgPct:275,aprAccts:2,aprFlips:22,mtgGoal:4},
-  "No SOM Account":{active:12,churned:10,q1:10,q2:0,apr:0,q1r:17.88,q2tr:16.09,aprR:null,budget:9,janR:18.18,febR:27.78,marR:7.69,jan:4,feb:5,mar:1,q1n:["ivalua","Virtual Fudge","Blue Box","Skybridge","Socket Labs","Precision Motion Health","Schill Insurance","EDGE / EdgeScore","Ovaro","Alpha BPO"],q2n:[],mtgApr:3.0,mtgMar:null,mtgFeb:null,mtgDelta:null,mtgPct:75,aprAccts:9,aprFlips:27,mtgGoal:4}
+  "David Rosenthal":{active:14,churned:5,q1:4,q2:1,apr:1,q1r:7.87,q2tr:7.08,aprR:7.89,budget:3,janR:0.0,febR:11.11,marR:12.5,jan:0,feb:2,mar:2,q1n:["Infolink Tax","One River","TigerPak","JumpCloud"],q2n:["WRS Health"],mtgApr:2.7,mtgMar:2.3,mtgFeb:2.1,mtgDelta:0.4,mtgPct:68,aprAccts:15,aprFlips:37,mtgGoal:4},
+  "Matt Guthrie":{active:16,churned:3,q1:2,q2:3,apr:3,q1r:3.81,q2tr:3.43,aprR:22.50,budget:1,janR:5.56,febR:5.88,marR:0.0,jan:1,feb:1,mar:0,q1n:["Innowell","The Plug T-Shirt Store"],q2n:["NIFTIT","Risk Ledger","Rodan Energy"],mtgApr:2.7,mtgMar:2.9,mtgFeb:2.8,mtgDelta:-0.2,mtgPct:68,aprAccts:16,aprFlips:43,mtgGoal:4},
+  "Venus Powers":{active:13,churned:1,q1:1,q2:0,apr:0,q1r:2.38,q2tr:2.14,aprR:0.0,budget:1,janR:7.14,febR:0.0,marR:0.0,jan:1,feb:0,mar:0,q1n:["TCS Canada"],q2n:[],mtgApr:2.3,mtgMar:1.1,mtgFeb:1.7,mtgDelta:1.2,mtgPct:57,aprAccts:10,aprFlips:23,mtgGoal:4},
+  "Jason Andrews":{active:13,churned:5,q1:4,q2:3,apr:3,q1r:8.36,q2tr:7.52,aprR:42.86,budget:3,janR:11.76,febR:13.33,marR:0.0,jan:2,feb:2,mar:0,q1n:["Neat Data","Land Journey AI","DYODE","Slow Road Photo"],q2n:["Paydoff","ShiftLab LLC","All Star Digital"],mtgApr:2.0,mtgMar:1.3,mtgFeb:1.1,mtgDelta:0.7,mtgPct:50,aprAccts:9,aprFlips:18,mtgGoal:4},
+  "Grant Paris":{active:10,churned:5,q1:3,q2:1,apr:1,q1r:8.16,q2tr:7.34,aprR:13.04,budget:2,janR:15.38,febR:0.0,marR:9.09,jan:2,feb:0,mar:1,q1n:["Recruit in Motion","Itransition","Elevate Cloud"],q2n:["Whale"],mtgApr:1.6,mtgMar:0.8,mtgFeb:1.4,mtgDelta:0.8,mtgPct:40,aprAccts:9,aprFlips:14,mtgGoal:4},
+  "James Bellew":{active:9,churned:5,q1:3,q2:1,apr:1,q1r:8.89,q2tr:8.0,aprR:15.79,budget:2,janR:16.67,febR:10.0,marR:0.0,jan:2,feb:1,mar:0,q1n:["HYCU Inc","Bosch Mobility","Connetra"],q2n:["Akquinet"],mtgApr:2.9,mtgMar:0.75,mtgFeb:2.7,mtgDelta:2.15,mtgPct:72,aprAccts:8,aprFlips:23,mtgGoal:4},
+  "David Harris":{active:9,churned:6,q1:6,q2:1,apr:1,q1r:14.86,q2tr:13.37,aprR:11.54,budget:5,janR:6.67,febR:7.14,marR:30.77,jan:1,feb:1,mar:4,q1n:["Novahaus","Jellyfish","Dynamic PMO","MTechZilla","Campus Ivy","ISG One"],q2n:["Website Closers"],mtgApr:3.9,mtgMar:2.2,mtgFeb:2.5,mtgDelta:1.7,mtgPct:98,aprAccts:12,aprFlips:47,mtgGoal:4},
+  "Merv Charles":{active:13,churned:5,q1:4,q2:1,apr:1,q1r:8.26,q2tr:7.43,aprR:9.09,budget:3,janR:0.0,febR:17.65,marR:7.14,jan:0,feb:3,mar:1,q1n:["Reten","Garantir","WRK","Fenix"],q2n:["IDEMIA"],mtgApr:1.6,mtgMar:1.2,mtgFeb:2.7,mtgDelta:0.4,mtgPct:40,aprAccts:10,aprFlips:16,mtgGoal:4},
+  "Paige Givinsky":{active:8,churned:0,q1:0,q2:0,apr:0,q1r:0,q2tr:0.0,aprR:0.0,budget:0,janR:0.0,febR:0.0,marR:0.0,jan:0,feb:0,mar:0,q1n:[],q2n:[],mtgApr:null,mtgMar:1.0,mtgFeb:1.0,mtgDelta:null,mtgPct:0,aprAccts:0,aprFlips:0,mtgGoal:4},
+  "Haset Aklilu (VP of Product / GEA & JPM Chase)":{active:2,churned:0,q1:0,q2:0,apr:0,q1r:0,q2tr:0.0,aprR:0.0,budget:0,janR:0.0,febR:0.0,marR:0.0,jan:0,feb:0,mar:0,q1n:[],q2n:[],mtgApr:11.0,mtgMar:null,mtgFeb:null,mtgDelta:null,mtgPct:275,aprAccts:2,aprFlips:22,mtgGoal:4},
+  "No SOM Account":{active:12,churned:10,q1:10,q2:2,apr:2,q1r:17.88,q2tr:16.09,aprR:16.22,budget:9,janR:18.18,febR:27.78,marR:7.69,jan:4,feb:5,mar:1,q1n:["ivalua","Virtual Fudge","Blue Box","Skybridge","Socket Labs","Precision Motion Health","Schill Insurance","EDGE / EdgeScore","Ovaro","Alpha BPO"],q2n:["Betstamp","Validato (NSA)"],mtgApr:3.0,mtgMar:null,mtgFeb:null,mtgDelta:null,mtgPct:75,aprAccts:9,aprFlips:27,mtgGoal:4}
 };
 
 // Helpers
@@ -1970,58 +1973,73 @@ function KpiCard(props){
 }
 
 
-// ─── CHURN REDUCTION GOAL PANEL (Q1 baseline, April pending measurement) ────
+// ─── CHURN REDUCTION GOAL PANEL (Q1 baseline → Q2 actual, April closed) ────
 function ChurnGoalPanel(props){
   const g = CHURN_GOALS[props.somName];
   if(!g) return null;
   const hasBaseline = g.q1 > 0;
-  
+  const st = somStatus(g);
+  const aprRateCol = g.aprR === 0 ? G : g.aprR <= g.q2tr ? G : g.aprR <= g.q1r ? "#f59e0b" : "#ef4444";
+  const aprRateSub = g.apr === 0 ? "no April churn" : g.aprR <= g.q2tr ? "below Q2 target" : g.aprR <= g.q1r ? "above target, below Q1" : "above Q1 baseline";
+  const q2Col = g.q2 > g.budget ? "#dc2626" : g.q2 === g.budget ? "#ea580c" : G;
+  const q2Sub = g.budget === 0 ? "no baseline" : g.q2 > g.budget ? "of "+g.budget+" — over!" : g.q2 === g.budget ? "of "+g.budget+" — at limit" : "of "+g.budget+" — "+(g.budget-g.q2)+" remaining";
+
   return (<div style={{background:"#0d0d0d",padding:"18px 22px",borderRadius:8,marginBottom:18,border:"1px solid "+BORDER}}>
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14,flexWrap:"wrap",gap:10}}>
       <div style={{display:"flex",alignItems:"center",gap:8}}>
         <div style={{width:16,height:2,background:G}}/>
         <div style={{fontSize:11,letterSpacing:"1.5px",textTransform:"uppercase",color:MUTED,fontFamily:FONT_BODY,fontWeight:700}}>Churn Reduction Goal — Q2 2026 (10% reduction target)</div>
       </div>
-      <div style={{background:"#2a1e0e",border:"1px solid #f59e0b55",color:"#f59e0b",borderRadius:20,padding:"4px 12px",fontSize:10,fontWeight:700,fontFamily:FONT_BODY,letterSpacing:"0.8px"}}>⏳ APRIL NOT YET MEASURED</div>
+      <div style={{background:st.bg,border:"1px solid "+st.color+"55",color:st.color,borderRadius:20,padding:"4px 12px",fontSize:10,fontWeight:700,fontFamily:FONT_BODY,letterSpacing:"0.8px"}}>{st.label}</div>
     </div>
     <div style={{display:"flex",gap:12,alignItems:"stretch",marginBottom:14,flexWrap:"wrap"}}>
       <KpiCard label="Q1 BASELINE %" value={hasBaseline?g.q1r+"%":"—"} sub="Jan–Mar avg" valColor={hasBaseline?"#ef4444":MUTED}/>
       <KpiCard label="Q2 TARGET %" value={hasBaseline?"≤"+g.q2tr+"%":"—"} sub="10% reduction" valColor={hasBaseline?G:MUTED}/>
       <KpiCard label="Q2 BUDGET" value={g.budget} sub={g.budget>0?"max churns allowed Q2":"no baseline"} valColor={g.budget>0?G:MUTED}/>
-      <KpiCard label="APRIL RATE" value="—" sub="measured end of April" valColor={MUTED}/>
-      <KpiCard label="Q2 ACTUAL" value="—" sub="pending measurement" valColor={MUTED}/>
+      <KpiCard label="APRIL RATE" value={g.aprR!=null?g.aprR+"%":"—"} sub={hasBaseline?aprRateSub:"no Q1 baseline"} valColor={hasBaseline?aprRateCol:MUTED}/>
+      <KpiCard label="Q2 ACTUAL" value={g.q2} sub={q2Sub} valColor={q2Col}/>
     </div>
     
     {hasBaseline && (<div style={{background:CARD,border:"1px solid "+BORDER,borderRadius:6,padding:"14px 16px",marginBottom:10}}>
-      <div style={{fontSize:9,letterSpacing:"1.2px",textTransform:"uppercase",color:MUTED,fontFamily:FONT_BODY,fontWeight:700,marginBottom:10}}>Q1 Monthly Churn Rate Breakdown</div>
+      <div style={{fontSize:9,letterSpacing:"1.2px",textTransform:"uppercase",color:MUTED,fontFamily:FONT_BODY,fontWeight:700,marginBottom:10}}>Monthly Churn Rate Breakdown — Q1 Baseline + April</div>
       <div style={{display:"flex",gap:8}}>
         {[
-          {m:"JAN 26", r:g.janR, n:g.jan, baseline:false},
-          {m:"FEB 26", r:g.febR, n:g.feb, baseline:false},
-          {m:"MAR 26", r:g.marR, n:g.mar, baseline:false},
-          {m:"Q1 AVG", r:g.q1r, n:g.q1, baseline:true}
+          {m:"JAN 26", r:g.janR, n:g.jan, baseline:false, q2:false},
+          {m:"FEB 26", r:g.febR, n:g.feb, baseline:false, q2:false},
+          {m:"MAR 26", r:g.marR, n:g.mar, baseline:false, q2:false},
+          {m:"Q1 AVG", r:g.q1r, n:g.q1, baseline:true,  q2:false},
+          {m:"APR 26", r:g.aprR, n:g.apr, baseline:false, q2:true}
         ].map((c,i)=>{
           const isAvg = c.baseline;
-          const cardBg = isAvg ? "#2a1214" : "#1a1a1a";
-          const valCol = c.r === 0 ? MUTED : (c.r <= g.q2tr ? G : (c.r <= g.q1r ? "#f59e0b" : "#ef4444"));
-          return (<div key={i} style={{flex:1,background:cardBg,border:"1px solid "+BORDER,borderRadius:6,padding:"12px 10px",textAlign:"center"}}>
-            <div style={{fontSize:9,fontWeight:700,letterSpacing:"1px",color:MUTED,fontFamily:FONT_BODY}}>{c.m}</div>
-            <div style={{fontSize:24,fontWeight:900,color:valCol,fontFamily:FONT_DISPLAY,margin:"6px 0",letterSpacing:"-0.5px"}}>{c.r}%</div>
+          const isQ2 = c.q2;
+          const cardBg = isAvg ? "#2a1214" : isQ2 ? "#0f2015" : "#1a1a1a";
+          const cardBorder = isQ2 ? "#16a34a55" : BORDER;
+          const valCol = c.r === 0 ? (isQ2 ? G : MUTED) : (c.r <= g.q2tr ? G : (c.r <= g.q1r ? "#f59e0b" : "#ef4444"));
+          return (<div key={i} style={{flex:1,background:cardBg,border:"1px solid "+cardBorder,borderRadius:6,padding:"12px 10px",textAlign:"center"}}>
+            <div style={{fontSize:9,fontWeight:700,letterSpacing:"1px",color:isQ2?G:MUTED,fontFamily:FONT_BODY}}>{c.m}</div>
+            <div style={{fontSize:24,fontWeight:900,color:valCol,fontFamily:FONT_DISPLAY,margin:"6px 0",letterSpacing:"-0.5px"}}>{c.r!=null?c.r+"%":"—"}</div>
             <div style={{fontSize:9,color:MUTED,fontFamily:FONT_BODY}}>{isAvg?"Baseline":(c.n+" lost")}</div>
           </div>);
         })}
       </div>
     </div>)}
     
-    {g.q1n.length>0 && (<div>
+    {g.q1n.length>0 && (<div style={{marginBottom:10}}>
       <div style={{fontSize:9,letterSpacing:"1px",textTransform:"uppercase",color:MUTED,fontFamily:FONT_BODY,fontWeight:700,marginBottom:6}}>Q1 Baseline Churns (Jan–Mar)</div>
       <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
         {g.q1n.map((n,i)=><span key={i} style={{fontSize:10,padding:"4px 10px",background:"#20242b",color:MUTED,borderRadius:3,fontFamily:FONT_BODY,fontWeight:600}}>{n}</span>)}
       </div>
     </div>)}
     
+    {g.q2n.length>0 && (<div>
+      <div style={{fontSize:9,letterSpacing:"1px",textTransform:"uppercase",color:"#16a34a",fontFamily:FONT_BODY,fontWeight:700,marginBottom:6}}>Q2 Churns (April)</div>
+      <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
+        {g.q2n.map((n,i)=><span key={i} style={{fontSize:10,padding:"4px 10px",background:"#0f2015",color:"#16a34a",border:"1px solid #16a34a55",borderRadius:3,fontFamily:FONT_BODY,fontWeight:600}}>{n}</span>)}
+      </div>
+    </div>)}
+    
     <div style={{marginTop:12,paddingTop:12,borderTop:"1px solid "+BORDER,fontSize:10,color:MUTED,fontFamily:FONT_BODY,fontStyle:"italic"}}>
-      Churn is measured on the last day of each month. April results available May 1.
+      April 2026 closed. Rate calculated as April churns ÷ avg(active Jan/Feb/Mar 26) × 100. Next measurement: end of May.
     </div>
   </div>);
 }
@@ -2065,6 +2083,7 @@ function BookedMeetingsPanel(props){
   </div>);
 }
 
+
 // ─── SOM OVERVIEW (when no SOM selected) ──────────────────────────────────
 function SOMOverview(props){
   const onSelect = props.onSelect;
@@ -2077,6 +2096,8 @@ function SOMOverview(props){
     const g = CHURN_GOALS[n];
     acc.q1Churns += g.q1;
     acc.q2Budget += g.budget;
+    acc.q2Total += g.q2;
+    acc.aprChurns += g.apr;
     acc.marChurns += g.mar;
     acc.aprAccts += g.aprAccts;
     acc.aprFlips += g.aprFlips;
@@ -2084,16 +2105,22 @@ function SOMOverview(props){
     else if(g.mtgPct >= 75) acc.nearGoal++;
     if(g.q1 > 0) acc.withBaseline++;
     return acc;
-  }, {q1Churns:0, q2Budget:0, marChurns:0, aprAccts:0, aprFlips:0, goalMet:0, nearGoal:0, withBaseline:0});
+  }, {q1Churns:0, q2Budget:0, q2Total:0, aprChurns:0, marChurns:0, aprAccts:0, aprFlips:0, goalMet:0, nearGoal:0, withBaseline:0});
+  // Include No SOM Account in q2 + apr totals
+  const noSomG = CHURN_GOALS["No SOM Account"];
+  const aprChurnsAll = totals.aprChurns + (noSomG ? noSomG.apr : 0);
+  const q2TotalAll = totals.q2Total + (noSomG ? noSomG.q2 : 0);
+  const q2BudgetAll = totals.q2Budget + (noSomG ? noSomG.budget : 0);
   
   const companyMtgAvg = totals.aprAccts > 0 ? (totals.aprFlips / totals.aprAccts) : 0;
   const companyPctOfGoal = Math.round((companyMtgAvg / 4) * 100);
+  const aprChurnsCol = q2TotalAll > q2BudgetAll ? "#dc2626" : q2TotalAll === q2BudgetAll ? "#ea580c" : G;
   
   return (<div>
     <div style={{display:"flex",gap:10,marginBottom:14,flexWrap:"wrap"}}>
       <KpiCard label="Q1 TOTAL CHURNS" value={totals.q1Churns} sub="Jan–Mar baseline"/>
-      <KpiCard label="Q2 BUDGET (MAX)" value={totals.q2Budget} sub="10% reduction target" valColor={G}/>
-      <KpiCard label="APRIL CHURNS" value={"—"} sub="measured May 1" valColor={MUTED}/>
+      <KpiCard label="Q2 BUDGET (MAX)" value={q2BudgetAll} sub="10% reduction target" valColor={G}/>
+      <KpiCard label="APRIL CHURNS" value={aprChurnsAll} sub={"Q2 actual: "+q2TotalAll+" / "+q2BudgetAll+" budget"} valColor={aprChurnsCol}/>
       <KpiCard label="AVG MTG / ACCOUNT" value={companyMtgAvg.toFixed(2)} sub="company-wide, Mar 16–Apr 15" valColor={companyMtgAvg>=4?G:(companyMtgAvg>=3?"#f59e0b":"#ef4444")}/>
       <KpiCard label="MTG GOAL (4/MO)" value={companyPctOfGoal+"%"} sub={totals.goalMet+" SOMs at goal"} valColor={companyPctOfGoal>=100?G:(companyPctOfGoal>=75?"#f59e0b":"#ef4444")}/>
     </div>
@@ -2110,6 +2137,7 @@ function SOMOverview(props){
         const displayName = hasParen ? name.split(" (")[0] : name;
         const subtitle = hasParen ? name.substring(name.indexOf("(")) : null;
         const mtgColor = g.mtgApr === null ? MUTED : (g.mtgPct>=100?"#16a34a":(g.mtgPct>=75?"#f59e0b":"#dc2626"));
+        const aprRateCol = g.aprR === 0 ? G : g.aprR <= g.q2tr ? G : g.aprR <= g.q1r ? "#f59e0b" : "#ef4444";
         return (<div key={name} onClick={()=>onSelect(name)} style={{background:st.bg,border:"1px solid "+st.color+"33",borderLeft:"3px solid "+st.color,borderRadius:6,padding:16,cursor:"pointer"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:4,gap:8}}>
             <div style={{minWidth:0,flex:1}}>
@@ -2122,21 +2150,21 @@ function SOMOverview(props){
             <span style={{color:"#8ed122",fontWeight:700}}>{g.active}</span> active &nbsp;·&nbsp; <span style={{color:"#dc2626",fontWeight:700}}>{g.churned}</span> churned
           </div>
           
-          {/* CHURN ROW — Q1 baseline → Q2 target (April pending) */}
+          {/* CHURN ROW — Q1 baseline → Q2 actual (April closed) */}
           <div style={{background:CARD,borderRadius:4,padding:"10px 12px",marginBottom:8,border:"1px solid "+BORDER}}>
             <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
-              <div style={{fontSize:8,color:MUTED,fontFamily:FONT_BODY,fontWeight:700,letterSpacing:"0.8px"}}>CHURN — Q1 BASELINE → Q2 TARGET</div>
-              <div style={{fontSize:8,color:"#f59e0b",fontFamily:FONT_BODY,fontWeight:700,letterSpacing:"0.8px"}}>APR PENDING</div>
+              <div style={{fontSize:8,color:MUTED,fontFamily:FONT_BODY,fontWeight:700,letterSpacing:"0.8px"}}>CHURN — Q1 BASELINE → Q2 ACTUAL</div>
+              <div style={{fontSize:8,color:aprRateCol,fontFamily:FONT_BODY,fontWeight:700,letterSpacing:"0.8px"}}>APR: {g.aprR!=null?g.aprR+"%":"—"}</div>
             </div>
             {g.q1 > 0 ? (
-              <div style={{display:"flex",alignItems:"baseline",gap:8}}>
+              <div style={{display:"flex",alignItems:"baseline",gap:8,flexWrap:"wrap"}}>
                 <div><span style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY}}>Q1: </span><span style={{fontSize:13,fontWeight:800,color:"#ef4444",fontFamily:FONT_DISPLAY}}>{g.q1r}%</span></div>
                 <div style={{color:MUTED,fontFamily:FONT_BODY,fontSize:11}}>→</div>
                 <div><span style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY}}>Tgt: </span><span style={{fontSize:13,fontWeight:800,color:G,fontFamily:FONT_DISPLAY}}>≤{g.q2tr}%</span></div>
-                <div style={{marginLeft:"auto",fontSize:10,color:MUTED,fontFamily:FONT_BODY}}>Budget: {g.budget}</div>
+                <div style={{marginLeft:"auto",fontSize:10,color:MUTED,fontFamily:FONT_BODY}}>Q2: <span style={{fontWeight:700,color:g.q2>g.budget?"#dc2626":g.q2===g.budget?"#ea580c":G}}>{g.q2}</span>/{g.budget}</div>
               </div>
             ) : (
-              <div style={{fontSize:11,color:MUTED,fontFamily:FONT_BODY,fontStyle:"italic"}}>No Q1 baseline (April will be first measurement)</div>
+              <div style={{fontSize:11,color:MUTED,fontFamily:FONT_BODY,fontStyle:"italic"}}>No Q1 baseline · April: {g.apr} churn{g.apr===1?"":"s"}</div>
             )}
           </div>
           
@@ -2171,7 +2199,7 @@ function SOMOverview(props){
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8}}>
         <div>
           <div style={{fontSize:13,fontWeight:800,color:TEXT,fontFamily:FONT_DISPLAY}}>No SOM Account (Structural Risk)</div>
-          <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY,marginTop:2}}>{noSom.active} active &middot; {noSom.churned} churned &middot; Q1: {noSom.q1r}% → Q2 Tgt: ≤{noSom.q2tr}% &middot; Mtg/acct: {noSom.mtgApr!==null?noSom.mtgApr.toFixed(2):"—"}</div>
+          <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY,marginTop:2}}>{noSom.active} active &middot; {noSom.churned} churned &middot; Q1: {noSom.q1r}% → Q2 Tgt: ≤{noSom.q2tr}% &middot; Apr: {noSom.aprR}% ({noSom.apr} churn{noSom.apr===1?"":"s"}) &middot; Mtg/acct: {noSom.mtgApr!==null?noSom.mtgApr.toFixed(2):"—"}</div>
         </div>
         <div style={{fontSize:10,color:"#ea580c",fontFamily:FONT_BODY,fontWeight:700,whiteSpace:"nowrap"}}>View detail →</div>
       </div>
@@ -2374,6 +2402,7 @@ function RepsTab(){
     )}
   </div>);
 }
+
 
 // ─── SDR PERFORMANCE DASHBOARD TAB ───────────────────────────────────────────
 const SDR_DARK="#0d1117",SDR_CARD="#161b22",SDR_CARD2="#21262d",SDR_BORDER="#30363d";
@@ -2692,6 +2721,7 @@ function SDRDashboard({cms}){
   );
 }
 
+
 // ─── CMS PANEL ────────────────────────────────────────────────────────────────
 const DEFAULT_CMS = {
   widgets:{
@@ -2701,18 +2731,31 @@ const DEFAULT_CMS = {
   },
   churn:{
     locked:true,
-    lockedValue:"9.62",
-    lockedMonth:"Mar 26",
-    lockedLabel:"Previous Month Churn (March 2026)",
+    lockedValue:"12.15",
+    lockedMonth:"Apr 26",
+    lockedLabel:"Previous Month Churn (April 2026)",
   },
   meta:{
-    lastUpdated:"Apr 22, 2026",
+    lastUpdated:"May 4, 2026",
     period:"Period 3/16–4/15/2026",
   },
 };
 
 function loadCMS(){
-  try{const s=localStorage.getItem("martal_cms");return s?JSON.parse(s):DEFAULT_CMS;}
+  try{
+    const s=localStorage.getItem("martal_cms");
+    if(!s) return DEFAULT_CMS;
+    const cms=JSON.parse(s);
+    // One-time migration: April 2026 close. Force-refresh stale churn lock + meta.
+    if(cms?.churn?.lockedMonth==="Mar 26"||cms?.churn?.lockedValue==="9.62"){
+      cms.churn.lockedValue="12.15";
+      cms.churn.lockedMonth="Apr 26";
+      cms.churn.lockedLabel="Previous Month Churn (April 2026)";
+      if(cms.meta) cms.meta.lastUpdated="May 4, 2026";
+      try{localStorage.setItem("martal_cms",JSON.stringify(cms));}catch{}
+    }
+    return cms;
+  }
   catch{return DEFAULT_CMS;}
 }
 function saveCMS(c){try{localStorage.setItem("martal_cms",JSON.stringify(c));}catch{}}
@@ -2879,8 +2922,8 @@ function App(){
             {[
               {t:"SOMs (11 listed)",i:["David Harris, David Rosenthal, Grant Paris, James Bellew, Jason Andrews, Matt Guthrie, Merv Charles, Paige Givinsky (Landbase), Venus Powers — confirmed from org chart","Haset Aklilu (VP of Product) — included because GEA and JPM Chase are assigned to her in the accounts matrix","No SOM Account — accounts without an assigned SOM"]},
               {t:"Reps (36)",i:["Anand Pandey, Angela Hamilton, Alex Prodromou, Ariel Wolfe, Bill O'Leary, Blake Peremel, Cesar Garcia, Chinedu Okafor, Clara Galetti, Daniel Davies, Derek Sindelman, Dominic Libertoski, Edgar Medina, Elisha Johnson, Eric Tuttle, Francois Dore, Harjit Sawhney, Javion Jones, Jesse Shorr, Johan Vrey, Joshua Bylsma, Joshua Crawford, Kellee Madonia, Korbin Kirk, Logan Kennedy, Luis Rodriguez, Mark Kreidler, Michele Harris, Paige Givinsky, Rebecca Barnes, Savannah Peck, Stephanie Hackert, Tim Lan, Alli Fowler, Alyssa Perez, Anthony Allen"]},
-              {t:"Churn Formula",i:["Company: Lost ÷ Avg(Active Clients prior 3 months) × 100","Person-level: same formula applied to their account counts by month","Mar 2026 example: 10 ÷ avg(106,105,101) = 9.62%"]},
-              {t:"Data Sources",i:["Cash Flow & Billings — active clients, closed, lost (Feb 2022–Mar 2026)","Accounts Matrix — account→SOM→rep assignments with start/end dates","Cancellations List (Jan–May 2026) — provided directly, all end dates updated","SOM Performance PDF — MQL/SQL/meetings per SOM (Jul 2024–Mar 2026)","Termination Analysis — churn reasons per account","Org Chart — definitive role assignments (SOMs vs Reps)"]},
+              {t:"Churn Formula",i:["Company: Lost ÷ Avg(Active Clients prior 3 months) × 100","Person-level: same formula applied to their account counts by month","Apr 2026 example: 13 ÷ avg(110,106,105) = 12.15%"]},
+              {t:"Data Sources",i:["Cash Flow & Billings — active clients, closed, lost (Feb 2022–Apr 2026)","Accounts Matrix — account→SOM→rep assignments with start/end dates","Cancellations List (Jan–May 2026) — provided directly, all end dates updated","SOM Performance PDF — MQL/SQL/meetings per SOM (Jul 2024–Apr 2026)","Termination Analysis — churn reasons per account","Org Chart — definitive role assignments (SOMs vs Reps)"]},
               {t:"Churn Score (per person, lower = better)",i:["Rep Issue / Sales Ops Issue: +8 | Lack of Results / No Closed Deals: +6 | Single Rep / No Show: +5 | Poor List / Slow Start: +3 | Budget / Landbase / Didnt Pay: +1","Green 0–14 · Yellow 15–34 · Red 35+"]},
             ].map(s=>(
               <div key={s.t} style={{...CS,marginBottom:10}}>
