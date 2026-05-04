@@ -1040,6 +1040,47 @@ function CompanyTab({cms}){
 
     {w.paceCard!==false&&<CompanyPaceCard/>}
 
+    {/* Team Score KPI Band — March 2026 3-month rolling average */}
+    {(() => {
+      const teamAvg = sdrRows.length>0 ? (sdrRows.reduce((s,r)=>s+(r.avg||0),0)/sdrRows.length) : 0;
+      const teamAvgCol = teamAvg>=3.5?G:teamAvg>=3.0?"#f5c518":"#ef4444";
+      const total = sdrRows.length;
+      return (
+        <div style={{background:"#0d0d0d",border:"1px solid "+BORDER,borderRadius:10,padding:"18px 22px",marginBottom:16}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
+            <div style={{width:14,height:2,background:G}}/>
+            <div style={{fontSize:10,fontWeight:800,letterSpacing:"2px",textTransform:"uppercase",color:MUTED,fontFamily:FONT_BODY}}>Team Score Snapshot — Mar 2026 · 3-Month Rolling Average</div>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(4, 1fr)",gap:14}}>
+            {/* Team avg */}
+            <div style={{background:CARD,border:"1px solid "+BORDER,borderLeft:"3px solid "+teamAvgCol,borderRadius:8,padding:"14px 18px"}}>
+              <div style={{fontSize:10,fontWeight:800,letterSpacing:"1.5px",textTransform:"uppercase",color:MUTED,fontFamily:FONT_BODY}}>Team Average</div>
+              <div style={{fontSize:36,fontWeight:900,color:teamAvgCol,fontFamily:FONT_DISPLAY,letterSpacing:"-0.8px",margin:"6px 0",lineHeight:1}}>{teamAvg.toFixed(2)}</div>
+              <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY}}>across {total} ranked reps</div>
+            </div>
+            {/* Pass */}
+            <div style={{background:CARD,border:"1px solid "+BORDER,borderLeft:"3px solid "+G,borderRadius:8,padding:"14px 18px"}}>
+              <div style={{fontSize:10,fontWeight:800,letterSpacing:"1.5px",textTransform:"uppercase",color:MUTED,fontFamily:FONT_BODY}}>Pass</div>
+              <div style={{fontSize:36,fontWeight:900,color:G,fontFamily:FONT_DISPLAY,letterSpacing:"-0.8px",margin:"6px 0",lineHeight:1}}>{passCount}</div>
+              <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY}}>≥ 3.50  ·  {total>0?Math.round((passCount/total)*100):0}% of team</div>
+            </div>
+            {/* Observe */}
+            <div style={{background:CARD,border:"1px solid "+BORDER,borderLeft:"3px solid #f5c518",borderRadius:8,padding:"14px 18px"}}>
+              <div style={{fontSize:10,fontWeight:800,letterSpacing:"1.5px",textTransform:"uppercase",color:MUTED,fontFamily:FONT_BODY}}>Observe</div>
+              <div style={{fontSize:36,fontWeight:900,color:"#f5c518",fontFamily:FONT_DISPLAY,letterSpacing:"-0.8px",margin:"6px 0",lineHeight:1}}>{obsCount}</div>
+              <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY}}>3.00 – 3.49  ·  {total>0?Math.round((obsCount/total)*100):0}% of team</div>
+            </div>
+            {/* Below */}
+            <div style={{background:CARD,border:"1px solid "+BORDER,borderLeft:"3px solid #ef4444",borderRadius:8,padding:"14px 18px"}}>
+              <div style={{fontSize:10,fontWeight:800,letterSpacing:"1.5px",textTransform:"uppercase",color:MUTED,fontFamily:FONT_BODY}}>Below</div>
+              <div style={{fontSize:36,fontWeight:900,color:"#ef4444",fontFamily:FONT_DISPLAY,letterSpacing:"-0.8px",margin:"6px 0",lineHeight:1}}>{belowCount}</div>
+              <div style={{fontSize:10,color:MUTED,fontFamily:FONT_BODY}}>&lt; 3.00  ·  {total>0?Math.round((belowCount/total)*100):0}% of team</div>
+            </div>
+          </div>
+        </div>
+      );
+    })()}
+
     {/* Sub-navigation */}
     <div style={{background:CARD,border:`1px solid ${BORDER}`,borderRadius:"10px 10px 0 0",borderBottom:"none",display:"flex",overflowX:"auto",boxShadow:SHADOW}}>
       <SubNav id="overview"   label="Overview"/>
