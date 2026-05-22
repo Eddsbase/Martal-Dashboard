@@ -580,9 +580,11 @@ const SDR_OBS_THRESHOLD  = 3.0;
 
 const APR_ELAPSED = 1.0; // May 15: period closed (30-day ranking 4/16 → 5/15)
 
-// Company-level: Prior period (Apr 15) vs current period (May 15), rep-sum totals from ranking report
-const MARCH_CO = {mql:2325, sql:640, mtg:317};
-const APR_MTD_CO = {mql:2172, sql:497, mtg:301};
+// Company-level: prior month calendar (April) vs current period (May 15 ranking total)
+// Matches deck methodology — April calendar from summary tab vs May 15 30-day ranking company total
+// May 15 totals: 2,280 MQL / 539 SQL / 330 booked meetings (261 Flips + 69 Flips After Obj)
+const MARCH_CO = {mql:2324, sql:640, mtg:348};
+const APR_MTD_CO = {mql:2280, sql:539, mtg:330};
 
 const REP_PACE={
   "Dominic Libertoski":{marchRank:1,  aprRank:1, marchSQL:63, marchFlips:36, marchMQL:175, curMQL:154, curSQL:59, curMtg:36},
@@ -907,9 +909,9 @@ function PersonCharts({accounts,perf,repName}) {
 // current 30-day ranking (May 15) — both from the ranking report.
 function CompanyPaceCard(){
   const GROWTH = [
-    {label:"MQLs",     pct:-7,  absNow:APR_MTD_CO.mql, absMarch:MARCH_CO.mql, desc:"vs April 15 ranking total"},
-    {label:"SQLs",     pct:-22, absNow:APR_MTD_CO.sql, absMarch:MARCH_CO.sql, desc:"vs April 15 ranking total"},
-    {label:"Meetings", pct:-5,  absNow:APR_MTD_CO.mtg, absMarch:MARCH_CO.mtg, desc:"vs April 15 ranking total"},
+    {label:"MQLs",     pct:-2,  absNow:APR_MTD_CO.mql, absMarch:MARCH_CO.mql, desc:"vs April calendar total"},
+    {label:"SQLs",     pct:-16, absNow:APR_MTD_CO.sql, absMarch:MARCH_CO.sql, desc:"vs April calendar total"},
+    {label:"Meetings", pct:-5,  absNow:APR_MTD_CO.mtg, absMarch:MARCH_CO.mtg, desc:"vs April calendar total"},
   ];
   const pctCol = (p) => p>=10?G : p>=0?"#8ed122" : p>=-10?"#f5c518" : "#ef4444";
   return(
@@ -921,7 +923,7 @@ function CompanyPaceCard(){
             <div style={{fontSize:13,fontWeight:800,letterSpacing:"2px",textTransform:"uppercase",color:MUTED,fontFamily:FONT_BODY}}>May 15 Period Complete</div>
           </div>
           <div style={{fontSize:28,fontWeight:900,color:TEXT,fontFamily:FONT_DISPLAY,letterSpacing:"-0.5px",lineHeight:1.15}}>Pipeline volume <span style={{color:"#f5c518"}}>softened</span> vs April’s ranking total</div>
-          <div style={{fontSize:15,color:MUTED,fontFamily:FONT_BODY,marginTop:8,lineHeight:1.55}}>Measurement window: 4/16 – 5/15/2026 &middot; Ranking-report rep totals vs prior 30-day period (3/16 – 4/15/2026)<br/><span style={{color:"#bebebe"}}>Second consecutive month of post-migration gains</span> &middot; modest period-over-period dip; sustained lift in booked meetings, MQLs and SQLs vs pre-migration baseline holds.</div>
+          <div style={{fontSize:15,color:MUTED,fontFamily:FONT_BODY,marginTop:8,lineHeight:1.55}}>Measurement window: 4/16 – 5/15/2026 &middot; Company-level May 15 ranking totals (2,280 MQL / 539 SQL / 330 booked meetings) vs April calendar baseline (2,324 / 640 / 348)<br/><span style={{color:"#bebebe"}}>Second consecutive month above pre-migration baseline</span> &middot; modest period-over-period dip; sustained lift vs pre-migration holds.</div>
         </div>
         <div style={{background:"#0a0a0a",border:"1px solid "+BORDER,color:TEXT,borderRadius:8,padding:"10px 18px",textAlign:"center",minWidth:120}}>
           <div style={{fontSize:9,color:MUTED,fontWeight:700,letterSpacing:"1.2px",textTransform:"uppercase",fontFamily:FONT_BODY}}>Status</div>
@@ -1760,17 +1762,17 @@ async function buildSomPDF(som){
   pdfText(doc,som.name,M,y); y+=6;
   doc.setFontSize(8); doc.setFont('helvetica','normal');
   doc.setTextColor(...MUTED_RGB);
-  pdfText(doc,`Sales Operations Manager  ·  Period 3/16–4/15  ·  ${active.length} active  ·  ${churned.length} churned`,M,y); y+=5;
+  pdfText(doc,`Sales Operations Manager  ·  Period 4/16–5/15  ·  ${active.length} active  ·  ${churned.length} churned`,M,y); y+=5;
   doc.setDrawColor(...BORDER_RGB); doc.line(M,y,W-M,y); y+=7;
 
   // Team PACE table
   doc.setFontSize(7); doc.setFont('helvetica','bold');
   doc.setTextColor(...MUTED_RGB);
-  pdfText(doc,`TEAM PERFORMANCE — APRIL 15 PERIOD COMPLETE`,M,y); y+=4;
+  pdfText(doc,`TEAM PERFORMANCE — MAY 15 PERIOD COMPLETE`,M,y); y+=4;
   doc.setDrawColor(...BORDER_RGB); doc.line(M,y,W-M,y); y+=4;
 
   const tc=[M,52,65,80,100,115,131,150,167];
-  ['Rep','MR','SQLs','%now→proj','Proj','Mtgs','%now→proj','MQLs','%now→proj'].forEach((h,i)=>{
+  ['Rep','AR','SQLs','%now→proj','Proj','Mtgs','%now→proj','MQLs','%now→proj'].forEach((h,i)=>{
     doc.setFontSize(6); doc.setFont('helvetica','bold'); doc.setTextColor(...MUTED_RGB);
     pdfText(doc,h,tc[i],y);
   });
@@ -1961,10 +1963,10 @@ function SomPrintModal({som,onClose}){
             </div>
           </div>
           <div style={CS}>
-            <SectionLabel>Team Performance — April 15 Period Complete</SectionLabel>
+            <SectionLabel>Team Performance — May 15 Period Complete</SectionLabel>
             <div style={{overflowX:'auto'}}>
               <table style={{width:"100%",borderCollapse:"collapse",fontSize:11,fontFamily:FONT_BODY}}>
-                <thead><tr style={{borderBottom:`2px solid ${BORDER2}`}}>{['Rep','Mar Rank','Apr Rank','SQLs','% of Mar','Meetings','% of Mar','MQLs','% of Mar'].map(h=><th key={h} style={{padding:"5px 8px",textAlign:h==='Rep'?'left':'center',color:MUTED,fontWeight:700,fontSize:9,textTransform:'uppercase',letterSpacing:'1px',whiteSpace:'nowrap'}}>{h}</th>)}</tr></thead>
+                <thead><tr style={{borderBottom:`2px solid ${BORDER2}`}}>{['Rep','Apr Rank','SQLs','% of Apr','Proj','Meetings','% of Apr','MQLs','% of Apr'].map(h=><th key={h} style={{padding:"5px 8px",textAlign:h==='Rep'?'left':'center',color:MUTED,fontWeight:700,fontSize:9,textTransform:'uppercase',letterSpacing:'1px',whiteSpace:'nowrap'}}>{h}</th>)}</tr></thead>
                 <tbody>{rows.map((r,i)=>{
                   const status=sqlPaceStatus(r.curSQL,r.marchSQL);
                   return(<tr key={r.name} style={{borderBottom:`1px solid ${BORDER}`,background:i%2?CARD3:'transparent'}}>
@@ -2577,7 +2579,7 @@ function SDRDashboard({cms}){
 
       {/* Stat cards */}
       <div style={{display:"flex",gap:10,flexWrap:"wrap",margin:"16px 0"}}>
-        {[["AVG TEAM SCORE",avgScore,SDR_BLUE,"Apr rolling avg"],["PASS",pass,SDR_GREEN,"≥ 3.5 perf & 3.0 act"],["OBSERVE",observe,SDR_YELLOW,"One metric below"],["BELOW",below,SDR_RED,"Both metrics below"],["TEAM MEETINGS",teamMtg,SDR_PURPLE,`${teamSQL} SQLs · ${teamMQL} MQLs this period`]].map(([l,v,c,sub])=>(
+        {[["AVG TEAM SCORE",avgScore,SDR_BLUE,"May rolling avg"],["PASS",pass,SDR_GREEN,"≥ 3.5 perf & 3.0 act"],["OBSERVE",observe,SDR_YELLOW,"One metric below"],["BELOW",below,SDR_RED,"Both metrics below"],["TEAM MEETINGS",teamMtg,SDR_PURPLE,`${teamSQL} SQLs · ${teamMQL} MQLs this period`]].map(([l,v,c,sub])=>(
           <div key={l} style={{...DC,flex:1,minWidth:120}}>
             <div style={{fontSize:9,color:SDR_MUTED,fontWeight:700,letterSpacing:"1.2px",textTransform:"uppercase",fontFamily:FONT_BODY,marginBottom:8}}>{l}</div>
             <div style={{fontSize:28,fontWeight:900,color:c,fontFamily:FONT_DISPLAY,lineHeight:1}}>{v}</div>
@@ -2693,7 +2695,7 @@ function SDRDashboard({cms}){
           {/* Rep table */}
           <div style={{...DC,marginTop:12}}>
             <table style={{width:"100%",borderCollapse:"collapse",fontSize:12,fontFamily:FONT_BODY}}>
-              <thead><tr style={{borderBottom:`1px solid ${SDR_BORDER}`}}>{["REP","MQL","SQL","MEETINGS","MTG BAND","APR AVG SCORE","TIER"].map(h=><th key={h} style={{padding:"8px 10px",textAlign:h==="REP"?"left":"center",color:SDR_MUTED,fontWeight:700,fontSize:9,textTransform:"uppercase",letterSpacing:"1px"}}>{h}</th>)}</tr></thead>
+              <thead><tr style={{borderBottom:`1px solid ${SDR_BORDER}`}}>{["REP","MQL","SQL","MEETINGS","MTG BAND","MAY AVG SCORE","TIER"].map(h=><th key={h} style={{padding:"8px 10px",textAlign:h==="REP"?"left":"center",color:SDR_MUTED,fontWeight:700,fontSize:9,textTransform:"uppercase",letterSpacing:"1px"}}>{h}</th>)}</tr></thead>
               <tbody>{sorted.map((r,i)=>{const col=bandCol(r.band);return(<tr key={r.name} style={{borderBottom:`1px solid ${SDR_BORDER}22`,background:i%2?SDR_CARD2:"transparent"}}>
                 <td style={{padding:"7px 10px",color:SDR_TEXT,fontWeight:600}}>{r.name}</td>
                 <td style={{padding:"7px 10px",textAlign:"center",color:SDR_PURPLE,fontWeight:600}}>{r.mql}</td>
